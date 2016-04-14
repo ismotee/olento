@@ -26,11 +26,21 @@ float randf(float min, float max) {
 	return ((float)rand() / RAND_MAX) * (max - min) + min;
 }
 
-void initialize() {
+glm::vec3 randvec(float min, float max) {
+	return(glm::vec3(randf(min, max), randf(min, max), randf(min, max)));
+}
+
+
+int main(int argc, char* argv[]) {
+
+	//Ikkunan koko
+	int width = 1000;
+	int height = 800;
+
 	srand(time(NULL));
 
 	//initialize window and context
-	oWindow::init();
+	oWindow::init(width, height);
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -43,11 +53,6 @@ void initialize() {
 
 	// Cull triangles which normal is not towards the camera
 	glEnable(GL_CULL_FACE);
-}
-
-int main(int argc, char* argv[]) {
-
-	initialize();
 
 	oBuffers::init();
 
@@ -62,8 +67,6 @@ int main(int argc, char* argv[]) {
     modDirs.push_back("sivulle");
     modDirs.push_back("ulos");
     modDirs.push_back("kierteinen");
-    
-    
     
     std::string vertexShaderPath = dir.path + "shaders/StandardShading.vertexshader";
 	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
@@ -81,11 +84,16 @@ int main(int argc, char* argv[]) {
 
     oBuffers::setElements(obj.elements);
     
-    oCamera::init(programID);
+	//init camera
+	oCamera::init(programID, (float)width/height );
     
-
 	glUseProgram(programID);
 	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
+	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
+	GLuint SpecularID = glGetUniformLocation(programID, "specularity");
+	GLuint HardnessID = glGetUniformLocation(programID, "hardness");
+
+
     int loop = 101;
     int modX = 0;
     int modY = 0;
@@ -96,6 +104,7 @@ int main(int argc, char* argv[]) {
 	//pääluuppi alkaa
 	while (oWindow::getCloseEvent() == false){
 
+		//ota aikaa
 		t.reset();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -126,9 +135,12 @@ int main(int argc, char* argv[]) {
         
         oCamera::update();
         
-		//set light
+		//set light and material
 		glm::vec3 lightPos = glm::vec3(4, 4, 4);
 		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+		glUniform3f(DiffuseID, 0.5, 0.5, 0.5);
+		glUniform1f(SpecularID, 0.3);
+		glUniform1f(HardnessID, 15);
 
 		//update vertices & normals
 		oBuffers::updateAttributes();
@@ -146,7 +158,12 @@ int main(int argc, char* argv[]) {
 		//for (int i = 0; i < obj.vertices.size(); i++)
 		//	obj.vertices[i] = obj.vertices[i] + glm::vec3(randf(-0.01f, 0.01f), randf(-0.01f, 0.01f), randf(-0.01f, 0.01f));
 		
-		std::cout << "frame time: " << t.get() << "\n";
+		//delay. Target is ~30 fps
+		float delay_t = 0.0333 - t.get();
+		if (delay_t > 0)
+			SDL_Delay(delay_t * 1000);
+		else
+			std::cout << "Lag! FPS: " << 1.0 / t.get() << "\n";
 
 	}
 

@@ -12,6 +12,10 @@ out vec3 color;
 // Values that stay constant for the whole mesh.
 uniform vec3 LightPosition_worldspace;
 
+uniform vec3 diffuseColor;
+uniform float specularity;
+uniform float hardness;
+
 void main(){
 
 	// Light emission properties
@@ -20,17 +24,18 @@ void main(){
 	float LightPower = 50.0f;
 	
 	// Material properties
-	vec3 MaterialDiffuseColor = vec3(0.5, 0.5, 0.5);
-	vec3 MaterialAmbientColor = vec3(0.1,0.2,0.2) * MaterialDiffuseColor;
-	vec3 MaterialSpecularColor = vec3(0.15,0.125,0.1);
+	vec3 ambientColor = vec3(0.1,0.2,0.2) * diffuseColor;
+	vec3 specularColor = vec3(specularity, specularity, specularity);
 
 	// Distance to the light
 	float distance = length( LightPosition_worldspace - Position_worldspace );
 
 	// Normal of the computed fragment, in camera space
 	vec3 n = normalize( Normal_cameraspace );
+	
 	// Direction of the light (from the fragment to the light)
 	vec3 l = normalize( LightDirection_cameraspace );
+	
 	// Cosine of the angle between the normal and the light direction, 
 	// clamped above 0
 	//  - light is at the vertical of the triangle -> 1
@@ -40,8 +45,10 @@ void main(){
 	
 	// Eye vector (towards the camera)
 	vec3 E = normalize(EyeDirection_cameraspace);
+
 	// Direction in which the triangle reflects the light
 	vec3 R = reflect(-l,n);
+	
 	// Cosine of the angle between the Eye vector and the Reflect vector,
 	// clamped to 0
 	//  - Looking into the reflection -> 1
@@ -50,10 +57,10 @@ void main(){
 	
 	color = 
 		// Ambient : simulates indirect lighting
-		MaterialAmbientColor +
+		ambientColor +
 		// Diffuse : "color" of the object
-		MaterialDiffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
+		diffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
 		// Specular : reflective highlight, like a mirror
-		MaterialSpecularColor * LightColor * LightPower * pow(cosAlpha,5) / (distance*distance);
+		specularColor * LightColor * LightPower * pow(cosAlpha, hardness) / (distance*distance);
 
 }
