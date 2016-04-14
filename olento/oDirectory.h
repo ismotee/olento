@@ -10,7 +10,13 @@
 #define opengltest_oDirectory_h
 
 #include <vector>
+
+#ifdef __APPLE__
 #include <dirent.h>
+#else
+#include "dirent.h"
+#endif
+
 #include <string.h>
 #include <stdio.h>
 #include <iostream>
@@ -39,7 +45,7 @@ oDirectory::oDirectory (std::string _path): path(_path)
         /* print all the files and directories within directory */
         while ((ent = readdir (dir)) != NULL) {
             if (ent->d_name[0] != '.' && ent->d_name[strlen(ent->d_name)-1] != '~') {
-                switch (ent->d_type) {
+/*                switch (ent->d_type) {
                     case DT_REG:
                             files.push_back(path + ent->d_name);
                         break;
@@ -48,14 +54,15 @@ oDirectory::oDirectory (std::string _path): path(_path)
                         //directories.push_back(oDirectory(path + ent->d_name));
                         break;
                 }
-                
+*/                
+				files.push_back(path + ent->d_name);
             }
         }
             
         closedir (dir);
     } else {
         /* could not open directory */
-        std::cout << "could not open directory " << path << "\n";
+        //std::cout << "could not open directory " << path << "\n";
     }
     
 }

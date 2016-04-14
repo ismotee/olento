@@ -6,4 +6,4 @@
 //  Copyright (c) 2016 Ismo Torvinen. All rights reserved.
 //
 
-#include "oCamera.h"
+//#include "oCamera.h"

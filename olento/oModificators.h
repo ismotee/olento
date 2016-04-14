@@ -33,7 +33,7 @@ oModificators::oModificators (std::string path, std::vector<std::string> modific
 {
     for(int i = 0; i < modificators.size(); i++) {
         std::string modPath = path + modificators[i] + "/";
-        std::cout << modPath << "\n";
+        //std::cout << modPath << "\n";
         oDirectory dir(modPath);
         mods.push_back(oMeshBundle(dir));
     }

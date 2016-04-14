@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 	oBuffers::init();
 
 	// Create and compile our GLSL program from the shaders
-	std::string dirStr = "/Users/ismotorvinen/Documents/3d/opengltest/opengltest/resources/";
+	std::string dirStr = "olento/resources/";
     oDirectory dir(dirStr);
     std::string meshDir(dirStr + "meshes/");
     
@@ -90,8 +90,14 @@ int main(int argc, char* argv[]) {
     int modX = 0;
     int modY = 0;
     std::vector<glm::vec3> aimVerts;
+
+	dClock t;
+
 	//pääluuppi alkaa
 	while (oWindow::getCloseEvent() == false){
+
+		t.reset();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if(loop++ > 50) {
@@ -139,6 +145,8 @@ int main(int argc, char* argv[]) {
 		//alter vertices & normals
 		//for (int i = 0; i < obj.vertices.size(); i++)
 		//	obj.vertices[i] = obj.vertices[i] + glm::vec3(randf(-0.01f, 0.01f), randf(-0.01f, 0.01f), randf(-0.01f, 0.01f));
+		
+		std::cout << "frame time: " << t.get() << "\n";
 
 	}
 
