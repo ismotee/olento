@@ -76,6 +76,7 @@
     <ClInclude Include="olento\dirent.h" />
     <ClInclude Include="olento\dobject.h" />
     <ClInclude Include="olento\dynamicVertex.h" />
+    <ClInclude Include="olento\material.h" />
     <ClInclude Include="olento\objloader.h" />
     <ClInclude Include="olento\objloader.hpp" />
     <ClInclude Include="olento\oBuffers.h" />

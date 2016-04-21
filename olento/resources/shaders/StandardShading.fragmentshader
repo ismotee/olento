@@ -15,17 +15,17 @@ uniform vec3 LightPosition_worldspace;
 uniform vec3 diffuseColor;
 uniform float specularity;
 uniform float hardness;
+uniform float alpha;
 
 void main(){
 
 	// Light emission properties
-	// You probably want to put them as uniforms
 	vec3 LightColor = vec3(1,1,1);
-	float LightPower = 50.0f;
+	float LightPower = 70.0f;
 	
 	// Material properties
 	vec3 ambientColor = vec3(0.1,0.2,0.2) * diffuseColor;
-	vec3 specularColor = vec3(specularity, specularity, specularity);
+	vec3 specularColor = vec3(1,1,1);
 
 	// Distance to the light
 	float distance = length( LightPosition_worldspace - Position_worldspace );
@@ -54,19 +54,14 @@ void main(){
 	//  - Looking into the reflection -> 1
 	//  - Looking elsewhere -> < 1
 	float cosAlpha = clamp( dot( E,R ), 0,1 );
-	
-	vec3 RGBcolor = 
-		// Ambient : simulates indirect lighting
-		ambientColor +
-		// Diffuse : "color" of the object
-		diffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
-		// Specular : reflective highlight, like a mirror
-		specularColor * LightColor * LightPower * pow(cosAlpha, hardness) / (distance*distance);
+
+	float diffuseComponent = cosTheta / (distance*distance);
+	float specularComponent = specularity * pow(cosAlpha, hardness) / (distance*distance);
+
+	vec3 RGBcolor = ambientColor + LightColor * LightPower * (diffuseComponent * diffuseColor + specularComponent * specularColor);
 
 	color.r = RGBcolor.r;
 	color.g = RGBcolor.g;
 	color.b = RGBcolor.b;
-	color.a = specularColor.r * 1 * LightPower * pow(cosAlpha, hardness) / (distance*distance) + 0.2;
-
-
+	color.a = (specularComponent * LightPower * (1-alpha)) + alpha;
 }
