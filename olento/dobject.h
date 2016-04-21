@@ -4,10 +4,10 @@
 #include <vector>
 #include <iostream>
 #include <time.h>
+#include <algorithm>
 #include "oLoader.h"
 #include "dFace.h"
 
-class dFace;
 class dFacesConnected;
 class dObject;
 
@@ -89,18 +89,26 @@ public:
     std::vector<glm::vec3> normals;
     std::vector<unsigned int> elements;
     
+	std::vector<dFace> faces;
+	std::vector<glm::vec3> facePositions;
+
     void calculateAllNormals();
     void changeVertices(std::vector<glm::vec3>& new_vertices);
     void changeVerticesTowards(std::vector<glm::vec3>& aim_vertices, float multi);
     
-    std::vector<dFace> faces;
     std::vector<dFacesConnected> vFacesConnected;
+
+	void sortElementsByDistance(glm::vec3 cameraPos);
+	void sortElementsByDistance();
 
 private:
   
     void makeFaces();
     void makeFacesConnected();
-    
+
+	glm::vec3 cameraPosition;           //tämä on läpinäkyvyyttä varten
+	bool faceIsCloser(int a, int b); //palauta tosi jos a on lähempänä kameraa kuin b
+
 };
 
 dObject::dObject (std::string path)
@@ -112,7 +120,14 @@ dObject::dObject (std::string path)
     std::cout << "took " << c.get() << " s\n";
     
     //makeFaces();
-    makeFacesConnected();
+
+	//Määritä facejen sijainnit avaruudessa
+	for (int i = 0; i < faces.size(); i++) {
+		glm::vec3 facePosition = (1.0f / 3)*vertices[faces[i].vertsIds[0]] + (1.0f / 3)*vertices[faces[i].vertsIds[1]] + (1.0f / 3)*vertices[faces[i].vertsIds[2]];
+		facePositions.push_back(facePosition);
+	}
+	
+	makeFacesConnected();
     
     calculateAllNormals();
     
@@ -149,6 +164,11 @@ void dObject::makeFaces() //tätä pitäisi optimoida!
         
 		std::vector<unsigned int> ids(it, it+3);
 		faces.push_back(dFace(ids));
+
+		//Facen keskipisteen sijainti avaruudessa:
+		glm::vec3 facePosition = (1.0f / 3)*vertices[ids[0]] + (1.0f / 3)*vertices[ids[1]] + (1.0f / 3)*vertices[ids[2]];
+		facePositions.push_back(facePosition);
+
     }
     
 	std::cout << " ok ("<<c.get()<< " s)\n";
@@ -194,6 +214,59 @@ void dObject::changeVerticesTowards(std::vector<glm::vec3>& aim_vertices, float 
     {
         vertices[i] = glm::mix(vertices[i],aim_vertices[i], multi);
     }
+}
+
+
+void dObject::sortElementsByDistance(glm::vec3 cameraPos) {
+	cameraPosition = cameraPos;
+	sortElementsByDistance();
+}
+
+
+struct sortT{
+	int value;
+	float key;
+};
+
+
+bool compare(sortT l, sortT r) {
+	if (l.key < r.key) return true;
+	else return false;
+}
+
+
+void dObject::sortElementsByDistance() {
+	
+	std::cout << "Sort faces... \n";
+	std::cout << "faces: " << faces.size() << " facePositions: " << facePositions.size() << "\n";
+
+	dClock t;
+
+	//Järjestä facet väliaikaiseen vektoriin siten että lähin on ensin
+	std::vector<sortT> sortedFaces;
+
+	for (int i = 0; i < faces.size(); i++) {
+		sortT s;
+		s.value = i;
+		s.key = length(facePositions[i] - cameraPosition);
+		
+		sortedFaces.push_back(s);
+	}
+
+	std::cout << "ok\n";
+	std::cout << "Sort elements... ";
+
+	std::sort(sortedFaces.begin(), sortedFaces.end(), compare);
+
+	//järjestä sitten elementit: Lähin face on viimeisenä. Kun piirretään, aloitetaan siis kauimmasta.
+	elements.clear();
+	
+	for (int i = 0; i < sortedFaces.size(); i++)
+		elements.insert(elements.begin(), faces[sortedFaces[i].value].vertsIds.begin(), faces[sortedFaces[i].value].vertsIds.end());
+
+	std::cout << "ok\n";
+	std::cout << "Sort took " << t.get() << " s\n";
+
 }
 
 

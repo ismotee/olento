@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
 	glDepthFunc(GL_LESS);
 
 	// Cull triangles which normal is not towards the camera
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 	oBuffers::init();
 
@@ -82,16 +82,24 @@ int main(int argc, char* argv[]) {
     std::cout << "normals: " << obj.normals.size() << "\n";
     std::cout << "elements: " << obj.elements.size() << "\n";
 
-    oBuffers::setElements(obj.elements);
-    
 	//init camera
 	oCamera::init(programID, (float)width/height );
-    
+
+	//sort object
+	obj.sortElementsByDistance(oCamera::position);
+
+	//set element data to be drawn
+	oBuffers::setElements(obj.elements);
+
 	glUseProgram(programID);
 	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
 	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
 	GLuint SpecularID = glGetUniformLocation(programID, "specularity");
 	GLuint HardnessID = glGetUniformLocation(programID, "hardness");
+
+	// Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
     int loop = 101;
@@ -136,11 +144,11 @@ int main(int argc, char* argv[]) {
         oCamera::update();
         
 		//set light and material
-		glm::vec3 lightPos = glm::vec3(4, 4, 4);
+		glm::vec3 lightPos = glm::vec3(6, 6, 6);
 		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
-		glUniform3f(DiffuseID, 0.5, 0.5, 0.5);
-		glUniform1f(SpecularID, 0.3);
-		glUniform1f(HardnessID, 15);
+		glUniform3f(DiffuseID, 1, 1, 1);
+		glUniform1f(SpecularID, 1);
+		glUniform1f(HardnessID, 4);
 
 		//update vertices & normals
 		oBuffers::updateAttributes();

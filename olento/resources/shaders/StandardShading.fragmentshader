@@ -7,7 +7,7 @@ in vec3 EyeDirection_cameraspace;
 in vec3 LightDirection_cameraspace;
 
 // Ouput data
-out vec3 color;
+out vec4 color;
 
 // Values that stay constant for the whole mesh.
 uniform vec3 LightPosition_worldspace;
@@ -55,12 +55,18 @@ void main(){
 	//  - Looking elsewhere -> < 1
 	float cosAlpha = clamp( dot( E,R ), 0,1 );
 	
-	color = 
+	vec3 RGBcolor = 
 		// Ambient : simulates indirect lighting
 		ambientColor +
 		// Diffuse : "color" of the object
 		diffuseColor * LightColor * LightPower * cosTheta / (distance*distance) +
 		// Specular : reflective highlight, like a mirror
 		specularColor * LightColor * LightPower * pow(cosAlpha, hardness) / (distance*distance);
+
+	color.r = RGBcolor.r;
+	color.g = RGBcolor.g;
+	color.b = RGBcolor.b;
+	color.a = specularColor.r * 1 * LightPower * pow(cosAlpha, hardness) / (distance*distance) + 0.2;
+
 
 }
