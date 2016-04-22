@@ -10,7 +10,7 @@
 #include "oDirectory.h"
 #include "oMeshBundle.h"
 #include "oModificators.h"
-
+#include "material.h"
 
 // Include standard headers
 #include <stdio.h>
@@ -19,8 +19,9 @@
 #include <time.h>
 #include <iostream>
 
-//using namespace glm;
+int main(int argc, char* argv[]) {
 
+<<<<<<< HEAD
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
 #endif
@@ -33,16 +34,21 @@
 float randf(float min, float max) {
 	return ((float)rand() / RAND_MAX) * (max - min) + min;
 }
+=======
+	//Ikkunan koko
+	int width = 1000;
+	int height = 800;
+>>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
 
-void initialize() {
 	srand(time(NULL));
 
 	//initialize window and context
-	oWindow::init();
+	oWindow::init(width, height);
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
+<<<<<<< HEAD
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 
@@ -72,6 +78,15 @@ int main(int argc, char* argv[]) {
     
     
 	initialize();
+=======
+	//Nämä on poistettu läpinäkyvyyden takia:
+		// Enable depth test
+		//glEnable(GL_DEPTH_TEST);
+		// Accept fragment if it closer to the camera than the former one
+		//glDepthFunc(GL_LESS);
+		// Cull triangles which normal is not towards the camera
+		//glEnable(GL_CULL_FACE);
+>>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
 
 	oBuffers::init();
 
@@ -87,8 +102,6 @@ int main(int argc, char* argv[]) {
     modDirs.push_back("ulos");
     modDirs.push_back("kierteinen");
     
-    
-    
     std::string vertexShaderPath = dir.path + "shaders/StandardShading.vertexshader";
 	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
     std::string objectDir = dirStr + "meshes/olento_testi.obj";
@@ -103,13 +116,29 @@ int main(int argc, char* argv[]) {
     std::cout << "normals: " << obj.normals.size() << "\n";
     std::cout << "elements: " << obj.elements.size() << "\n";
 
-    oBuffers::setElements(obj.elements);
-    
-    oCamera::init(programID);
-    
+	//init camera
+	oCamera::init(programID, (float)width/height );
+
+	//Järjestä elementit läpinäkyvyyttä varten. Tässä menee KAUAN (> 4 min)
+	obj.sortElementsByDistance(oCamera::position);
+
+	//set element data to be drawn
+	oBuffers::setElements(obj.elements);
 
 	glUseProgram(programID);
+
+	//luodaan uniformien kahvat
 	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
+	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
+	GLuint SpecularID = glGetUniformLocation(programID, "specularity");
+	GLuint HardnessID = glGetUniformLocation(programID, "hardness");
+	GLuint AlphaID = glGetUniformLocation(programID, "alpha");
+
+	// Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
     int loop = 101;
     float a = 0.0f;
     float b = 0.0;
@@ -120,19 +149,45 @@ int main(int argc, char* argv[]) {
 
 	dClock t;
 
+	//luo materiaalit
+	std::vector<material> materials;
+	for (int i = 0; i < 8; i++) 
+		materials.push_back(createRandomMaterial());
+
+	int mat_i = 0; 
+
+	//aseta valo
+	glm::vec3 lightPos = glm::vec3(6, 6, 6);
+	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+
 	//pääluuppi alkaa
 	while (oWindow::getCloseEvent() == false){
 
+		//ota aikaa
 		t.reset();
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+<<<<<<< HEAD
         if(loop++ > 5) {
             
             std::vector<float> values(5);
         
           //  a += 0.06f;
             e+= 0.3f;
+=======
+        if(loop++ > 50) {
+
+			//aseta materiaali
+			mat_i = rand() % materials.size();
+			glUniform3f(DiffuseID, materials[mat_i].diffuseColor.r, materials[mat_i].diffuseColor.g, materials[mat_i].diffuseColor.b);
+			glUniform1f(SpecularID, materials[mat_i].specularity);
+			glUniform1f(HardnessID, materials[mat_i].hardness);
+			glUniform1f(AlphaID, materials[mat_i].alpha);
+
+			//mod stuffii
+            aimVerts = mods[modX][modY].vertices;
+>>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
             
             if(e >= 1.0f) {
                 e = -0.9;
@@ -168,38 +223,36 @@ int main(int argc, char* argv[]) {
             
             loop = 0;
         }
-        
+
+		//muuta verteksit ja normaalit
         obj.changeVerticesTowards(aimVerts, 0.1f);
         obj.calculateAllNormals();
 
-
-		glUseProgram(programID);
+		//päivitä ja näytä
 
 		oBuffers::updateBuffers(obj);
-        
         oCamera::update();
-        
-		//set light
-		glm::vec3 lightPos = glm::vec3(4, 4, 4);
-		glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
-
-		//update vertices & normals
 		oBuffers::updateAttributes();
-
-		// Draw
-		//glDrawElements(GL_TRIANGLES, obj.elements.size(), GL_UNSIGNED_INT, 0);
 
 		GLenum err = glGetError();
 		if (err != 0) std::cout << "Error: " << err << "\n";
 
-		//show
 		oWindow::show();
 
+<<<<<<< HEAD
 		//alter vertices & normals
 		//for (int i = 0; i < obj.vertices.size(); i++)
 		//	obj.vertices[i] = obj.vertices[i] + glm::vec3(randf(-0.01f, 0.01f), randf(-0.01f, 0.01f), randf(-0.01f, 0.01f));
 		
 		//std::cout << "fps: " << 1/t.get() << "\n";
+=======
+		//delay. Target is ~30 fps
+		float delay_t = 0.0333 - t.get();
+		if (delay_t > 0)
+			SDL_Delay(delay_t * 1000);
+		else
+			std::cout << "Lag! FPS: " << 1.0 / t.get() << "\n";
+>>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
 
 	}
 

@@ -63,6 +63,9 @@
     <ClInclude Include="olento\shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="olento\material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="olento\main.cpp">
