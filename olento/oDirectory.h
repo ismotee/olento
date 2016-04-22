@@ -10,16 +10,14 @@
 #define opengltest_oDirectory_h
 
 #include <vector>
-<<<<<<< HEAD
 
-//#ifdef __APPLE__
+
+#ifdef __APPLE__
 #include <dirent.h>
-//#else
-//#include "dirent.h"
-//#endif
-=======
-#include <dirent.h>
->>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
+#else
+#include "direntwin.h"
+#endif
+
 
 #include <string.h>
 #include <stdio.h>

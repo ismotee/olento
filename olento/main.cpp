@@ -19,9 +19,7 @@
 #include <time.h>
 #include <iostream>
 
-int main(int argc, char* argv[]) {
 
-<<<<<<< HEAD
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
 #endif
@@ -31,33 +29,25 @@ int main(int argc, char* argv[]) {
 
 
 // Random Float
-float randf(float min, float max) {
-	return ((float)rand() / RAND_MAX) * (max - min) + min;
-}
-=======
+//float randf(float min, float max) {
+//	return ((float)rand() / RAND_MAX) * (max - min) + min;
+//}
 	//Ikkunan koko
 	int width = 1000;
 	int height = 800;
->>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
 
-	srand(time(NULL));
+void initialize() {
+
+    srand(time(NULL));
 
 	//initialize window and context
 	oWindow::init(width, height);
 
 	// Dark blue background
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
-<<<<<<< HEAD
-	// Enable depth test
-	glEnable(GL_DEPTH_TEST);
-
-	// Accept fragment if it closer to the camera than the former one
-	glDepthFunc(GL_LESS);
-
-	// Cull triangles which normal is not towards the camera
-	glEnable(GL_CULL_FACE);
 }
+
+
 
 int main(int argc, char* argv[]) {
     
@@ -78,7 +68,6 @@ int main(int argc, char* argv[]) {
     
     
 	initialize();
-=======
 	//Nämä on poistettu läpinäkyvyyden takia:
 		// Enable depth test
 		//glEnable(GL_DEPTH_TEST);
@@ -86,7 +75,6 @@ int main(int argc, char* argv[]) {
 		//glDepthFunc(GL_LESS);
 		// Cull triangles which normal is not towards the camera
 		//glEnable(GL_CULL_FACE);
->>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
 
 	oBuffers::init();
 
@@ -168,16 +156,13 @@ int main(int argc, char* argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-<<<<<<< HEAD
-        if(loop++ > 5) {
+        if(loop++ > 25) {
             
             std::vector<float> values(5);
         
           //  a += 0.06f;
             e+= 0.3f;
-=======
-        if(loop++ > 50) {
-
+  
 			//aseta materiaali
 			mat_i = rand() % materials.size();
 			glUniform3f(DiffuseID, materials[mat_i].diffuseColor.r, materials[mat_i].diffuseColor.g, materials[mat_i].diffuseColor.b);
@@ -185,10 +170,7 @@ int main(int argc, char* argv[]) {
 			glUniform1f(HardnessID, materials[mat_i].hardness);
 			glUniform1f(AlphaID, materials[mat_i].alpha);
 
-			//mod stuffii
-            aimVerts = mods[modX][modY].vertices;
->>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
-            
+           
             if(e >= 1.0f) {
                 e = -0.9;
                 d += 0.3f;
@@ -217,7 +199,7 @@ int main(int argc, char* argv[]) {
             values[3] = d;
             values[4] = e;
             
-            std::cout << values[0] << " : " << values[1] << " : " << values[2] << ":" << values[3] << ":" << values[4] << "\n";
+          //  std::cout << values[0] << " : " << values[1] << " : " << values[2] << ":" << values[3] << ":" << values[4] << "\n";
             
             aimVerts = mods.getShape(values);
             
@@ -239,20 +221,11 @@ int main(int argc, char* argv[]) {
 
 		oWindow::show();
 
-<<<<<<< HEAD
-		//alter vertices & normals
-		//for (int i = 0; i < obj.vertices.size(); i++)
-		//	obj.vertices[i] = obj.vertices[i] + glm::vec3(randf(-0.01f, 0.01f), randf(-0.01f, 0.01f), randf(-0.01f, 0.01f));
-		
-		//std::cout << "fps: " << 1/t.get() << "\n";
-=======
-		//delay. Target is ~30 fps
 		float delay_t = 0.0333 - t.get();
 		if (delay_t > 0)
 			SDL_Delay(delay_t * 1000);
 		else
 			std::cout << "Lag! FPS: " << 1.0 / t.get() << "\n";
->>>>>>> 053cd29e47ac4bdb5fee4f51164f1c4bea23e3e9
 
 	}
 
