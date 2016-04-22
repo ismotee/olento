@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>8D7B01E3-032F-43BC-A080-1B0B56171731</string>
+	<key>IDESourceControlProjectName</key>
+	<string>opengltest</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>399B4148550AAB5C0F7FDF835EE83CB4971B01FB</key>
+		<string>https://github.com/ismotee/olento.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>opengltest.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>399B4148550AAB5C0F7FDF835EE83CB4971B01FB</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/ismotee/olento.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>399B4148550AAB5C0F7FDF835EE83CB4971B01FB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>399B4148550AAB5C0F7FDF835EE83CB4971B01FB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>olento</string>
+		</dict>
+	</array>
+</dict>
+</plist>

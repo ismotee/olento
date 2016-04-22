@@ -21,6 +21,14 @@
 
 //using namespace glm;
 
+#ifdef __APPLE__
+#include "CoreFoundation/CoreFoundation.h"
+#endif
+
+// ----------------------------------------------------------------------------
+// This makes relative paths work in C++ in Xcode by changing directory to the Resources folder inside the .app bundle
+
+
 // Random Float
 float randf(float min, float max) {
 	return ((float)rand() / RAND_MAX) * (max - min) + min;
@@ -46,18 +54,34 @@ void initialize() {
 }
 
 int main(int argc, char* argv[]) {
+    
+#ifdef __APPLE__
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+    char path[PATH_MAX];
+    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
+    {
+        // error!
+    }
+    CFRelease(resourcesURL);
+    
+    chdir(path);
+    std::cout << "Current Path: " << path << std::endl;
+#endif
 
+    
+    
 	initialize();
 
 	oBuffers::init();
 
 	// Create and compile our GLSL program from the shaders
-	std::string dirStr = "olento/resources/";
+	std::string dirStr = "/Users/ismotorvinen/Documents/3d/olento/olento/resources/";
     oDirectory dir(dirStr);
     std::string meshDir(dirStr + "meshes/");
     
     std::vector<std::string> modDirs;
-    modDirs.push_back("arkkityypit");
+    //modDirs.push_back("arkkityypit");
     modDirs.push_back("ylos");
     modDirs.push_back("sivulle");
     modDirs.push_back("ulos");
@@ -69,7 +93,7 @@ int main(int argc, char* argv[]) {
 	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
     std::string objectDir = dirStr + "meshes/olento_testi.obj";
 
-    oModificators mods(meshDir, modDirs);
+    oModificators mods(meshDir, "arkkityypit", modDirs);
     
 	GLuint programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
     dObject obj = dObject(objectDir);
@@ -87,8 +111,11 @@ int main(int argc, char* argv[]) {
 	glUseProgram(programID);
 	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
     int loop = 101;
-    int modX = 0;
-    int modY = 0;
+    float a = 0.0f;
+    float b = 0.0;
+    float c = 0.0;
+    float d = 0.0;
+    float e = 0.0;
     std::vector<glm::vec3> aimVerts;
 
 	dClock t;
@@ -100,19 +127,45 @@ int main(int argc, char* argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if(loop++ > 50) {
+        if(loop++ > 5) {
             
-            aimVerts = mods[modX][modY].vertices;
-            
-            if(++modY >= mods[modX].meshes.size()) {
-                modY = 0;
-                modX++;
-                
-            }
-            if(modX >= mods.mods.size()) {
-                modX = 0;
-            }
+            std::vector<float> values(5);
         
+          //  a += 0.06f;
+            e+= 0.3f;
+            
+            if(e >= 1.0f) {
+                e = -0.9;
+                d += 0.3f;
+            }
+            if(d >= 1.0f) {
+                d = -0.9;
+                c += 0.3f;
+            }
+            if(c >= 1.0f) {
+                c = -0.9;
+                b += 0.3f;
+            }
+            if(b >= 1.0f) {
+                b = -0.9;
+                a += 0.999f;
+            }
+            if(a >= 3) {
+                a = 0;
+            }
+
+            
+            
+            values[0] = a;
+            values[1] = b;
+            values[2] = c;
+            values[3] = d;
+            values[4] = e;
+            
+            std::cout << values[0] << " : " << values[1] << " : " << values[2] << ":" << values[3] << ":" << values[4] << "\n";
+            
+            aimVerts = mods.getShape(values);
+            
             loop = 0;
         }
         
@@ -146,7 +199,7 @@ int main(int argc, char* argv[]) {
 		//for (int i = 0; i < obj.vertices.size(); i++)
 		//	obj.vertices[i] = obj.vertices[i] + glm::vec3(randf(-0.01f, 0.01f), randf(-0.01f, 0.01f), randf(-0.01f, 0.01f));
 		
-		std::cout << "frame time: " << t.get() << "\n";
+		//std::cout << "fps: " << 1/t.get() << "\n";
 
 	}
 

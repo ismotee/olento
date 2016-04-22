@@ -7,51 +7,56 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		836242041CA4753800D164AF /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836242031CA4753800D164AF /* shader.cpp */; };
-		836242071CA476B300D164AF /* oWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 836242061CA476B300D164AF /* oWindow.cpp */; };
-		838C26B51C8F3B41001FF9B7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 838C26B41C8F3B41001FF9B7 /* main.cpp */; };
 		838C26BC1C8F3D68001FF9B7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 838C26BB1C8F3D68001FF9B7 /* OpenGL.framework */; };
 		838C26BE1C8F3D8C001FF9B7 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */; };
-		83EB86191C996A1300D083A9 /* objloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83EB86171C996A1300D083A9 /* objloader.cpp */; };
+		83DA591A1CBFAEFC00F267A6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA59071CBFAEFC00F267A6 /* main.cpp */; };
+		83DA591B1CBFAEFC00F267A6 /* objloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA59081CBFAEFC00F267A6 /* objloader.cpp */; };
+		83DA591C1CBFAEFC00F267A6 /* oCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA590C1CBFAEFC00F267A6 /* oCamera.cpp */; };
+		83DA591D1CBFAEFC00F267A6 /* oWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA59141CBFAEFC00F267A6 /* oWindow.cpp */; };
+		83DA591E1CBFAEFC00F267A6 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA59161CBFAEFC00F267A6 /* shader.cpp */; };
+		83DA59221CBFB54600F267A6 /* resources in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83DA59211CBFB54600F267A6 /* resources */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		838C26AF1C8F3B41001FF9B7 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			dstPath = resources;
+			dstSubfolderSpec = 16;
 			files = (
+				83DA59221CBFB54600F267A6 /* resources in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		830CD83A1CA9463F006458F8 /* oDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oDirectory.h; sourceTree = "<group>"; };
-		8347136A1CA7595500E3B19A /* oMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oMesh.h; sourceTree = "<group>"; };
-		8347136B1CA75D7300E3B19A /* oLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oLoader.h; sourceTree = "<group>"; };
-		8347136C1CA7638600E3B19A /* dFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dFace.h; sourceTree = "<group>"; };
-		836241FD1CA415B400D164AF /* libassimp.3.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libassimp.3.2.0.dylib; path = ../../../../../usr/local/lib/libassimp.3.2.0.dylib; sourceTree = "<group>"; };
-		836242011CA4528300D164AF /* oWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oWindow.h; sourceTree = "<group>"; };
-		836242021CA4751400D164AF /* oBuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oBuffers.h; sourceTree = "<group>"; };
-		836242031CA4753800D164AF /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
-		836242051CA4759900D164AF /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
-		836242061CA476B300D164AF /* oWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = oWindow.cpp; sourceTree = "<group>"; };
-		836242081CA4852100D164AF /* olento.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = olento.h; sourceTree = "<group>"; };
-		836E9DF11CA4B0A00065B78F /* oCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = oCamera.cpp; sourceTree = "<group>"; };
-		836E9DF21CA4B0A00065B78F /* oCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oCamera.h; sourceTree = "<group>"; };
-		83839D441A54C69600E6B417 /* dobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dobject.h; sourceTree = "<group>"; };
-		838C26B11C8F3B41001FF9B7 /* opengltest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = opengltest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		838C26B41C8F3B41001FF9B7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		838C26B11C8F3B41001FF9B7 /* olento.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = olento.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		838C26BB1C8F3D68001FF9B7 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
-		8394455F1CB7B57F00012EF2 /* oModificators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oModificators.h; sourceTree = "<group>"; };
-		83B7C40B1CA84AA700D1FB8C /* oMeshBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = oMeshBundle.h; sourceTree = "<group>"; };
-		83EB86171C996A1300D083A9 /* objloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = objloader.cpp; sourceTree = "<group>"; };
-		83EB86181C996A1300D083A9 /* objloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = objloader.h; sourceTree = "<group>"; };
-		83EB861D1C99759800D083A9 /* SimpleTransform.vertexshader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SimpleTransform.vertexshader; sourceTree = "<group>"; };
-		83EB861E1C9975BC00D083A9 /* SimpleTransform.fragmentshader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SimpleTransform.fragmentshader; sourceTree = "<group>"; };
+		83DA59031CBFAEFC00F267A6 /* dFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dFace.h; path = olento/dFace.h; sourceTree = "<group>"; };
+		83DA59051CBFAEFC00F267A6 /* dobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dobject.h; path = olento/dobject.h; sourceTree = "<group>"; };
+		83DA59061CBFAEFC00F267A6 /* dynamicVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dynamicVertex.h; path = olento/dynamicVertex.h; sourceTree = "<group>"; };
+		83DA59071CBFAEFC00F267A6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = olento/main.cpp; sourceTree = "<group>"; };
+		83DA59081CBFAEFC00F267A6 /* objloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = objloader.cpp; path = olento/objloader.cpp; sourceTree = "<group>"; };
+		83DA59091CBFAEFC00F267A6 /* objloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = objloader.h; path = olento/objloader.h; sourceTree = "<group>"; };
+		83DA590A1CBFAEFC00F267A6 /* objloader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = objloader.hpp; path = olento/objloader.hpp; sourceTree = "<group>"; };
+		83DA590B1CBFAEFC00F267A6 /* oBuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oBuffers.h; path = olento/oBuffers.h; sourceTree = "<group>"; };
+		83DA590C1CBFAEFC00F267A6 /* oCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = oCamera.cpp; path = olento/oCamera.cpp; sourceTree = "<group>"; };
+		83DA590D1CBFAEFC00F267A6 /* oCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oCamera.h; path = olento/oCamera.h; sourceTree = "<group>"; };
+		83DA590E1CBFAEFC00F267A6 /* oDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oDirectory.h; path = olento/oDirectory.h; sourceTree = "<group>"; };
+		83DA590F1CBFAEFC00F267A6 /* olento.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = olento.h; path = olento/olento.h; sourceTree = "<group>"; };
+		83DA59101CBFAEFC00F267A6 /* oLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oLoader.h; path = olento/oLoader.h; sourceTree = "<group>"; };
+		83DA59111CBFAEFC00F267A6 /* oMesh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oMesh.h; path = olento/oMesh.h; sourceTree = "<group>"; };
+		83DA59121CBFAEFC00F267A6 /* oMeshBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oMeshBundle.h; path = olento/oMeshBundle.h; sourceTree = "<group>"; };
+		83DA59131CBFAEFC00F267A6 /* oModificators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oModificators.h; path = olento/oModificators.h; sourceTree = "<group>"; };
+		83DA59141CBFAEFC00F267A6 /* oWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = oWindow.cpp; path = olento/oWindow.cpp; sourceTree = "<group>"; };
+		83DA59151CBFAEFC00F267A6 /* oWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = oWindow.h; path = olento/oWindow.h; sourceTree = "<group>"; };
+		83DA59161CBFAEFC00F267A6 /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = shader.cpp; path = olento/shader.cpp; sourceTree = "<group>"; };
+		83DA59171CBFAEFC00F267A6 /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = shader.hpp; path = olento/shader.hpp; sourceTree = "<group>"; };
+		83DA59181CBFAEFC00F267A6 /* SimpleTransform.fragmentshader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimpleTransform.fragmentshader; path = olento/SimpleTransform.fragmentshader; sourceTree = "<group>"; };
+		83DA59191CBFAEFC00F267A6 /* SimpleTransform.vertexshader */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SimpleTransform.vertexshader; path = olento/SimpleTransform.vertexshader; sourceTree = "<group>"; };
+		83DA59211CBFB54600F267A6 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resources; path = olento/resources; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,10 +75,10 @@
 		838C26A81C8F3B41001FF9B7 = {
 			isa = PBXGroup;
 			children = (
-				836241FD1CA415B400D164AF /* libassimp.3.2.0.dylib */,
+				83DA59211CBFB54600F267A6 /* resources */,
+				83DA59021CBFAEB000F267A6 /* olento */,
 				838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */,
 				838C26BB1C8F3D68001FF9B7 /* OpenGL.framework */,
-				838C26B31C8F3B41001FF9B7 /* opengltest */,
 				838C26B21C8F3B41001FF9B7 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -81,44 +86,46 @@
 		838C26B21C8F3B41001FF9B7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				838C26B11C8F3B41001FF9B7 /* opengltest.app */,
+				838C26B11C8F3B41001FF9B7 /* olento.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		838C26B31C8F3B41001FF9B7 /* opengltest */ = {
+		83DA59021CBFAEB000F267A6 /* olento */ = {
 			isa = PBXGroup;
 			children = (
-				836242081CA4852100D164AF /* olento.h */,
-				836242061CA476B300D164AF /* oWindow.cpp */,
-				836242051CA4759900D164AF /* shader.hpp */,
-				836242031CA4753800D164AF /* shader.cpp */,
-				836242021CA4751400D164AF /* oBuffers.h */,
-				83EB86171C996A1300D083A9 /* objloader.cpp */,
-				83EB86181C996A1300D083A9 /* objloader.h */,
-				838C26B41C8F3B41001FF9B7 /* main.cpp */,
-				83EB861D1C99759800D083A9 /* SimpleTransform.vertexshader */,
-				83EB861E1C9975BC00D083A9 /* SimpleTransform.fragmentshader */,
-				83839D441A54C69600E6B417 /* dobject.h */,
-				836242011CA4528300D164AF /* oWindow.h */,
-				836E9DF11CA4B0A00065B78F /* oCamera.cpp */,
-				836E9DF21CA4B0A00065B78F /* oCamera.h */,
-				8347136A1CA7595500E3B19A /* oMesh.h */,
-				8347136B1CA75D7300E3B19A /* oLoader.h */,
-				8347136C1CA7638600E3B19A /* dFace.h */,
-				83B7C40B1CA84AA700D1FB8C /* oMeshBundle.h */,
-				830CD83A1CA9463F006458F8 /* oDirectory.h */,
-				8394455F1CB7B57F00012EF2 /* oModificators.h */,
+				83DA59031CBFAEFC00F267A6 /* dFace.h */,
+				83DA59051CBFAEFC00F267A6 /* dobject.h */,
+				83DA59061CBFAEFC00F267A6 /* dynamicVertex.h */,
+				83DA59071CBFAEFC00F267A6 /* main.cpp */,
+				83DA59081CBFAEFC00F267A6 /* objloader.cpp */,
+				83DA59091CBFAEFC00F267A6 /* objloader.h */,
+				83DA590A1CBFAEFC00F267A6 /* objloader.hpp */,
+				83DA590B1CBFAEFC00F267A6 /* oBuffers.h */,
+				83DA590C1CBFAEFC00F267A6 /* oCamera.cpp */,
+				83DA590D1CBFAEFC00F267A6 /* oCamera.h */,
+				83DA590E1CBFAEFC00F267A6 /* oDirectory.h */,
+				83DA590F1CBFAEFC00F267A6 /* olento.h */,
+				83DA59101CBFAEFC00F267A6 /* oLoader.h */,
+				83DA59111CBFAEFC00F267A6 /* oMesh.h */,
+				83DA59121CBFAEFC00F267A6 /* oMeshBundle.h */,
+				83DA59131CBFAEFC00F267A6 /* oModificators.h */,
+				83DA59141CBFAEFC00F267A6 /* oWindow.cpp */,
+				83DA59151CBFAEFC00F267A6 /* oWindow.h */,
+				83DA59161CBFAEFC00F267A6 /* shader.cpp */,
+				83DA59171CBFAEFC00F267A6 /* shader.hpp */,
+				83DA59181CBFAEFC00F267A6 /* SimpleTransform.fragmentshader */,
+				83DA59191CBFAEFC00F267A6 /* SimpleTransform.vertexshader */,
 			);
-			path = opengltest;
+			name = olento;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		838C26B01C8F3B41001FF9B7 /* opengltest */ = {
+		838C26B01C8F3B41001FF9B7 /* olento */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 838C26B81C8F3B41001FF9B7 /* Build configuration list for PBXNativeTarget "opengltest" */;
+			buildConfigurationList = 838C26B81C8F3B41001FF9B7 /* Build configuration list for PBXNativeTarget "olento" */;
 			buildPhases = (
 				838C26AD1C8F3B41001FF9B7 /* Sources */,
 				838C26AE1C8F3B41001FF9B7 /* Frameworks */,
@@ -128,9 +135,9 @@
 			);
 			dependencies = (
 			);
-			name = opengltest;
+			name = olento;
 			productName = opengltest;
-			productReference = 838C26B11C8F3B41001FF9B7 /* opengltest.app */;
+			productReference = 838C26B11C8F3B41001FF9B7 /* olento.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -159,7 +166,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				838C26B01C8F3B41001FF9B7 /* opengltest */,
+				838C26B01C8F3B41001FF9B7 /* olento */,
 			);
 		};
 /* End PBXProject section */
@@ -169,10 +176,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83EB86191C996A1300D083A9 /* objloader.cpp in Sources */,
-				836242041CA4753800D164AF /* shader.cpp in Sources */,
-				838C26B51C8F3B41001FF9B7 /* main.cpp in Sources */,
-				836242071CA476B300D164AF /* oWindow.cpp in Sources */,
+				83DA591E1CBFAEFC00F267A6 /* shader.cpp in Sources */,
+				83DA591B1CBFAEFC00F267A6 /* objloader.cpp in Sources */,
+				83DA591A1CBFAEFC00F267A6 /* main.cpp in Sources */,
+				83DA591C1CBFAEFC00F267A6 /* oCamera.cpp in Sources */,
+				83DA591D1CBFAEFC00F267A6 /* oWindow.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -215,7 +223,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				LIBRARY_SEARCH_PATHS = "/usr/local/lib/**";
+				LIBRARY_SEARCH_PATHS = (
+					"/usr/local/lib/**",
+					lib/,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -254,7 +265,10 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				LIBRARY_SEARCH_PATHS = "/usr/local/lib/**";
+				LIBRARY_SEARCH_PATHS = (
+					"/usr/local/lib/**",
+					lib/,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
@@ -264,6 +278,7 @@
 		838C26B91C8F3B41001FF9B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,
@@ -271,6 +286,7 @@
 					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = "/usr/local/lib/**";
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-framework",
 					cocoa,
@@ -278,13 +294,14 @@
 					SDL2,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = /Users/ismotorvinen/Documents/3d/olento/olento/include;
 			};
 			name = Debug;
 		};
 		838C26BA1C8F3B41001FF9B7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,
@@ -292,6 +309,7 @@
 					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = "/usr/local/lib/**";
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				OTHER_LDFLAGS = (
 					"-framework",
 					cocoa,
@@ -299,7 +317,7 @@
 					SDL2,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = /Users/ismotorvinen/Documents/3d/olento/olento/include;
 			};
 			name = Release;
 		};
@@ -315,7 +333,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		838C26B81C8F3B41001FF9B7 /* Build configuration list for PBXNativeTarget "opengltest" */ = {
+		838C26B81C8F3B41001FF9B7 /* Build configuration list for PBXNativeTarget "olento" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				838C26B91C8F3B41001FF9B7 /* Debug */,

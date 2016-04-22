@@ -21,11 +21,28 @@ public:
     std::vector<glm::vec3> vertices;
 
     oMesh (std::string path);
+    oMesh (int size);
+    
+    oMesh& operator-=(const oMesh& rhs)
+    {
+        for(int i = 0; i < vertices.size();i++){
+            vertices[i] = vertices[i] - rhs.vertices[i];
+        }
+        
+        return *this; // return the result by reference
+    }
 
 };
+
+oMesh::oMesh(int size) {
+    vertices.resize(size);
+
+
+}
 
 oMesh::oMesh (std::string path)
 {
     oLoader::loadOBJ(path,vertices);
 }
+
 
