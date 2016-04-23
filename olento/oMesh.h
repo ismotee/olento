@@ -25,7 +25,8 @@ public:
     
     oMesh& operator-=(const oMesh& rhs)
     {
-        for(int i = 0; i < vertices.size();i++){
+        std::cout << "rhs: " << rhs.vertices.size() << " target: " << vertices.size() << "\n";
+        for(int i = 0; i < rhs.vertices.size();i++){
             vertices[i] = vertices[i] - rhs.vertices[i];
         }
         

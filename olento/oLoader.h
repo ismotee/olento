@@ -27,7 +27,7 @@ bool oLoader::loadOBJ(
                       std::vector<glm::vec3>& vertices)
 {
     
-    std::cout << "Loading OBJ file " << path.c_str() << "...  \n" ;
+    std::cout << "Loading OBJ file " << path.c_str() << "... " ;
     
     FILE * file = fopen(path.c_str(), "r");
     if( file == NULL ){
@@ -59,6 +59,8 @@ bool oLoader::loadOBJ(
         }
     }
     
+    
+    std::cout << "done!\n";
     return true;
 
 

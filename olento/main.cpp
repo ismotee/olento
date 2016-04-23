@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
 
 
     int loop = 101;
-    float a = 0.0f;
+    float a = 1.0f;
     float b = 0.0;
     float c = 0.0;
     float d = 0.0;
@@ -156,7 +156,7 @@ int main(int argc, char* argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if(loop++ > 25) {
+        if(loop++ > 10) {
             
             std::vector<float> values(5);
         

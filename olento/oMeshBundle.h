@@ -58,10 +58,13 @@ oMeshBundle::oMeshBundle (oDirectory& dir, oMeshBundle& archtypes) {
     for(int i = 0; i < dir.files.size(); i++) {
         if (++j % 4 == 0) {
             meshes.push_back(archtypes[0].vertices.size());
-            std::cout << "0mesh.x = " << meshes[meshes.size() - 1].vertices[0].x << "\n";
+            std::cout << "writing 0mesh\n";
         }
+        std::cout << "push_back...\n";
         meshes.push_back(oMesh(dir.files[i]));
+        std::cout << "minus archtype...  ";
         meshes[meshes.size() - 1] -= archtypes[i/4];
+        std::cout << "ok!\n";
     }
 }
 
