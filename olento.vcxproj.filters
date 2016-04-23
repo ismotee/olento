@@ -66,6 +66,9 @@
     <ClInclude Include="olento\material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="olento\dClock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="olento\main.cpp">
@@ -82,6 +85,15 @@
     </ClCompile>
     <ClCompile Include="olento\shader.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="olento\material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="olento\dobject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="olento\oLoader.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

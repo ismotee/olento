@@ -72,6 +72,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="olento\dClock.h" />
     <ClInclude Include="olento\dFace.h" />
     <ClInclude Include="olento\dirent.h" />
     <ClInclude Include="olento\dobject.h" />
@@ -91,9 +92,12 @@
     <ClInclude Include="olento\shader.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="olento\dobject.cpp" />
     <ClCompile Include="olento\main.cpp" />
+    <ClCompile Include="olento\material.cpp" />
     <ClCompile Include="olento\objloader.cpp" />
     <ClCompile Include="olento\oCamera.cpp" />
+    <ClCompile Include="olento\oLoader.cpp" />
     <ClCompile Include="olento\oWindow.cpp" />
     <ClCompile Include="olento\shader.cpp" />
   </ItemGroup>
