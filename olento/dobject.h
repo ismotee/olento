@@ -230,44 +230,54 @@ struct sortT{
 
 
 bool compare(sortT l, sortT r) {
-	if (l.key < r.key) return true;
+	if (l.key > r.key) return true;
 	else return false;
 }
 
 
 void dObject::sortElementsByDistance() {
-	
-	std::cout << "Sort faces... \n";
-	std::cout << "faces: " << faces.size() << " facePositions: " << facePositions.size() << "\n";
-
-	dClock t;
-
-	//Järjestä facet väliaikaiseen vektoriin siten että lähin on ensin
-	std::vector<sortT> sortedFaces;
-
-	for (int i = 0; i < faces.size(); i++) {
-		sortT s;
-		s.value = i;
-		s.key = length(facePositions[i] - cameraPosition);
-		
-		sortedFaces.push_back(s);
-	}
-
-	std::cout << "ok\n";
-	std::cout << "Sort elements... ";
-
-	std::sort(sortedFaces.begin(), sortedFaces.end(), compare);
-
-	//järjestä sitten elementit: Lähin face on viimeisenä. Kun piirretään, aloitetaan siis kauimmasta.
-	elements.clear();
-	
-	for (int i = 0; i < sortedFaces.size(); i++)
-		elements.insert(elements.begin(), faces[sortedFaces[i].value].vertsIds.begin(), faces[sortedFaces[i].value].vertsIds.end());
-
-	std::cout << "ok\n";
-	std::cout << "Sort took " << t.get() << " s\n";
-
+    
+ //   std::cout << "Sort faces... \n";
+ //   std::cout << "   faces: " << faces.size() << " facePositions: " << facePositions.size() << "\n";
+    
+    dClock t;
+    
+    //JŠrjestŠ facet vŠliaikaiseen vektoriin siten ettŠ lŠhin on ensin
+    std::vector<sortT> sortedFaces;
+    sortedFaces.resize(faces.size() );
+    
+    for (int i = 0; i < faces.size(); i++) {
+        /*
+         sortT s;
+         s.value = i;
+         s.key = length(facePositions[i] - cameraPosition);
+         
+         sortedFaces.push_back(s);*/
+        
+        sortedFaces[i].value = i;
+        sortedFaces[i].key = length(facePositions[i] - cameraPosition);
+    }
+    
+  //  std::cout << "   calculated distances (" << t.get() << " s)\n";
+    t.reset();
+    
+    std::sort(sortedFaces.begin(), sortedFaces.end(), compare);
+    
+   // std::cout << "   sorted faces (" << t.get() << " s)\n";
+   // std::cout << "ok\n";
+   // std::cout << "Sort elements... \n";
+    
+  //  t.reset();
+    //jŠrjestŠ sitten elementit: LŠhin face on viimeisenŠ. Kun piirretŠŠn, aloitetaan siis kauimmasta.
+    for (int f_i = 0; f_i < sortedFaces.size(); f_i ++) {
+        int e_i = f_i * 3;
+        elements[e_i] = faces[sortedFaces[f_i].value].vertsIds[0];
+        elements[e_i + 1] = faces[sortedFaces[f_i].value].vertsIds[1];
+        elements[e_i + 2] = faces[sortedFaces[f_i].value].vertsIds[2];
+    }
+    
+  //  std::cout << "ok (" << t.get() << " s)\n";
+    
 }
-
 
 #endif

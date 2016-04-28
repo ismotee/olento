@@ -63,6 +63,7 @@ int main(int argc, char* argv[]) {
     
     chdir(path);
     std::cout << "Current Path: " << path << std::endl;
+    std::string pathStr = path;
 #endif
 
     
@@ -79,7 +80,12 @@ int main(int argc, char* argv[]) {
 	oBuffers::init();
 
 	// Create and compile our GLSL program from the shaders
-	std::string dirStr = "/Users/ismotorvinen/Documents/3d/olento/olento/resources/";
+#ifdef __APPLE__
+	std::string dirStr = pathStr + "/resources/";
+#else
+    std::string dirStr = "olento/resources/";
+#endif
+    
     oDirectory dir(dirStr);
     std::string meshDir(dirStr + "meshes/");
     
@@ -107,9 +113,9 @@ int main(int argc, char* argv[]) {
 	//init camera
 	oCamera::init(programID, (float)width/height );
 
+    
 	//Järjestä elementit läpinäkyvyyttä varten. Tässä menee KAUAN (> 4 min)
 	obj.sortElementsByDistance(oCamera::position);
-
 	//set element data to be drawn
 	oBuffers::setElements(obj.elements);
 
@@ -209,6 +215,8 @@ int main(int argc, char* argv[]) {
 		//muuta verteksit ja normaalit
         obj.changeVerticesTowards(aimVerts, 0.1f);
         obj.calculateAllNormals();
+        //Järjestä elementit läpinäkyvyyttä varten. Tässä menee KAUAN (> 4 min)
+        obj.sortElementsByDistance(oCamera::position);
 
 		//päivitä ja näytä
 

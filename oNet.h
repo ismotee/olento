@@ -9,5 +9,30 @@
 #ifndef opengltest_oNet_h
 #define opengltest_oNet_h
 
+#include <iostream>
+#include "olento.h"
+
+
+//tcp client
+#ifdef __APPLE__
+#include <SDL2/SDL_net.h>
+#else
+
+#endif
+
+class oNet
+{
+protected:
+    char buffer[256];
+    IPaddress ip;
+    TCPsocket socket;
+    int port_n;
+    
+public:
+    oNet ();
+    oNet (std::string hostname, int port);
+    
+};
+
 
 #endif
