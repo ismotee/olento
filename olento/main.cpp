@@ -96,7 +96,7 @@ void setMaterial(int mat_n) {
 
 void setLight() {
 	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
-	glm::vec3 lightPos = glm::vec3(6, 6, 6);
+	glm::vec3 lightPos = glm::vec3(11, 6, 11);
 	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 }
 
@@ -159,29 +159,24 @@ int main(int argc, char* argv[]) {
             
             std::vector<float> values(5);
         
-          //  a += 0.06f;
-            e+= 0.3f;
-  
-            if(e >= 1.0f) {
-                e = -0.9;
-                d += 0.3f;
-            }
-            if(d >= 1.0f) {
-                d = -0.9;
-                c += 0.3f;
-            }
-            if(c >= 1.0f) {
-                c = -0.9;
-                b += 0.3f;
-            }
-            if(b >= 1.0f) {
-                b = -0.9;
-                a += 0.999f;
-            }
-            if(a >= 3) {
-                a = 0;
-            }
-            
+			a += randf(-0.1, 0.1);
+			b += randf(-0.1, 0.1);
+			c += randf(-0.1, 0.1);
+			d += randf(-0.1, 0.1);
+			e += randf(-0.1, 0.1);
+
+			if (a > 3) a = 2.99;
+			if (a < 0) a = 0;
+			if (b > 1) b = 0.99;
+			if (b < 0) b = 0;
+			if (c>1) c = 0.99;
+			if (c < 0) c = 0;
+			if (d>1) d = 0.99;
+			if (d < 0) d = 0;
+			if (e>1) e = 0.99;
+			if (e < 0) e = 0;
+
+
             values[0] = a;
             values[1] = b;
             values[2] = c;
@@ -193,7 +188,8 @@ int main(int argc, char* argv[]) {
             aimVerts = mods.getShape(values);
 			setMaterial(rand() % 5);
 
-			obj.sortElementsByDistance(oCamera::position);
+			//obj.sortElementsByDistance(oCamera::position);
+			//oBuffers::setElements(obj.elements);
 
             loop = 0;
         }
