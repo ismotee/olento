@@ -11,6 +11,7 @@
 #include "oMeshBundle.h"
 #include "oModificators.h"
 #include "material.h"
+#include "dClock.h"
 
 // Include standard headers
 #include <stdio.h>
@@ -28,13 +29,17 @@
 // This makes relative paths work in C++ in Xcode by changing directory to the Resources folder inside the .app bundle
 
 
-// Random Float
-//float randf(float min, float max) {
-//	return ((float)rand() / RAND_MAX) * (max - min) + min;
-//}
-	//Ikkunan koko
-	int width = 1000;
-	int height = 800;
+//Ikkunan koko
+int width = 1000;
+int height = 800;
+
+GLuint programID;
+
+
+std::string dirStr = "olento/resources/";
+std::string objectDir = dirStr + "meshes/olento_testi.obj";
+std::string meshDir = dirStr + "meshes/";
+std::vector<std::string> modDirs(4);
 
 void initialize() {
 
@@ -44,9 +49,57 @@ void initialize() {
 	oWindow::init(width, height);
 
 	// Dark blue background
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+	glClearColor(0.7f, 0.9f, 1.0f, 0.0f);
+
+	oBuffers::init();
+
+	oDirectory dir(dirStr);
+
+	modDirs[0] = "ylos";
+	modDirs[1] = "sivulle";
+	modDirs[2] = "ulos";
+	modDirs[3] = "kierteinen";
+
+	std::string vertexShaderPath = dir.path + "shaders/StandardShading.vertexshader";
+	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
+	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
+
+	//init camera
+	oCamera::init(programID, (float)width / height);
+
+	// Enable blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	createMaterials();
+
+	glUseProgram(programID);
+
 }
 
+
+void setMaterial(int mat_n) {
+	//luodaan uniformien kahvat
+	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
+	GLuint SpecularID = glGetUniformLocation(programID, "specularity");
+	GLuint HardnessID = glGetUniformLocation(programID, "hardness");
+	GLuint AlphaID = glGetUniformLocation(programID, "alpha");
+
+	material M = getMaterial(mat_n);
+
+	glUniform3f(DiffuseID, M.diffuseColor.r, M.diffuseColor.g, M.diffuseColor.b);
+	glUniform1f(SpecularID, M.specularity);
+	glUniform1f(HardnessID, M.hardness);
+	glUniform1f(AlphaID, M.alpha);
+
+}
+
+
+void setLight() {
+	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
+	glm::vec3 lightPos = glm::vec3(11, 6, 11);
+	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+}
 
 
 int main(int argc, char* argv[]) {
@@ -64,74 +117,26 @@ int main(int argc, char* argv[]) {
     chdir(path);
     std::cout << "Current Path: " << path << std::endl;
     std::string pathStr = path;
+    dirStr = pathStr + "/resources/";
+    objectDir = dirStr + "meshes/olento_testi.obj";
+    meshDir = dirStr + "meshes/";
 #endif
 
     
     
 	initialize();
-	//Nämä on poistettu läpinäkyvyyden takia:
-		// Enable depth test
-		//glEnable(GL_DEPTH_TEST);
-		// Accept fragment if it closer to the camera than the former one
-		//glDepthFunc(GL_LESS);
-		// Cull triangles which normal is not towards the camera
-		//glEnable(GL_CULL_FACE);
-
-	oBuffers::init();
 
 	// Create and compile our GLSL program from the shaders
-#ifdef __APPLE__
-	std::string dirStr = pathStr + "/resources/";
-#else
-    std::string dirStr = "olento/resources/";
-#endif
-    
-    oDirectory dir(dirStr);
-    std::string meshDir(dirStr + "meshes/");
-    
-    std::vector<std::string> modDirs;
-    //modDirs.push_back("arkkityypit");
-    modDirs.push_back("ylos");
-    modDirs.push_back("sivulle");
-    modDirs.push_back("ulos");
-    modDirs.push_back("kierteinen");
-    
-    std::string vertexShaderPath = dir.path + "shaders/StandardShading.vertexshader";
-	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
-    std::string objectDir = dirStr + "meshes/olento_testi.obj";
-
-    oModificators mods(meshDir, "arkkityypit", modDirs);
-    
-	GLuint programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
-    dObject obj = dObject(objectDir);
-
-    std::cout << "vertices: " << obj.vertices.size() << "\n";
-    std::cout << "faces: " << obj.faces.size() << "\n";
-    std::cout << "normals: " << obj.normals.size() << "\n";
-    std::cout << "elements: " << obj.elements.size() << "\n";
-
-	//init camera
-	oCamera::init(programID, (float)width/height );
 
     
-	//Järjestä elementit läpinäkyvyyttä varten. Tässä menee KAUAN (> 4 min)
+	dObject obj = dObject(objectDir);
+    std::cout << "loading mods\n";
+	oModificators mods(meshDir, "arkkityypit", modDirs);
+
+    
 	obj.sortElementsByDistance(oCamera::position);
 	//set element data to be drawn
 	oBuffers::setElements(obj.elements);
-
-	glUseProgram(programID);
-
-	//luodaan uniformien kahvat
-	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
-	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
-	GLuint SpecularID = glGetUniformLocation(programID, "specularity");
-	GLuint HardnessID = glGetUniformLocation(programID, "hardness");
-	GLuint AlphaID = glGetUniformLocation(programID, "alpha");
-
-	// Enable blending
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 
     int loop = 101;
     float a = 1.0f;
@@ -143,16 +148,7 @@ int main(int argc, char* argv[]) {
 
 	dClock t;
 
-	//luo materiaalit
-	std::vector<material> materials;
-	for (int i = 0; i < 8; i++) 
-		materials.push_back(createRandomMaterial());
-
-	int mat_i = 0; 
-
-	//aseta valo
-	glm::vec3 lightPos = glm::vec3(6, 6, 6);
-	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+	setLight();
 
 	//pääluuppi alkaa
 	while (oWindow::getCloseEvent() == false){
@@ -166,39 +162,24 @@ int main(int argc, char* argv[]) {
             
             std::vector<float> values(5);
         
-          //  a += 0.06f;
-            e+= 0.3f;
-  
-			//aseta materiaali
-			mat_i = rand() % materials.size();
-			glUniform3f(DiffuseID, materials[mat_i].diffuseColor.r, materials[mat_i].diffuseColor.g, materials[mat_i].diffuseColor.b);
-			glUniform1f(SpecularID, materials[mat_i].specularity);
-			glUniform1f(HardnessID, materials[mat_i].hardness);
-			glUniform1f(AlphaID, materials[mat_i].alpha);
+			a += randf(-0.1, 0.1);
+			b += randf(-0.1, 0.1);
+			c += randf(-0.1, 0.1);
+			d += randf(-0.1, 0.1);
+			e += randf(-0.1, 0.1);
 
-           
-            if(e >= 1.0f) {
-                e = -0.9;
-                d += 0.3f;
-            }
-            if(d >= 1.0f) {
-                d = -0.9;
-                c += 0.3f;
-            }
-            if(c >= 1.0f) {
-                c = -0.9;
-                b += 0.3f;
-            }
-            if(b >= 1.0f) {
-                b = -0.9;
-                a += 0.999f;
-            }
-            if(a >= 3) {
-                a = 0;
-            }
+			if (a > 3) a = 2.99;
+			if (a < 0) a = 0;
+			if (b > 1) b = 0.99;
+			if (b < 0) b = 0;
+			if (c>1) c = 0.99;
+			if (c < 0) c = 0;
+			if (d>1) d = 0.99;
+			if (d < 0) d = 0;
+			if (e>1) e = 0.99;
+			if (e < 0) e = 0;
 
-            
-            
+
             values[0] = a;
             values[1] = b;
             values[2] = c;
@@ -208,7 +189,11 @@ int main(int argc, char* argv[]) {
           //  std::cout << values[0] << " : " << values[1] << " : " << values[2] << ":" << values[3] << ":" << values[4] << "\n";
             
             aimVerts = mods.getShape(values);
-            
+			setMaterial(rand() % 5);
+
+			//obj.sortElementsByDistance(oCamera::position);
+			//oBuffers::setElements(obj.elements);
+
             loop = 0;
         }
 
@@ -219,7 +204,6 @@ int main(int argc, char* argv[]) {
         obj.sortElementsByDistance(oCamera::position);
 
 		//päivitä ja näytä
-
 		oBuffers::updateBuffers(obj);
         oCamera::update();
 		oBuffers::updateAttributes();
@@ -229,11 +213,7 @@ int main(int argc, char* argv[]) {
 
 		oWindow::show();
 
-		float delay_t = 0.0333 - t.get();
-		if (delay_t > 0)
-			SDL_Delay(delay_t * 1000);
-		else
-			std::cout << "Lag! FPS: " << 1.0 / t.get() << "\n";
+		t.delay(30);
 
 	}
 
