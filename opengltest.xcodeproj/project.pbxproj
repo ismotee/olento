@@ -14,18 +14,19 @@
 		83DA591C1CBFAEFC00F267A6 /* oCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA590C1CBFAEFC00F267A6 /* oCamera.cpp */; };
 		83DA591D1CBFAEFC00F267A6 /* oWindow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA59141CBFAEFC00F267A6 /* oWindow.cpp */; };
 		83DA591E1CBFAEFC00F267A6 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA59161CBFAEFC00F267A6 /* shader.cpp */; };
-		83DA59221CBFB54600F267A6 /* resources in CopyFiles */ = {isa = PBXBuildFile; fileRef = 83DA59211CBFB54600F267A6 /* resources */; };
+		83DA59221CBFB54600F267A6 /* resources in Copy Files */ = {isa = PBXBuildFile; fileRef = 83DA59211CBFB54600F267A6 /* resources */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		838C26AF1C8F3B41001FF9B7 /* CopyFiles */ = {
+		838C26AF1C8F3B41001FF9B7 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = resources;
-			dstSubfolderSpec = 16;
+			dstPath = "";
+			dstSubfolderSpec = 7;
 			files = (
-				83DA59221CBFB54600F267A6 /* resources in CopyFiles */,
+				83DA59221CBFB54600F267A6 /* resources in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -36,7 +37,6 @@
 		838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		83DA59031CBFAEFC00F267A6 /* dFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dFace.h; path = olento/dFace.h; sourceTree = "<group>"; };
 		83DA59051CBFAEFC00F267A6 /* dobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dobject.h; path = olento/dobject.h; sourceTree = "<group>"; };
-		83DA59061CBFAEFC00F267A6 /* dynamicVertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dynamicVertex.h; path = olento/dynamicVertex.h; sourceTree = "<group>"; };
 		83DA59071CBFAEFC00F267A6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = olento/main.cpp; sourceTree = "<group>"; };
 		83DA59081CBFAEFC00F267A6 /* objloader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = objloader.cpp; path = olento/objloader.cpp; sourceTree = "<group>"; };
 		83DA59091CBFAEFC00F267A6 /* objloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = objloader.h; path = olento/objloader.h; sourceTree = "<group>"; };
@@ -96,7 +96,6 @@
 			children = (
 				83DA59031CBFAEFC00F267A6 /* dFace.h */,
 				83DA59051CBFAEFC00F267A6 /* dobject.h */,
-				83DA59061CBFAEFC00F267A6 /* dynamicVertex.h */,
 				83DA59071CBFAEFC00F267A6 /* main.cpp */,
 				83DA59081CBFAEFC00F267A6 /* objloader.cpp */,
 				83DA59091CBFAEFC00F267A6 /* objloader.h */,
@@ -129,7 +128,7 @@
 			buildPhases = (
 				838C26AD1C8F3B41001FF9B7 /* Sources */,
 				838C26AE1C8F3B41001FF9B7 /* Frameworks */,
-				838C26AF1C8F3B41001FF9B7 /* CopyFiles */,
+				838C26AF1C8F3B41001FF9B7 /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -279,7 +278,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Library/Frameworks,
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,
 					/usr/include,
@@ -302,7 +304,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
+				FRAMEWORK_SEARCH_PATHS = (
+					/Library/Frameworks,
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
+				);
 				HEADER_SEARCH_PATHS = (
 					/opt/local/include,
 					/usr/include,

@@ -2,7 +2,7 @@
 #define DCLOCK_H
 
 #include <time.h>
-#include <SDL2\SDL.h>
+#include <SDL2/SDL.h>
 
 class dClock{
 public:

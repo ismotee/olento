@@ -35,6 +35,7 @@ int height = 800;
 
 GLuint programID;
 
+
 std::string dirStr = "olento/resources/";
 std::string objectDir = dirStr + "meshes/olento_testi.obj";
 std::string meshDir = dirStr + "meshes/";
@@ -114,34 +115,34 @@ void wrap(float& value, float min, float max) {
 int main(int argc, char* argv[]) {
 
 #ifdef __APPLE__
-	CFBundleRef mainBundle = CFBundleGetMainBundle();
-	CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-	char path[PATH_MAX];
-	if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
-	{
-		// error!
-	}
-	CFRelease(resourcesURL);
-
-	chdir(path);
-	std::cout << "Current Path: " << path << std::endl;
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+    char path[PATH_MAX];
+    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
+    {
+        // error!
+    }
+    CFRelease(resourcesURL);
+    
+    chdir(path);
+    std::cout << "Current Path: " << path << std::endl;
+    std::string pathStr = path;
+    dirStr = pathStr + "/resources/";
+    objectDir = dirStr + "meshes/olento_testi.obj";
+    meshDir = dirStr + "meshes/";
 #endif
 
+    
+    
 	initialize();
 
 	// Create and compile our GLSL program from the shaders
 
 	dObject obj = dObject(objectDir);
+    std::cout << "loading mods\n";
 	oModificators mods(meshDir, "arkkityypit", modDirs);
 
-	std::cout << "vertices: " << obj.vertices.size() << "\n";
-	std::cout << "faces: " << obj.faces.size() << "\n";
-	std::cout << "normals: " << obj.normals.size() << "\n";
-	std::cout << "elements: " << obj.elements.size() << "\n";
-
-	//Järjestä elementit läpinäkyvyyttä varten.
 	obj.sortElementsByDistance(oCamera::position);
-
 	//set element data to be drawn
 	oBuffers::setElements(obj);
 
@@ -195,6 +196,8 @@ int main(int argc, char* argv[]) {
 		//muuta verteksit ja normaalit
         obj.changeVerticesTowards(aimVerts, 0.1f);
         obj.calculateAllNormals();
+        //Järjestä elementit läpinäkyvyyttä varten. Tässä menee KAUAN (> 4 min)
+        obj.sortElementsByDistance(oCamera::position);
 
 		//päivitä ja näytä
 		oBuffers::updateBuffers(obj);
