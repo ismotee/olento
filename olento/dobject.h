@@ -28,7 +28,6 @@ public:
 
 	dFacesConnected(unsigned int vertexId,
 		std::vector<unsigned int> elements,
-		std::vector<dFace>& faces,
 		std::vector<glm::vec3> normals);
    
 	glm::vec3 calculateVertexNormal(std::vector<dFace>& allFaces);

@@ -10,7 +10,6 @@ dFacesConnected::dFacesConnected(){}
 
 dFacesConnected::dFacesConnected(unsigned int vertexId,
 	std::vector<unsigned int> elements,
-	std::vector<dFace>& faces,
 	std::vector<glm::vec3> normals) {
 	
 	// get references from faces by elements and vertexId
