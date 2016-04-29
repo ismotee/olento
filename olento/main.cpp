@@ -47,7 +47,6 @@ void initialize() {
 	//initialize window and context
 	oWindow::init(width, height);
 
-	// Dark blue background
 	glClearColor(0.7f, 0.9f, 1.0f, 0.0f);
 
 	oBuffers::init();
@@ -77,7 +76,7 @@ void initialize() {
 }
 
 
-void setMaterial(int mat_n) {
+void setMaterial(float mat_n) {
 	//luodaan uniformien kahvat
 	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
 	GLuint SpecularID = glGetUniformLocation(programID, "specularity");
@@ -90,7 +89,6 @@ void setMaterial(int mat_n) {
 	glUniform1f(SpecularID, M.specularity);
 	glUniform1f(HardnessID, M.hardness);
 	glUniform1f(AlphaID, M.alpha);
-
 }
 
 
@@ -101,51 +99,63 @@ void setLight() {
 }
 
 
+void bound(float& value, float min, float max) {
+	if (value < min) value = min;
+	if (value > max) value = max;
+}
+
+
+void wrap(float& value, float min, float max) {
+	float w = max - min;
+	while (value < min) value += w;
+	while (value > max) value -= w;
+}
+
 int main(int argc, char* argv[]) {
-    
+
 #ifdef __APPLE__
-    CFBundleRef mainBundle = CFBundleGetMainBundle();
-    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
-    char path[PATH_MAX];
-    if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
-    {
-        // error!
-    }
-    CFRelease(resourcesURL);
-    
-    chdir(path);
-    std::cout << "Current Path: " << path << std::endl;
+	CFBundleRef mainBundle = CFBundleGetMainBundle();
+	CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(mainBundle);
+	char path[PATH_MAX];
+	if (!CFURLGetFileSystemRepresentation(resourcesURL, TRUE, (UInt8 *)path, PATH_MAX))
+	{
+		// error!
+	}
+	CFRelease(resourcesURL);
+
+	chdir(path);
+	std::cout << "Current Path: " << path << std::endl;
 #endif
 
 	initialize();
 
 	// Create and compile our GLSL program from the shaders
-    
+
 	dObject obj = dObject(objectDir);
 	oModificators mods(meshDir, "arkkityypit", modDirs);
 
-    std::cout << "vertices: " << obj.vertices.size() << "\n";
-    std::cout << "faces: " << obj.faces.size() << "\n";
-    std::cout << "normals: " << obj.normals.size() << "\n";
-    std::cout << "elements: " << obj.elements.size() << "\n";
+	std::cout << "vertices: " << obj.vertices.size() << "\n";
+	std::cout << "faces: " << obj.faces.size() << "\n";
+	std::cout << "normals: " << obj.normals.size() << "\n";
+	std::cout << "elements: " << obj.elements.size() << "\n";
 
 	//Järjestä elementit läpinäkyvyyttä varten.
 	obj.sortElementsByDistance(oCamera::position);
 
 	//set element data to be drawn
-	oBuffers::setElements(obj.elements);
+	oBuffers::setElements(obj);
 
-    int loop = 101;
-    float a = 1.0f;
-    float b = 0.0;
-    float c = 0.0;
-    float d = 0.0;
-    float e = 0.0;
-    std::vector<glm::vec3> aimVerts;
+	int loop = 101;
+	std::vector<glm::vec3> aimVerts;
 
 	dClock t;
 
 	setLight();
+
+	std::vector<float> values;
+	values.resize(5);
+	
+	float mat_i = 0;
 
 	//pääluuppi alkaa
 	while (oWindow::getCloseEvent() == false){
@@ -155,44 +165,32 @@ int main(int argc, char* argv[]) {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if(loop++ > 10) {
-            
-            std::vector<float> values(5);
-        
-			a += randf(-0.1, 0.1);
-			b += randf(-0.1, 0.1);
-			c += randf(-0.1, 0.1);
-			d += randf(-0.1, 0.1);
-			e += randf(-0.1, 0.1);
+		if (loop++ > 10) {
 
-			if (a > 3) a = 2.99;
-			if (a < 0) a = 0;
-			if (b > 1) b = 0.99;
-			if (b < 0) b = 0;
-			if (c>1) c = 0.99;
-			if (c < 0) c = 0;
-			if (d>1) d = 0.99;
-			if (d < 0) d = 0;
-			if (e>1) e = 0.99;
-			if (e < 0) e = 0;
+			values[0] += randf(-0.1, 0.1);
+			values[1] += randf(-0.1, 0.1);
+			values[2] += randf(-0.1, 0.1);
+			values[3] += randf(-0.1, 0.1);
+			values[4] += randf(-0.1, 0.1);
 
+			bound(values[0], 0.001, 3.999);
+			bound(values[1], -0.999, 0.999);
+			bound(values[2], -0.999, 0.999);
+			bound(values[3], -0.999, 0.999);
+			bound(values[4], -0.999, 0.999);
 
-            values[0] = a;
-            values[1] = b;
-            values[2] = c;
-            values[3] = d;
-            values[4] = e;
-            
-          //  std::cout << values[0] << " : " << values[1] << " : " << values[2] << ":" << values[3] << ":" << values[4] << "\n";
-            
             aimVerts = mods.getShape(values);
-			setMaterial(rand() % 5);
 
 			//obj.sortElementsByDistance(oCamera::position);
 			//oBuffers::setElements(obj.elements);
 
             loop = 0;
         }
+
+		//muuta materiaalia
+		mat_i += 0.02;
+		wrap(mat_i, 0, 4.99);
+		setMaterial(mat_i);
 
 		//muuta verteksit ja normaalit
         obj.changeVerticesTowards(aimVerts, 0.1f);
@@ -208,6 +206,7 @@ int main(int argc, char* argv[]) {
 
 		oWindow::show();
 
+		//ajasta 30 FPS:ään
 		t.delay(30);
 
 	}

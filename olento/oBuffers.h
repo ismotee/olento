@@ -13,7 +13,7 @@ namespace oBuffers
 	int element_n;
 
 	void init();
-	void setElements(std::vector<unsigned int>& elements);
+	void setElements(dObject& obj);
 	void close();
 
 	void updateBuffers(dObject& obj);
@@ -33,11 +33,11 @@ void oBuffers::init() {
 }
 
 
-void oBuffers::setElements(std::vector<unsigned int>& elements) {
+void oBuffers::setElements(dObject& obj) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size() * sizeof(glm::vec3), &elements[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, obj.getElementData().length, obj.getElementData().data, GL_STATIC_DRAW);
 
-	element_n = elements.size();
+	element_n = obj.getElementData().length;
 }
 
 
@@ -45,10 +45,10 @@ void oBuffers::setElements(std::vector<unsigned int>& elements) {
 void oBuffers::updateBuffers(dObject& obj)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, obj.vertices.size() * sizeof(glm::vec3), &obj.vertices[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, obj.getVertexData().length, obj.getVertexData().data, GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-	glBufferData(GL_ARRAY_BUFFER, obj.normals.size() * sizeof(glm::vec3), &obj.normals[0], GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, obj.getNormalData().length, obj.getNormalData().data, GL_DYNAMIC_DRAW);
 }
 
 
