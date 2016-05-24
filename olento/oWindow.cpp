@@ -1,6 +1,8 @@
 #include "olento.h"
 #include "oWindow.h"
 #include <iostream>
+#include <SDL2/SDL_image.h>
+
 SDL_Window* window;
 SDL_GLContext context;
 
@@ -69,3 +71,65 @@ void oWindow::close() {
 	SDL_Quit();
 }
 
+
+bool xyPalette::init() {
+
+	if (!IMG_Init(IMG_INIT_PNG)) return false;
+	else return true;
+}
+
+
+bool xyPalette::loadFromFile(std::string filename){
+	
+	if (!init()) return false;
+	
+	SDL_Surface* surface = IMG_Load(filename.c_str());
+
+	if (surface == NULL) return false;
+
+	w = surface->w;
+	h = surface->h;
+	size = w * h;
+
+	colors.resize(size);
+
+	for (int i = 0; i < size; i++) {
+		//get pointer to pixel
+		Uint8 *p = (Uint8 *)surface->pixels + i * surface->format->BytesPerPixel;
+		
+		//put color to vector
+
+		float r = (float)p[0] / 256;
+		float g = (float)p[1] / 256;
+		float b = (float)p[2] / 256;
+
+		colors[i] = glm::vec3(r,g,b);
+	}
+
+	std::cout << "Created palette, size: " << size << ", bpp: " << (int)surface->format->BytesPerPixel << "\n";
+	SDL_FreeSurface(surface);
+	return true;
+}
+
+
+glm::vec3 xyPalette::getColor(float x, float y) {
+	int i_x = (float)w*x;
+	int i_y = (float)h*y;
+
+	int i = w*i_y + i_x;
+	if (i<0 || i>size)
+		std::cerr << "Huono väri-indeksi: " << i << " !\n";
+
+	return colors[i];
+}
+
+
+void xyPalette::tulosta() {
+	std::cout << "Paletti: \n";
+	
+	for (int i = 0; i < size; i++)
+		std::cout << "r: " << colors[i].r << ", g: " << colors[i].g << ", b: " << colors[i].b << "\n";
+
+	std::cout << size << " väriä\n";
+
+}

@@ -40,56 +40,22 @@ std::string dirStr = "olento/resources/";
 std::string objectDir = dirStr + "meshes/olento_testi.obj";
 std::string meshDir = dirStr + "meshes/";
 std::vector<std::string> modDirs = {"ylos", "sivulle", "ulos", "kierteinen"};
+std::string palettePath = dirStr + "palette.png";
 
-float muodonArvot[7];
+float muodonArvot[8];
 
 std::atomic<bool> isRunning = false;
 std::atomic<bool> verteksitVarattu = false;
+std::atomic<bool> ready = false;
 
 std::vector<glm::vec3> aimVerts;
+float mat_n = 1;
+float color_x = 0;
+float color_y = 0;
 
 oModificators mods(meshDir, "arkkityypit", modDirs);
 
-
-void asetaMuoto(std::vector<float> values) {
-	
-	if (values.size() != 7) std::cerr << "Varoitus: Annettiin muodolle " << values.size() << " arvoa\n";
-	/*
-	for (int i = 0; i < values.size() && i < 7; i++) {
-		muodonArvot[i] = values[i];
-	}
-
-	bound(muodonArvot[0], 0.001, 3.999);
-	bound(muodonArvot[1], -0.999, 0.999);
-	bound(muodonArvot[2], -0.999, 0.999);
-	bound(muodonArvot[3], -0.999, 0.999);
-	bound(muodonArvot[4], -0.999, 0.999);
-
-	//HUOM! turha vektorimuunnos, getShape voisi vastaanottaa arrayn!
-	std::vector<float> values(muodonArvot, muodonArvot + 5);
-	aimVerts = mods.getShape(values);*/
-
-	values.resize(5);
-
-	bound(values[0], 0.001, 2.999);
-	bound(values[1], -0.999, 0.999);
-	bound(values[2], -0.999, 0.999);
-	bound(values[3], -0.999, 0.999);
-	bound(values[4], -0.999, 0.999);
-
-	dClock t;
-
-	std::vector<glm::vec3> newAimVerts = mods.getShape(values);
-
-	//odota lupaa kirjoittaa
-	while (verteksitVarattu)
-		t.delay(10000);
-	
-	verteksitVarattu = true;
-	aimVerts = newAimVerts;
-	verteksitVarattu = false;
-
-}
+xyPalette paletti;
 
 void initialize() {
 
@@ -98,17 +64,17 @@ void initialize() {
 	//initialize window and context
 	oWindow::init(width, height);
 
+	if (!paletti.loadFromFile(palettePath))
+		std::cerr << "Palettia ei voitu ladata! (" << palettePath << ")\n";
+	else
+		;//paletti.tulosta();
+
 	glClearColor(0.7f, 0.9f, 1.0f, 0.0f);
 
 	oBuffers::init();
 
 	oDirectory dir(dirStr);
-	/*
-	modDirs[0] = "ylos";
-	modDirs[1] = "sivulle";
-	modDirs[2] = "ulos";
-	modDirs[3] = "kierteinen";
-	*/
+
 	std::string vertexShaderPath = dir.path + "shaders/StandardShading.vertexshader";
 	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
 	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
@@ -129,19 +95,58 @@ void initialize() {
 
 void setMaterial(float mat_n) {
 	//luodaan uniformien kahvat
-	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
 	GLuint SpecularID = glGetUniformLocation(programID, "specularity");
 	GLuint HardnessID = glGetUniformLocation(programID, "hardness");
 	GLuint AlphaID = glGetUniformLocation(programID, "alpha");
 
 	material M = getMaterial(mat_n);
 
-	glUniform3f(DiffuseID, M.diffuseColor.r, M.diffuseColor.g, M.diffuseColor.b);
 	glUniform1f(SpecularID, M.specularity);
 	glUniform1f(HardnessID, M.hardness);
 	glUniform1f(AlphaID, M.alpha);
 }
 
+
+void setColor(float x, float y) {
+	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
+	glm::vec3 color = paletti.getColor(x, y);
+	glUniform3f(DiffuseID, color.r,color.g, color.b);
+}
+
+void asetaMuoto(std::vector<float> values) {
+
+	if (!ready) return;
+
+	if (values.size() != 8) {
+		std::cerr << "Varoitus: Annettiin muodolle " << values.size() << " arvoa\n";
+		return;
+	}
+
+	bound(values[0], 0.001, 2.999);
+	for (int i = 1; i < 5; i++) bound(values[i], -0.999, 0.999);
+	bound(values[5], 0, 4.999);
+	bound(values[6], 0, 0.999);
+	bound(values[7], 0, 0.999);
+
+	std::vector<float> shapeValues = values;
+	shapeValues.resize(5);
+
+	dClock t;
+
+	std::vector<glm::vec3> newAimVerts = mods.getShape(shapeValues);
+
+	//odota lupaa kirjoittaa
+	while (verteksitVarattu)
+		t.delay(10000);
+
+	verteksitVarattu = true;
+	aimVerts = newAimVerts;
+	mat_n = values[5];
+	color_x = values[6];
+	color_y = values[7];
+	verteksitVarattu = false;
+
+}
 
 void setLight() {
 	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
@@ -185,16 +190,16 @@ void run() {
 	//set element data to be drawn
 	oBuffers::setElements(obj);
 
+	aimVerts = obj.vertices;
+
 	int loop = 101;
 
 	dClock t;
 
 	setLight();
 
-	//std::vector<float> values;
-	//values.resize(5);
-
-	float mat_i = 0;
+	ready = true;
+	std::cerr << "run!\n";
 
 	//pääluuppi alkaa
 	while (oWindow::getCloseEvent() == false){
@@ -204,60 +209,33 @@ void run() {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (loop++ > 10) {
-
-			/*
-			values[0] += randf(-0.1, 0.1);
-			values[1] += randf(-0.1, 0.1);
-			values[2] += randf(-0.1, 0.1);
-			values[3] += randf(-0.1, 0.1);
-			values[4] += randf(-0.1, 0.1);
-
-			bound(values[0], 0.001, 3.999);
-			bound(values[1], -0.999, 0.999);
-			bound(values[2], -0.999, 0.999);
-			bound(values[3], -0.999, 0.999);
-			bound(values[4], -0.999, 0.999);
-			*/
-
-			/*
-			//HUOM! turha vektorimuunnos, getShape voisi vastaanottaa arrayn!
-			std::vector<float> values(muodonArvot, muodonArvot + 5);
-			aimVerts = mods.getShape(values);
-			*/
-			//obj.sortElementsByDistance(oCamera::position);
-			//oBuffers::setElements(obj.elements);
-
-			loop = 0;
-		}
-
-		//muuta materiaalia
-		mat_i += 0.02;
-		wrap(mat_i, 0, 4.99);
-		setMaterial(mat_i);
-
 		//muuta verteksit ja normaalit
 		if (!verteksitVarattu) {
 			verteksitVarattu = true;
 			obj.changeVerticesTowards(aimVerts, 0.1f);
 			//obj.changeVertices(aimVerts);
+			
+			setMaterial(mat_n);
+			setColor(color_x, color_y);
+			
+			obj.calculateAllNormals();
+
+			//Järjestä elementit läpinäkyvyyttä varten. Tässä menee KAUAN (> 4 min)
+			//obj.sortElementsByDistance(oCamera::position);
+
+			//päivitä ja näytä
+			oBuffers::updateBuffers(obj);
+			oCamera::update();
+			oBuffers::updateAttributes();
+			GLenum err = glGetError();
+			if (err != 0) std::cout << "Error: " << err << "\n";
+
+			oWindow::show();
+
 			verteksitVarattu = false;
 
-			obj.calculateAllNormals();
 		}
 		else std::cerr << "Ei voitu muuttaa verteksejä koska varattu\n";
-		//Järjestä elementit läpinäkyvyyttä varten. Tässä menee KAUAN (> 4 min)
-		//obj.sortElementsByDistance(oCamera::position);
-
-		//päivitä ja näytä
-		oBuffers::updateBuffers(obj);
-		oCamera::update();
-		oBuffers::updateAttributes();
-
-		GLenum err = glGetError();
-		if (err != 0) std::cout << "Error: " << err << "\n";
-
-		oWindow::show();
 
 		//ajasta 30 FPS:ään
 		t.delay(30);

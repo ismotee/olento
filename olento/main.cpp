@@ -11,24 +11,18 @@
 int main(int argc, char* argv[]) {
 	
 	std::vector<float> muodonArvot;
-	muodonArvot.resize(7);
+	muodonArvot.resize(8);
 
 	olentoServer::aloita(); //käynnistyy omaan threadiin
 
 	std::thread olentogl(run);
 
-	//hae paketti
-
-	//paketti -> neuralnet -> arvot
-
-	//asetaMuoto(arvot)
-	
 	dClock t;
-
+	int frame = 0;
 	while(olentoPyorii() ) {
 
 		t.reset(); //ota aikaa
-
+		
 		//hae paketti
 		olentoServer::pakettiDataT p = olentoServer::haePaketti();
 		while (!p.empty()) {
@@ -36,19 +30,22 @@ int main(int argc, char* argv[]) {
 			tulostaPaketti(p);
 			p = olentoServer::haePaketti();
 		}
-
+		
 		//luo paketista arvot neuralnetin avulla...
 
 		//tee sattumanvarainen muoto
 		muodonArvot[0] = randf(0, 3);
-		for (int i = 1; i < 7; i++)
-			muodonArvot[i] = randf(-1, 1);
+		for (int i = 1; i < 5; i++) muodonArvot[i] = randf(-1, 1);
+		muodonArvot[5] = randf(0, 4.999);
+		muodonArvot[6] = randf(0, 0.999);
+		muodonArvot[7] = randf(0, 0.999);
 
 		//muuta muotoa gl:ään
 		asetaMuoto(muodonArvot);
 
 		//ajasta luuppi (1 fps)
 		t.delay(1);
+		std::cout << frame++ << "\n";
 	}
 	
 	std::cerr << "olentogl suljettiin\n";
