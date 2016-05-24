@@ -2,6 +2,13 @@
 #ifndef OWINDOW_H
 #define OWINDOW_H
 
+//include GL
+#ifdef __APPLE__
+#include <OpenGL/gl3.h>
+#else
+#include <glew.h>
+#endif
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <stdio.h>

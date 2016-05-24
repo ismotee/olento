@@ -1,15 +1,8 @@
 #include "material.h"
+#include "random.h"
 
 material materials[5];
 
-
-float randf(float min, float max) {
-	return ((float)rand() / RAND_MAX) * (max - min) + min;
-}
-
-glm::vec3 randvec(float min, float max) {
-	return(glm::vec3(randf(min, max), randf(min, max), randf(min, max)));
-}
 
 void createMaterials() {
 	for (int i = 0; i < 5; i++)

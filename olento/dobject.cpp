@@ -73,7 +73,6 @@ elements(_elements)
 void dObject::changeVertices(std::vector<glm::vec3>& new_vertices)
 {
 	vertices = new_vertices;
-	calculateAllNormals();
 }
 
 void dObject::makeFaces() //tätä pitäisi optimoida!

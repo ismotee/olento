@@ -1,7 +1,7 @@
 //olento.h
 #ifndef OLENTO_H
 #define OLENTO_H
-
+/*
 // mäkki includet
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
@@ -15,5 +15,13 @@
 #endif
 
 // Include GLM
+*/
+
+#include <vector>
+
+void run();
+void asetaMuoto(std::vector<float> arvot);
+
+bool olentoPyorii();
 
 #endif

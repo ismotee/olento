@@ -1,15 +1,8 @@
-//
-//  oCamera.h
-//  opengltest
-//
-//  Created by Ismo Torvinen on 25.3.2016.
-//  Copyright (c) 2016 Ismo Torvinen. All rights reserved.
-//
-
 #ifndef __opengltest__oCam__
 #define __opengltest__oCam__
 
-#include "olento.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
 
 namespace oCamera {
 
@@ -25,7 +18,6 @@ namespace oCamera {
     glm::mat4 Model;
     glm::mat4 MVP;
     // later on more functions: like moving, tilting, panning, zooming etc..
-
 };
 
 void oCamera::init(GLuint& programID, float aspectRatio) {

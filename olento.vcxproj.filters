@@ -69,6 +69,12 @@
     <ClInclude Include="olento\dClock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="olento\random.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="olento\server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="olento\main.cpp">
@@ -94,6 +100,15 @@
     </ClCompile>
     <ClCompile Include="olento\oLoader.cpp">
       <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="olento\olento.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="olento\random.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="olento\server.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -54,7 +54,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\matti\Documents\Visual Studio 2013\Projects\olento\olento\olento\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;SDL2_net.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -89,6 +89,8 @@
     <ClInclude Include="olento\oMeshBundle.h" />
     <ClInclude Include="olento\oModificators.h" />
     <ClInclude Include="olento\oWindow.h" />
+    <ClInclude Include="olento\random.h" />
+    <ClInclude Include="olento\server.h" />
     <ClInclude Include="olento\shader.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -97,8 +99,11 @@
     <ClCompile Include="olento\material.cpp" />
     <ClCompile Include="olento\objloader.cpp" />
     <ClCompile Include="olento\oCamera.cpp" />
+    <ClCompile Include="olento\olento.cpp" />
     <ClCompile Include="olento\oLoader.cpp" />
     <ClCompile Include="olento\oWindow.cpp" />
+    <ClCompile Include="olento\random.cpp" />
+    <ClCompile Include="olento\server.cpp" />
     <ClCompile Include="olento\shader.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

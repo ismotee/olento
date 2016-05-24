@@ -1,19 +1,9 @@
-//
-//  dFace.h
-//  opengltest
-//
-//  Created by Ismo Torvinen on 27.3.2016.
-//  Copyright (c) 2016 Ismo Torvinen. All rights reserved.
-//
-
-#include "olento.h"
 #include <vector>
 
-#ifndef opengltest_dFace_h
-#define opengltest_dFace_h
+#ifndef DFACE_H
+#define DFACE_H
 
-//========================================= dFace =======================================//
-//=======================================================================================//
+#include <glm/glm.hpp>
 
 class dFace 
 {
