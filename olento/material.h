@@ -2,6 +2,7 @@
 #define MATERIAL_H
 
 #include <glm/glm.hpp>
+#include <stdlib.h>
 
 struct material{
 	float alpha; //0...1

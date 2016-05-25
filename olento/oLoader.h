@@ -4,6 +4,7 @@
 #include "olento.h"
 #include <vector>
 #include "dFace.h"
+#include <string>
 
 class oLoader {
 

@@ -1,21 +1,13 @@
-//
-//  oDirectory.h
-//  opengltest
-//
-//  Created by Ismo Torvinen on 28.3.2016.
-//  Copyright (c) 2016 Ismo Torvinen. All rights reserved.
-//
-
 #ifndef opengltest_oDirectory_h
 #define opengltest_oDirectory_h
 
 #include <vector>
 
 
-#ifdef __APPLE__
-#include <dirent.h>
-#else
+#ifdef _WIN32
 #include "direntwin.h"
+#else
+#include <dirent.h>
 #endif
 
 

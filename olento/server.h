@@ -33,6 +33,7 @@ namespace olentoServer{
 	bool setup();
 	void lopeta();
 	void testi();
+	void asetaVastausviesti(std::vector<float> arvot);
 }
 
 #endif

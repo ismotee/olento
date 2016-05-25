@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 
 	dClock t;
 	int frame = 0;
-	while(olentoPyorii() ) {
+	do {
 
 		t.reset(); //ota aikaa
 		
@@ -42,11 +42,12 @@ int main(int argc, char* argv[]) {
 
 		//muuta muotoa gl:‰‰n
 		asetaMuoto(muodonArvot);
-
+		olentoServer::asetaVastausviesti(muodonArvot);
+		
 		//ajasta luuppi (1 fps)
 		t.delay(1);
 		std::cout << frame++ << "\n";
-	}
+	} while(olentoPyorii());
 	
 	std::cerr << "olentogl suljettiin\n";
 

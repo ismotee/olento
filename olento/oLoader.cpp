@@ -1,6 +1,6 @@
 #include "oLoader.h"
 #include <iostream>
-
+#include <string.h>
 
 bool oLoader::loadOBJ(
 	std::string path,
