@@ -202,7 +202,7 @@ void run() {
   std::cerr << "run!\n";
   
   //pääluuppi alkaa
-  while (oWindow::getCloseEvent() == false){
+  while (oWindow::getCloseEvent() == false && isRunning == true){
     
     //ota aikaa
     t.reset();
@@ -235,7 +235,7 @@ void run() {
       verteksitVarattu = false;
       
     }
-    else std::cerr << "Ei voitu muuttaa verteksejä koska varattu\n";
+    //else std::cerr << "Ei voitu muuttaa verteksejä koska varattu\n";
     
     //ajasta 30 FPS:ään
     t.delay(30);
@@ -253,4 +253,9 @@ void run() {
 
 bool olentoPyorii() {
   return isRunning;
+}
+
+
+void suljeOlento() {
+  isRunning = false;
 }

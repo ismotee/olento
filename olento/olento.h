@@ -23,5 +23,6 @@ void run();
 void asetaMuoto(std::vector<float> arvot);
 
 bool olentoPyorii();
+void suljeOlento();
 
 #endif

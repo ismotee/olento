@@ -28,6 +28,7 @@ namespace olentoServer{
 
 	pakettiDataT haePaketti();
 	void tulostaPaketti(pakettiDataT paketti);
+	std::vector<float> annaPisteet(pakettiDataT paketti);
 	void aloita();
 	void kuuntele();
 	bool setup();

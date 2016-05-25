@@ -40,6 +40,15 @@ namespace olentoServer{
     }
   }
   
+  std::vector<float> annaPisteet(pakettiDataT paketti) {
+    std::vector<float> result;
+    for(int i=0; i<paketti.pisteet.size(); i++) {
+      result.push_back(paketti.pisteet[i].x);
+      result.push_back(paketti.pisteet[i].y);
+    }
+    return result;
+  }
+  
   
   bool initializeServer() {
     

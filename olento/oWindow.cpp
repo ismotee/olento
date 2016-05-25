@@ -56,12 +56,13 @@ void oWindow::show() {
 
 
 bool oWindow::getCloseEvent() {
-	SDL_Event event;
+	/*SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		if (event.type == SDL_QUIT)
 			return true;
 	}
 
+	return false;*/
 	return false;
 }
 
