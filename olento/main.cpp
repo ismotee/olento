@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
 	    else desiredOutput[0] = 0.5;
 	    break;  
 	  case SDLK_RETURN:
-	    if(e.type == SDL_KEYDOWN) koulutetaan = false;
+	    if(e.type == SDL_KEYDOWN) koulutetaan = !koulutetaan;
 	    break;
 	}	
       }

@@ -75,6 +75,9 @@
     <ClInclude Include="olento\server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="olento\libnn.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="olento\main.cpp">
@@ -108,6 +111,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="olento\server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="olento\libnn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

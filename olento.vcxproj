@@ -48,7 +48,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Users\matti\Documents\Visual Studio 2013\Projects\olento\olento\olento\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -77,6 +77,7 @@
     <ClInclude Include="olento\dirent.h" />
     <ClInclude Include="olento\dobject.h" />
     <ClInclude Include="olento\dynamicVertex.h" />
+    <ClInclude Include="olento\libnn.h" />
     <ClInclude Include="olento\material.h" />
     <ClInclude Include="olento\objloader.h" />
     <ClInclude Include="olento\objloader.hpp" />
@@ -95,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="olento\dobject.cpp" />
+    <ClCompile Include="olento\libnn.cpp" />
     <ClCompile Include="olento\main.cpp" />
     <ClCompile Include="olento\material.cpp" />
     <ClCompile Include="olento\objloader.cpp" />
