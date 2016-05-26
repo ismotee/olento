@@ -57,6 +57,10 @@ oModificators mods(meshDir, "arkkityypit", modDirs);
 
 xyPalette paletti;
 
+std::vector<float> desiredOutput(8,0.5);
+bool koulutetaan  = false;
+bool katsellaan = false;
+
 void initialize() {
   
   srand(time(NULL));
@@ -122,6 +126,12 @@ void asetaMuoto(std::vector<float> values) {
     return;
   }
   
+  //skaalaa luvut olennon käyttöön! Oletetaan että tulevat arvot ovat avoimella välillä 0...1
+  values[0] *= 3;
+  for (int i = 1; i < 5; i++) values[i] = values[i] * 2 - 1;
+  values[5] *= 5;
+
+
   bound(values[0], 0.001, 2.999);
   for (int i = 1; i < 5; i++) bound(values[i], -0.999, 0.999);
   bound(values[5], 0, 4.999);
@@ -237,6 +247,8 @@ void run() {
     }
     //else std::cerr << "Ei voitu muuttaa verteksejä koska varattu\n";
     
+	handleEvent();
+
     //ajasta 30 FPS:ään
     t.delay(30);
     
@@ -258,4 +270,125 @@ bool olentoPyorii() {
 
 void suljeOlento() {
   isRunning = false;
+}
+
+
+bool handleEvent() {
+	//return true if there was event
+	const float koulutus_up = 0.02;
+	const float koulutus_down = 0.02;
+	bool result = false;
+
+	if (desiredOutput.size() != 8)
+		std::cerr << "desiredOutput on " << desiredOutput.size() << "!\n";
+
+	SDL_Event e;
+	while (SDL_PollEvent(&e)) {
+		if (e.type == SDL_QUIT) {
+			result = true;
+			isRunning = false;
+		}
+
+		else if (e.type == SDL_KEYDOWN || e.type == SDL_KEYUP){
+
+			result = true;
+
+			switch (e.key.keysym.sym) {
+			case SDLK_q:
+				if (e.type == SDL_KEYDOWN) desiredOutput[0] += koulutus_up;
+				//else desiredOutput[0] = 0.5;
+				break;
+			case SDLK_a:
+				if (e.type == SDL_KEYDOWN) desiredOutput[0] -= koulutus_down;
+				//else desiredOutput[0] = 0.5;
+				break;
+			case SDLK_w:
+				if (e.type == SDL_KEYDOWN) desiredOutput[1] += koulutus_up;
+				//else desiredOutput[1] = 0.5;
+				break;
+			case SDLK_s:
+				if (e.type == SDL_KEYDOWN) desiredOutput[1] -= koulutus_down;
+				//else desiredOutput[1] = 0.5;
+				break;
+			case SDLK_e:
+				if (e.type == SDL_KEYDOWN) desiredOutput[2] += koulutus_up;
+				//else desiredOutput[2] = 0.5;
+				break;
+			case SDLK_d:
+				if (e.type == SDL_KEYDOWN) desiredOutput[2] -= koulutus_down;
+				//else desiredOutput[2] = 0.5;
+				break;
+			case SDLK_r:
+				if (e.type == SDL_KEYDOWN) desiredOutput[3] += koulutus_up;
+				//else desiredOutput[3] = 0.5;
+				break;
+			case SDLK_f:
+				if (e.type == SDL_KEYDOWN) desiredOutput[3] -= koulutus_down;
+				//else desiredOutput[3] = 0.5;
+				break;
+			case SDLK_t:
+				if (e.type == SDL_KEYDOWN) desiredOutput[4] += koulutus_up;
+				//else desiredOutput[4] = 0.5;
+				break;
+			case SDLK_g:
+				if (e.type == SDL_KEYDOWN) desiredOutput[4] -= koulutus_down;
+				//else desiredOutput[4] = 0.5;
+				break;
+			case SDLK_y:
+				if (e.type == SDL_KEYDOWN) desiredOutput[5] += koulutus_up;
+				//else desiredOutput[5] = 0.5;
+				break;
+			case SDLK_h:
+				if (e.type == SDL_KEYDOWN) desiredOutput[5] -= koulutus_down;
+				//else desiredOutput[5] = 0.5;
+				break;
+			case SDLK_u:
+				if (e.type == SDL_KEYDOWN) desiredOutput[6] += koulutus_up;
+				//else desiredOutput[6] = 0.5;
+				break;
+			case SDLK_j:
+				if (e.type == SDL_KEYDOWN) desiredOutput[6] -= koulutus_down;
+				//else desiredOutput[6] = 0.5;
+				break;
+			case SDLK_i:
+				if (e.type == SDL_KEYDOWN) desiredOutput[7] += koulutus_up;
+				//else desiredOutput[7] = 0.5;
+				break;
+			case SDLK_k:
+				if (e.type == SDL_KEYDOWN) desiredOutput[7] -= koulutus_down;
+				//else desiredOutput[7] = 0.5;
+				break;
+			case SDLK_RETURN:
+				if (e.type == SDL_KEYDOWN) koulutetaan = !koulutetaan;
+				if (koulutetaan) std::cout << "koulutetaan\n";
+				else std::cout << "ei enää kouluteta\n";
+				break;
+			case SDLK_SPACE:
+				for (int i = 0; i < desiredOutput.size(); i++)
+					desiredOutput[i] = 0.5;
+				break;
+			case SDLK_TAB:
+				if (e.type == SDL_KEYDOWN) {
+					katsellaan = !katsellaan;
+					if (katsellaan) std::cout << "katsellaan\n";
+					else std::cout << "muokataan\n";
+				}
+				break;
+			}
+
+			for (int i = 0; i < desiredOutput.size(); i++)
+				bound(desiredOutput[i], 0, 1);
+
+		}
+	}
+
+	return result;
+}
+
+
+bool koulutetaanko() {	return koulutetaan;}
+bool katsellaanko() { return katsellaan; }
+
+std::vector<float> haeKoulutusarvot() {
+	return desiredOutput;
 }

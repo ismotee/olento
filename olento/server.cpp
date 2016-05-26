@@ -261,10 +261,14 @@ namespace olentoServer{
 	    
 	    else if (strcmp(buffer, "get;\n")==0) {
 	      //lähetä vastaus
-	      int msgLength = strlen(sendBuffer) + 1;
+	      /*int msgLength = strlen(sendBuffer) + 1;
 	      std::cerr << "get! (" << msgLength << ")\n";
 	      int err = SDLNet_TCP_Send(clientSocket[clientNumber], (void *)sendBuffer, msgLength);
-	      std::cerr << "sent " << err << " bytes from client " << clientNumber << "\n";
+	      std::cerr << "sent " << err << " bytes from client " << clientNumber << "\n";*/
+
+		  int msgLength = strlen(sendBuffer) + 1;
+		  std::cerr << "Send response: " << sendBuffer << endl;
+		  SDLNet_TCP_Send(clientSocket[clientNumber], (void *)sendBuffer, msgLength);
 	      
 	    }
 	    
@@ -422,19 +426,38 @@ namespace olentoServer{
   }
   
   void asetaVastausviesti(vector<float> arvot) {
-   stringstream ss;
-   string viesti;
-   
-   //luo viesti arvoista
-   for(int i=0; i<arvot.size(); i++) {
-     ss << arvot[i];
-     string arvo_s;
-     ss >> arvo_s;
-     viesti += arvo_s;
-   }
-   
-   //kopioi viesti bufferiin
-   viesti.copy(sendBuffer, viesti.length() );
+
+	  string response;
+	  for (float i = 0; i < arvot.size(); i++) {
+		  stringstream ss;
+		  ss << arvot[i];
+		  string luku = ss.str();
+		  response += luku;
+		  if (i < arvot.size()-1 ) response += " ";
+	  }
+	  response += ";\n";
+	  response.copy(sendBuffer, response.length() );
+
+	  //cout << "Send response: " << response << endl;
+	  //	  SDLNet_TCP_Send(clientSocket[clientNumber], (void *)response.c_str(), response.length());
+	  /*
+
+
+	  stringstream ss;
+	  string viesti;
+
+	  //luo viesti arvoista
+	  for (int i = 0; i < arvot.size(); i++) {
+		  ss << arvot[i];
+		  string arvo_s;
+		  ss >> arvo_s;
+		  viesti += arvo_s;
+	  }
+
+	  viesti += ";\n";
+
+	  //kopioi viesti bufferiin
+	  viesti.copy(sendBuffer, viesti.length());*/
   }
   
 }

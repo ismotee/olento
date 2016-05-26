@@ -38,4 +38,5 @@ public:
 	void tulosta();
 };
 
+
 #endif

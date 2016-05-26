@@ -8,13 +8,15 @@ struct material{
 	float alpha; //0...1
 	float specularity; //0...1
 	float hardness; // 1...7
-	glm::vec3 diffuseColor; //r,g,b 0...1
+	material(){}
+	material(float, float, float);
 
 };
 
 void createMaterials();
 
-material getMaterial(int n);
+material getMaterial(float n);
+material mixMaterials(material A, material B, float amount);
 
 // Random Float
 float randf(float min, float max);

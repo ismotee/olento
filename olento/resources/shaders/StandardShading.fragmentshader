@@ -24,7 +24,7 @@ void main(){
 	float LightPower = 70.0f;
 	
 	// Material properties
-	vec3 ambientColor = vec3(0.7, 0.9, 1.0) * diffuseColor * 0.2;
+	vec3 ambientColor = vec3(0.7, 0.9, 1.0) * diffuseColor * 0.5;
 	vec3 specularColor = vec3(1,1,1);
 
 	// Distance to the light

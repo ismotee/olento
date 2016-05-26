@@ -16,9 +16,11 @@
 
 std::vector<glm::vec3> lerpVectors (std::vector<glm::vec3>& verts1, std::vector<glm::vec3>& verts2, float value) {
 
-    std::vector<glm::vec3> result(verts1.size());
+	int size = verts1.size();
+	if (size > verts2.size()) size = verts2.size();
+    std::vector<glm::vec3> result(size);
     
-    for(int i = 0; i < result.size();i++) {
+    for(int i = 0; i < size;i++) {
     
         result[i] = glm::mix(verts1[i],verts2[i],value);
     

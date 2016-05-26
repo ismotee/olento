@@ -107,17 +107,22 @@ bool xyPalette::loadFromFile(std::string filename){
 		colors[i] = glm::vec3(r,g,b);
 	}
 
-	std::cout << "Created palette, size: " << size << ", bpp: " << (int)surface->format->BytesPerPixel << "\n";
+	std::cout << "Created palette, size: " << size << ", w: " << w << ", h: " << h << ", bpp: " << (int)surface->format->BytesPerPixel << "\n";
+	if ((int)surface->format->BytesPerPixel != 4)
+		std::cerr << "Varoitus! Paletin BPP pitäisi olla 4\n";
 	SDL_FreeSurface(surface);
 	return true;
 }
 
 
 glm::vec3 xyPalette::getColor(float x, float y) {
-	int i_x = (float)w*x;
-	int i_y = (float)h*y;
+	int i_x = w*x;
+	int i_y = h*y;
 
 	int i = w*i_y + i_x;
+
+	//std::cerr << "getColor " << i_x << ", " << i_y << " (" << i << ")\n";
+
 	if (i<0 || i>size)
 		std::cerr << "Huono väri-indeksi: " << i << " !\n";
 
