@@ -85,12 +85,15 @@ int main(int argc, char* argv[]) {
     //ajasta luuppi
     t.delay(20);
     //std::cout << frame++ << "\n";  
-    
-    for(int i=0; i<8; i++) {
-      std::cout << muodonArvot[i] << ", ";
+	/*
+    for(int i=0; i<muodonArvot.size(); i++) {
+      std::cout << muodonArvot[i];
+	  if (i < muodonArvot.size() - 1) std::cout << ", ";
+	  else std::cout << "\n";
+
     }    
     std::cout << "\n";
-    
+    */
   } while(olentoPyorii() );
   
   std::cerr << "olentogl suljettiin\n";
