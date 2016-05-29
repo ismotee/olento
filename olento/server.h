@@ -16,19 +16,9 @@ namespace olentoServer{
 	const unsigned short MAX_SOCKETS = 100;               // Max number of sockets
 	const unsigned short MAX_CLIENTS = MAX_SOCKETS - 1; // Max number of clients in our socket set (-1 because server's listening socket takes the 1st socket in the set)
 
-	struct vec2{
-		float x;
-		float y;
-	};
-
-	struct pakettiDataT {
-		std::vector<vec2> pisteet;
-		bool empty();
-	};
-
-	pakettiDataT haePaketti();
-	void tulostaPaketti(pakettiDataT paketti);
-	std::vector<float> annaPisteet(pakettiDataT paketti);
+	std::vector<float> haePaketti();
+	void tulostaPaketti(std::vector<float> paketti);
+	std::vector<float> annaPisteet(std::vector<float> paketti);
 	void aloita();
 	void kuuntele();
 	bool setup();

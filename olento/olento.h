@@ -19,16 +19,10 @@
 
 #include <vector>
 
-void run();
+void updateGL();
 void asetaMuoto(std::vector<float> arvot);
 
 bool olentoPyorii();
 void suljeOlento();
-
-bool handleEvent();
-
-std::vector<float> haeKoulutusarvot();
-bool koulutetaanko();
-bool katsellaanko();
 
 #endif

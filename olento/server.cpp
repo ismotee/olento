@@ -31,24 +31,14 @@ namespace olentoServer{
 	std::atomic<bool> running(false);
 	std::atomic<bool> paketitVarattu(false);
 
-	std::vector<pakettiDataT> paketit;
+	std::vector< std::vector<float> > paketit;
 
 
-	void tulostaPaketti(pakettiDataT paketti) {
-		for (int i = 0; i < paketti.pisteet.size(); i++) {
-			cout << "x: " << paketti.pisteet[i].x << " y: " << paketti.pisteet[i].y << "\n";
+	void tulostaPaketti(std::vector<float> paketti) {
+		for (int i = 0; i < paketti.size(); i++) {
+			cout << "piste: " << paketti[i] << "\n";
 		}
 	}
-
-	std::vector<float> annaPisteet(pakettiDataT paketti) {
-		std::vector<float> result;
-		for (int i = 0; i < paketti.pisteet.size(); i++) {
-			result.push_back(paketti.pisteet[i].x);
-			result.push_back(paketti.pisteet[i].y);
-		}
-		return result;
-	}
-
 
 	bool initializeServer() {
 
@@ -68,14 +58,9 @@ namespace olentoServer{
 	}
 
 
-	bool pakettiDataT::empty() {
-		return pisteet.empty();
-	}
-
-
-	pakettiDataT haePaketti() {
+	vector<float> haePaketti() {
 		//Palauta alkupäästä eli ensimmäisenä lisätty paketti
-		pakettiDataT result;
+		vector<float> result;
 		while (paketitVarattu)
 			SDL_Delay(1);
 
@@ -92,40 +77,15 @@ namespace olentoServer{
 	}
 
 
-	pakettiDataT luoPaketti(char* data, int kokoTavuina) {
+	vector<float> luoPaketti(char* data, int kokoTavuina) {
 		stringstream ss;
-		pakettiDataT uusiPaketti;
+		vector<float> uusiPaketti;
 		ss.write(data, kokoTavuina);
-
-		vector<float> floats;
 
 		while (ss.good()) {
 			float f;
 			ss >> f;
-			floats.push_back(f);
-		}
-
-		//cerr << floats.size() << "\n";
-
-		while (floats.size() > 1) {
-			vec2 uusiPiste;
-			uusiPiste.x = floats[0];
-			uusiPiste.y = floats[1];
-			floats.erase(floats.begin(), floats.begin() + 2);
-			uusiPaketti.pisteet.push_back(uusiPiste);
-		}
-
-
-		int n_floats = kokoTavuina / sizeof(float);
-
-		//cerr << kokoTavuina << "tavua, " << n_floats << "lukua\n";
-
-		for (int i = 0; i < n_floats - 1; i += 2) {
-			vec2 uusiPiste;
-			uusiPiste.x = ((float*)data)[i];
-			uusiPiste.y = ((float*)data)[i + 1];
-
-			uusiPaketti.pisteet.push_back(uusiPiste);
+			uusiPaketti.push_back(f);
 		}
 
 		return uusiPaketti;
@@ -250,7 +210,7 @@ namespace olentoServer{
 						//std::cout << "Byte count: " << receivedByteCount << "\n";
 
 						//Luo paketti saadun datan perusteella
-						pakettiDataT uusiPaketti = luoPaketti(buffer, receivedByteCount);
+						vector<float> uusiPaketti = luoPaketti(buffer, receivedByteCount);
 
 						if (strcmp(buffer, "shutdown") == 0)
 						{
@@ -267,7 +227,7 @@ namespace olentoServer{
 						}
 
 						else { //
-							int piste_n = uusiPaketti.pisteet.size();
+							int piste_n = uusiPaketti.size();
 
 							//cout << "Tuli " << uusiPaketti.pisteet.size() << " pistettä\n";
 							//tulostaPaketti(uusiPaketti);
@@ -413,8 +373,8 @@ namespace olentoServer{
 	void testi() {
 		char* testiData = "1.4\n1\n9.5\n4\n0\n0.0\n33\n16\n";
 
-		pakettiDataT uusiPaketti = luoPaketti(testiData, strlen(testiData));
-		cout << "Testipaketti: " << uusiPaketti.pisteet.size() << " pistettä\n";
+		vector<float> uusiPaketti = luoPaketti(testiData, strlen(testiData));
+		cout << "Testipaketti: " << uusiPaketti.size() << " pistettä\n";
 		tulostaPaketti(uusiPaketti);
 
 	}

@@ -1,4 +1,7 @@
 #include "dobject.h"
+#include <iostream>
+
+using namespace std;
 
 void dFacesConnected::addFace(unsigned int Id) {
 	faceIds.push_back(Id);
@@ -34,26 +37,52 @@ glm::vec3 dFacesConnected::calculateVertexNormal(std::vector<dFace>& allFaces) {
 oRawDataT::oRawDataT() : length(0), data(NULL) {}
 
 
+bool dObject::loadFromFile(std::string path) {
+    if (!oLoader::loadOBJ(path, vertices, elements, faces)) {
+        //cerr << "Couldn't read file' " << path.c_str() << "!\n";
+        return false;
+    }
+
+    normals = vertices;
+
+    //M√§√§rit√§ facejen sijainnit avaruudessa
+    for (int i = 0; i < faces.size(); i++) {
+        glm::vec3 facePosition = (1.0f / 3)*vertices[faces[i].vertsIds[0]] + (1.0f / 3)*vertices[faces[i].vertsIds[1]] + (1.0f / 3)*vertices[faces[i].vertsIds[2]];
+        facePositions.push_back(facePosition);
+    }
+
+    makeFacesConnected();
+    calculateAllNormals();
+
+    return true;
+}
+
+
+int dObject::generateId() {
+    static int ObjCount = 0;
+    return ObjCount++;
+}
+
+
+dObject::dObject() {
+    cerr << "Warning: Using dObject default constructor. Object not loaded!\n";
+    id = generateId();
+    cerr << "Created dObject " << id <<"\n";
+}
+
+
 dObject::dObject(std::string path)
-
 {
-	dClock c;
-	oLoader::loadOBJ(path, vertices, elements, faces);
-	normals = vertices;
-	std::cout << "took " << c.get() << " s\n";
+    id = generateId();
 
-	//makeFaces();
+    cerr << "dObject constructor ... \n";
+    cerr << "   id: " << id << "\n";
+    cerr << "   path: " << path.c_str() << "\n";
 
-	//M‰‰rit‰ facejen sijainnit avaruudessa
-	for (int i = 0; i < faces.size(); i++) {
-		glm::vec3 facePosition = (1.0f / 3)*vertices[faces[i].vertsIds[0]] + (1.0f / 3)*vertices[faces[i].vertsIds[1]] + (1.0f / 3)*vertices[faces[i].vertsIds[2]];
-		facePositions.push_back(facePosition);
-	}
-
-	makeFacesConnected();
-
-	calculateAllNormals();
-
+    if(!loadFromFile(path) ) {
+        cerr << "   Couldn't load object!\n";
+    }
+    cerr << "Created object " << id << "\n";
 }
 
 
@@ -63,22 +92,26 @@ normals(_vertices),
 elements(_elements)
 
 {
+    id = generateId();
+
 	makeFaces();
 	makeFacesConnected();
 
 	calculateAllNormals();
 
+    cerr << "Created object " << id << "\n";
 }
 
 void dObject::changeVertices(std::vector<glm::vec3>& new_vertices)
 {
 	vertices = new_vertices;
+	calculateAllNormals();
 }
 
-void dObject::makeFaces() //t‰t‰ pit‰isi optimoida!
+void dObject::makeFaces() //t√§t√§ pit√§isi optimoida!
 {
 	dClock c;
-	std::cout << "makeFaces...";
+    std::cerr << "makeFaces...";
 
 	for (std::vector<unsigned int>::iterator it = elements.begin();
 		it != elements.end();
@@ -93,38 +126,39 @@ void dObject::makeFaces() //t‰t‰ pit‰isi optimoida!
 
 	}
 
-	std::cout << " ok (" << c.get() << " s)\n";
+    std::cerr << " ok (" << c.get() << " s)\n";
 }
 
 void dObject::makeFacesConnected()
 {
-	dClock c;
+    dClock c;
+    //std::cerr << "makeFacesConnected... ";
 
-	std::cout << "makeFacesConnected... ";
 	vFacesConnected.resize(vertices.size());
 
 	for (int i = 0; i < elements.size(); i++) {
 		vFacesConnected[elements[i]].addFace(i / 3);
 	}
-	std::cout << "ok (" << c.get() << " s)\n";
+
+    //std::cerr << "ok (" << c.get() << " s)\n";
 }
 
 
 void dObject::calculateAllNormals()
 {
-	//std::cout << "calculateAllNormals: vFacesConnected.size = " << vFacesConnected.size() << "\n";
+    //std::cerr << "calculateAllNormals: vFacesConnected.size = " << vFacesConnected.size() << "\n";
 	dClock c;
 	for (int i = 0; i < faces.size(); i++) {
 		faces[i].calculateFaceNormal(vertices);
 	}
 
-	//std::cout << "face normals done (took "<< c.get() <<" s)\n";
+    //std::cerr << "face normals done (took "<< c.get() <<" s)\n";
 	c.reset();
 	for (int i = 0; i < vFacesConnected.size() && i < normals.size(); i++) {
 		normals[i] = vFacesConnected[i].calculateVertexNormal(faces);
 	}
 
-	//std::cout << "vertex normals done (took " << c.get() << " s)\n";
+    //std::cerr << "vertex normals done (took " << c.get() << " s)\n";
 }
 
 void dObject::changeVerticesTowards(std::vector<glm::vec3>& aim_vertices, float multi)
@@ -161,7 +195,7 @@ void dObject::sortElementsByDistance() {
 
 	dClock t;
 
-	//J‰rjest‰ facet v‰liaikaiseen vektoriin siten ett‰ l‰hin on ensin
+	//J√§rjest√§ facet v√§liaikaiseen vektoriin siten ett√§ l√§hin on ensin
 	std::vector<sortT> sortedFaces;
 	sortedFaces.resize(faces.size());
 
@@ -172,7 +206,7 @@ void dObject::sortElementsByDistance() {
 	}
 	std::sort(sortedFaces.begin(), sortedFaces.end(), compare);
 
-	//j‰rjest‰ sitten elementit: L‰hin face on viimeisen‰. Kun piirret‰‰n, aloitetaan siis kauimmasta.
+	//j√§rjest√§ sitten elementit: L√§hin face on viimeisen√§. Kun piirret√§√§n, aloitetaan siis kauimmasta.
 	for (int f_i = 0; f_i < sortedFaces.size(); f_i++) {
 		int e_i = f_i * 3;
 		elements[e_i] = faces[sortedFaces[f_i].value].vertsIds[0];
@@ -180,7 +214,14 @@ void dObject::sortElementsByDistance() {
 		elements[e_i + 2] = faces[sortedFaces[f_i].value].vertsIds[2];
 	}
 
-	//std::cout << "ok (" << t.get() << " s)\n";
+    std::cerr << "ok (" << t.get() << " s)\n";
+}
+
+
+bool dObject::isReady() {
+    if(vertices.empty() || normals.empty() || elements.empty() )
+        return false;
+    else return true;
 }
 
 

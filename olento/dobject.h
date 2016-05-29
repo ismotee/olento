@@ -53,9 +53,17 @@ struct oRawDataT{
 
 
 class dObject : public oLoader {
+private:
+    static int generateId();
+
 public:
+    dObject();
     dObject(std::string path);
     dObject(std::vector<glm::vec3> _vertices, std::vector<unsigned int> _elements);
+
+    int id;
+    bool loadFromFile(std::string path);
+
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
     std::vector<unsigned int> elements;
@@ -75,6 +83,8 @@ public:
 
 	void sortElementsByDistance(glm::vec3 cameraPos);
 	void sortElementsByDistance();
+
+    bool isReady();
 
 private:
   
