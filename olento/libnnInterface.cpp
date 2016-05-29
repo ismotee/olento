@@ -104,3 +104,8 @@ void SetDesiredOut(std::vector<float> desired_out_)
             mtx.unlock();
         }
     }
+
+
+void Close() {
+	nn_stop = true;
+}

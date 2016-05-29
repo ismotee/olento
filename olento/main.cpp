@@ -31,7 +31,7 @@ void print(userInput ui) {
 		std::cout << "Katsellaan";
 
 	std::cout << "\n";
-
+	
 	for (int i = 0; i < ui.arvot.size(); i++) {
 		std::cout << ui.arvot[i];
 		if (i < ui.arvot.size() - 1)
@@ -39,7 +39,7 @@ void print(userInput ui) {
 		else
 			std::cout << "\n";
 	}
-
+	
 	
 
 }
@@ -159,12 +159,16 @@ userInput handleEvent(SDL_Event e) {
 int main(int argc, char* argv[]) {
 
 	olentoServer::aloita(); //käynnistyy omaan threadiin
-	std::thread(StartRoutine).detach();
+
+	Init(); //initialize nnet
+
+	std::thread net(StartRoutine);
 
 	initialize();
 
 	SDL_Event e;
 	std::vector<float> paketti;
+	std::vector<float> testInputs(4, 0.5);
 	dClock t;
 
 	userInput ui;
@@ -180,16 +184,14 @@ int main(int argc, char* argv[]) {
 			ui = handleEvent(e);
 
 		//hae paketti
-		paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
-		if (paketti.empty())
-			std::cerr << "Ei pakettia!\n";
+		//paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
+		paketti = testInputs;
 
 		if (ui.moodi == MUOKATAAN) {
 			muodonArvot = ui.arvot;
 		}
 
 		else if (ui.moodi == KOULUTETAAN) {
-			//hae paketti
 			muodonArvot = ui.arvot;
 
 			if (!paketti.empty()) {
@@ -199,12 +201,15 @@ int main(int argc, char* argv[]) {
 		}
 
 		else if (ui.moodi == KATSELLAAN) {
-			//hae paketti
-			paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
-
 			if (!paketti.empty()) {
 				SetInput(paketti);
-				muodonArvot = GetOutput();
+				std::vector<float> outputs;
+
+				while (outputs.empty())
+					outputs = GetOutput();
+
+				muodonArvot = outputs;
+
 			}
 		}
 
@@ -215,12 +220,14 @@ int main(int argc, char* argv[]) {
 		print(ui);
 
 		//ajasta luuppi
-		std::cout << "Kesti " << t.get() << " s\n";
+		//std::cout << "Kesti " << t.get() << " s\n";
 		t.delay(30);
 
 	} while (ui.run);
 
+	Close();
 
+	net.join();
 	olentoServer::lopeta();
 
 	return 0;

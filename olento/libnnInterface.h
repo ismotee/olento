@@ -54,4 +54,6 @@ void SetDesiredOut(std::vector<float> desired_out_);
     // net.desired_out = desired_out
     // desiredWritten = true
 
+void Close();
+
 #endif /* defined(__libnn__libnnInterface__) */
