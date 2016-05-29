@@ -1,9 +1,16 @@
+//
+//  libnn.h
+//  libnn
+//
+//  Created by Ismo Torvinen on 23.5.2016.
+//  Copyright (c) 2016 Ismo Torvinen. All rights reserved.
+//
+
 #ifndef __libnn__libnn__
 #define __libnn__libnn__
 
 #include <stdio.h>
 #include <vector>
-#include <string>
 
 struct linkData
 {
@@ -46,9 +53,9 @@ struct NeuronData
 {
     std::vector<float> weights;
     float output;
-    NeuronData(Neuron* original) : output(original->output)
+    NeuronData(Neuron& original) : output(original.output)
     {
-        weights = original->weights;
+        weights = original.weights;
     }
 };
 
@@ -56,7 +63,7 @@ struct NeuronData
 class HiddenNeuron : public Neuron
 {
 public:
-    HiddenNeuron(float learn_rate = 0.001f);
+    HiddenNeuron(float learn_rate = 0.01f);
     
     std::vector<Neuron*> upper;
     
@@ -69,7 +76,7 @@ public:
 class InputNeuron : public Neuron
 {
 public:
-    InputNeuron(float learn_rate = 0.001f);
+    InputNeuron(float learn_rate = 0.01f);
     
     float input;
     

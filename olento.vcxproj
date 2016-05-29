@@ -78,6 +78,7 @@
     <ClInclude Include="olento\dobject.h" />
     <ClInclude Include="olento\dynamicVertex.h" />
     <ClInclude Include="olento\libnn.h" />
+    <ClInclude Include="olento\libnnInterface.h" />
     <ClInclude Include="olento\material.h" />
     <ClInclude Include="olento\objloader.h" />
     <ClInclude Include="olento\objloader.hpp" />
@@ -97,6 +98,7 @@
   <ItemGroup>
     <ClCompile Include="olento\dobject.cpp" />
     <ClCompile Include="olento\libnn.cpp" />
+    <ClCompile Include="olento\libnnInterface.cpp" />
     <ClCompile Include="olento\main.cpp" />
     <ClCompile Include="olento\material.cpp" />
     <ClCompile Include="olento\objloader.cpp" />

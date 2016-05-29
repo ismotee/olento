@@ -54,6 +54,13 @@ dObject obj;
 
 
 
+void setLight() {
+	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
+	glm::vec3 lightPos = glm::vec3(11, 6, 11);
+	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+}
+
+
 void initialize() {
 
 	srand(time(NULL));
@@ -171,12 +178,6 @@ void asetaMuoto(std::vector<float> values) {
   mat_n = values[5];
   color_x = values[6];
   color_y = values[7];  
-}
-
-void setLight() {
-  GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
-  glm::vec3 lightPos = glm::vec3(11, 6, 11);
-  glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
 }
 
 

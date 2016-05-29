@@ -3,7 +3,7 @@
 #include "random.h"
 #include "dClock.h"
 #include "server.h"
-#include "libnn.h"
+#include "libnnInterface.h"
 
 #include <thread>
 #include <vector>
@@ -23,6 +23,28 @@ struct userInput{
 };
 
 
+void print(userInput ui) {
+	std::cout << "moodi: ";
+	if (ui.moodi == KOULUTETAAN) std::cout << "Koulutetaan";
+	else if (ui.moodi == MUOKATAAN) std::cout << "Muokataan";
+	else 
+		std::cout << "Katsellaan";
+
+	std::cout << "\n";
+
+	for (int i = 0; i < ui.arvot.size(); i++) {
+		std::cout << ui.arvot[i];
+		if (i < ui.arvot.size() - 1)
+			std::cout << ", ";
+		else
+			std::cout << "\n";
+	}
+
+	
+
+}
+
+
 userInput handleEvent(SDL_Event e) {
 
 	static userInput ui;
@@ -35,6 +57,7 @@ userInput handleEvent(SDL_Event e) {
 			ui.run = false;
 
 		else if (e.type == SDL_KEYUP || e.type == SDL_KEYDOWN) {
+			std::cerr << "got key event\n";
 			switch (e.key.keysym.sym) {
 			
 			//moodin vaihtaminen
@@ -136,6 +159,9 @@ userInput handleEvent(SDL_Event e) {
 int main(int argc, char* argv[]) {
 
 	olentoServer::aloita(); //käynnistyy omaan threadiin
+	std::thread(StartRoutine).detach();
+
+	initialize();
 
 	SDL_Event e;
 	std::vector<float> paketti;
@@ -153,18 +179,22 @@ int main(int argc, char* argv[]) {
 		while (SDL_PollEvent(&e))
 			ui = handleEvent(e);
 
+		//hae paketti
+		paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
+		if (paketti.empty())
+			std::cerr << "Ei pakettia!\n";
+
 		if (ui.moodi == MUOKATAAN) {
 			muodonArvot = ui.arvot;
 		}
 
 		else if (ui.moodi == KOULUTETAAN) {
 			//hae paketti
-			paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
 			muodonArvot = ui.arvot;
 
 			if (!paketti.empty()) {
-				NNet::setInput(paketti);
-				NNet::setDesiredOut(ui.arvot);
+				SetInput(paketti);
+				SetDesiredOut(ui.arvot);
 			}
 		}
 
@@ -173,8 +203,8 @@ int main(int argc, char* argv[]) {
 			paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
 
 			if (!paketti.empty()) {
-				NNet::setInput(paketti);
-				muodonArvot = NNet::getOutput();
+				SetInput(paketti);
+				muodonArvot = GetOutput();
 			}
 		}
 
@@ -182,7 +212,10 @@ int main(int argc, char* argv[]) {
 		olentoServer::asetaVastausviesti(muodonArvot);
 		updateGL();
 
+		print(ui);
+
 		//ajasta luuppi
+		std::cout << "Kesti " << t.get() << " s\n";
 		t.delay(30);
 
 	} while (ui.run);

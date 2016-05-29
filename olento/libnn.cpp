@@ -218,7 +218,7 @@ std::vector<NeuronData> NLayer::getNeuronData ()
 {
     std::vector<NeuronData> data;
     for(int i = 0; i < neurons.size(); i++)
-        data.push_back(NeuronData(neurons[i]));
+        data.push_back(*neurons[i]);
 
     return data;
 }
@@ -281,7 +281,7 @@ void NNet::init(int inputs_n, int hidden_layers_n, int hidden_neurons_n, int out
     // link all neurons from last hidden layer to every output layer's neuron.
     for(int i= 0; i < outputs_n; i++) {
         for(int j=0; j < hidden_neurons_n; j++) {
-            outputLayer.neurons[i]->addLink(hiddenLayers.back().neurons[j]);
+            outputLayer.neurons[i]->addLink(hiddenLayers.back().neurons[i]);
         }
     }
     

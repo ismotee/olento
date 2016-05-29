@@ -19,6 +19,8 @@
 
 #include <vector>
 
+void initialize();
+
 void updateGL();
 void asetaMuoto(std::vector<float> arvot);
 
