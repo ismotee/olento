@@ -8,10 +8,10 @@ material materials[5];
 //kovakiiltoinen opaque
 
 void createMaterials() {
-	materials[0] = material(0.1,5,10);
+	materials[0] = material(0.1,1,10);
 	materials[1] = material(0.2, 0.05, 1);
 	materials[2] = material(1, 0.02, 1);
-	materials[3] = material(1, 3, 20);
+	materials[3] = material(1, 1, 10);
 }
 
 material::material(float alpha_, float specularity_, float hardness_) : alpha(alpha_), specularity(specularity_), hardness(hardness_) {}

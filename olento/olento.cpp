@@ -20,6 +20,7 @@
 #include <time.h>
 #include <iostream>
 #include <atomic>
+#include <thread>
 
 #ifdef __APPLE__
 #include "CoreFoundation/CoreFoundation.h"
@@ -52,12 +53,33 @@ xyPalette paletti;
 
 dObject obj;
 
-
+std::atomic<bool> varattu = false;
 
 void setLight() {
-	GLuint LightID = glGetUniformLocation(programID, "LightPosition_worldspace");
-	glm::vec3 lightPos = glm::vec3(11, 6, 11);
-	glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.z);
+	GLuint LightA_ID = glGetUniformLocation(programID, "LightPosition_A_worldspace");
+	GLuint LightB_ID = glGetUniformLocation(programID, "LightPosition_B_worldspace");
+
+	GLuint LightPower_A_ID = glGetUniformLocation(programID, "lightPower_A"); 
+	GLuint LightPower_B_ID = glGetUniformLocation(programID, "lightPower_B");
+
+	GLuint AmbientPower_ID = glGetUniformLocation(programID, "ambientPower");
+
+	//takavalo
+	glm::vec3 lightPos_A = glm::vec3(-15, -1, -1);
+	float lightPower_A = 150.0f;
+
+	//etu
+	glm::vec3 lightPos_B = glm::vec3(15, 1, 1);
+	float lightPower_B = 50.0f;
+
+	float ambientPower = 0.35f;
+
+	glUniform3f(LightA_ID, lightPos_A.x, lightPos_A.y, lightPos_A.z);
+	glUniform3f(LightB_ID, lightPos_B.x, lightPos_B.y, lightPos_B.z);
+	glUniform1f(LightPower_A_ID, lightPower_A);
+	glUniform1f(LightPower_B_ID, lightPower_B);
+	glUniform1f(AmbientPower_ID, ambientPower);
+
 }
 
 
@@ -99,8 +121,8 @@ void initialize() {
 
 	oDirectory dir(dirStr);
 
-	std::string vertexShaderPath = dir.path + "shaders/StandardShading.vertexshader";
-	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
+	std::string vertexShaderPath = dir.path + "shaders/multiLight.vertexshader";
+	std::string fragmentShaderPath = dir.path + "shaders/multiLight.fragmentshader";
 	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
 
 	//init camera
@@ -174,10 +196,15 @@ void asetaMuoto(std::vector<float> values) {
   
   std::vector<glm::vec3> newAimVerts = mods.getShape(shapeValues);
    
+  while (varattu)
+	std::this_thread::yield();
+
+  varattu = true;
   aimVerts = newAimVerts;
   mat_n = values[5];
   color_x = values[6];
   color_y = values[7];  
+  varattu = false;
 }
 
 
@@ -188,16 +215,18 @@ void updateGL() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//muuta verteksit ja normaalit
-	obj.changeVerticesTowards(aimVerts, 0.1f);
-	//obj.changeVertices(aimVerts);
+	//obj.changeVerticesTowards(aimVerts, 0.1);
+	while (varattu)
+		std::this_thread::yield();
+	obj.changeVertices(aimVerts);
 
 	setMaterial(mat_n);
 	setColor(color_x, color_y);
 
 	obj.calculateAllNormals();
 
-	//Järjestä elementit läpinäkyvyyttä varten. Tässä menee KAUAN (> 4 min)
-	//obj.sortElementsByDistance(oCamera::position);
+	//Järjestä elementit läpinäkyvyyttä varten.
+	obj.sortElementsByDistance(oCamera::position);
 
 	//päivitä ja näytä
 	oBuffers::updateBuffers(obj);

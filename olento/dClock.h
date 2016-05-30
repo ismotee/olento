@@ -16,23 +16,29 @@ public:
 		return ((float)time / CLOCKS_PER_SEC);
 	}
 
+	void delay_ms(int ms) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+	}
+
 	bool delay(float target_fps) {
-		int delay_ms = (1000 / target_fps) - get() * 1000;
+		int ms = (1000 / target_fps) - get() * 1000;
 		reset();
 
 //		using namespace std::this_thread; // sleep_for, sleep_until
 //		using namespace std::chrono; // nanoseconds, system_clock, seconds
 
-		if (delay_ms > 0) {
-			//if (delay_ms > 1000)
-			//	delay_ms = 1000;
+		if (ms > 0) {
+			//if (ms > 1000)
+			//	ms = 1000;
 			
-			std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
+			delay_ms(ms);
 			return true;
 		}
 
 		else return false; //if lag, return false
 	}
+
+
 
 	dClock(){
 		reset();

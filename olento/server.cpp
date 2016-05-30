@@ -62,7 +62,7 @@ namespace olentoServer{
 		//Palauta alkupäästä eli ensimmäisenä lisätty paketti
 		vector<float> result;
 		while (paketitVarattu)
-			SDL_Delay(1);
+			std::this_thread::yield();
 
 		paketitVarattu = true;
 
@@ -234,7 +234,7 @@ namespace olentoServer{
 
 							//Odota lupaa kirjoittaa.
 							while (paketitVarattu)
-								SDL_Delay(1);
+								std::this_thread::yield();
 
 							paketitVarattu = true;
 
