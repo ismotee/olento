@@ -13,6 +13,9 @@
 #include "libnn.h"
 #include <vector>
 #include <atomic>
+#include <thread>
+#include <mutex>
+
 
 /*
 // muuttujat ja luokat
@@ -29,8 +32,14 @@
  std::atomic<bool> desiredWritten;
  std::atomic<bool> nn_stop;
 
+
+ 
 //funktiot:
 */
+namespace nnInterface {
+extern std::mutex mtx;
+
+
 void Init();
 
 void StartRoutine();
@@ -55,5 +64,5 @@ void SetDesiredOut(std::vector<float> desired_out_);
     // desiredWritten = true
 
 void Close();
-
+}
 #endif /* defined(__libnn__libnnInterface__) */

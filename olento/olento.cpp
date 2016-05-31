@@ -47,7 +47,7 @@ float mat_n = 1;
 float color_x = 0;
 float color_y = 0;
 
-oModificators mods(meshDir, "arkkityypit", modDirs);
+oModificators mods;
 
 xyPalette paletti;
 
@@ -121,8 +121,14 @@ void initialize() {
 
 	oDirectory dir(dirStr);
 
+<<<<<<< Updated upstream
 	std::string vertexShaderPath = dir.path + "shaders/multiLight.vertexshader";
 	std::string fragmentShaderPath = dir.path + "shaders/multiLight.fragmentshader";
+=======
+    mods.load(meshDir, "arkkityypit", modDirs);
+	std::string vertexShaderPath = dir.path + "shaders/StandardShading.vertexshader";
+	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
+>>>>>>> Stashed changes
 	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
 
 	//init camera

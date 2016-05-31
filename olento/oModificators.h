@@ -20,8 +20,9 @@ struct oModificators {
     oMeshBundle* archtypes;
     std::vector<oMeshBundle> mods;
     
+    oModificators();
     oModificators(std::string path, std::string _archtype, std::vector<std::string> modificators);
-    
+    void load(std::string path, std::string _archtype, std::vector<std::string> modificators);
     std::vector<glm::vec3> getShape(std::vector<float>& values);
     
     //making easier and more intuitive to get data from mods vector
@@ -29,6 +30,9 @@ struct oModificators {
     const oMeshBundle& operator[](std::size_t idx) const { return mods[idx]; };
     
 };
+
+oModificators::oModificators()
+{}
 
 oModificators::oModificators (std::string path, std::string _archtype, std::vector<std::string> modificators)
 {
@@ -44,6 +48,23 @@ oModificators::oModificators (std::string path, std::string _archtype, std::vect
         mods.push_back(oMeshBundle(dir,*archtypes));
     }
     
+}
+
+void oModificators::load(std::string path, std::string _archtype, std::vector<std::string> modificators)
+{
+    std::string archtypePath = path + _archtype + "/";
+    
+    oDirectory archtypeDir(archtypePath);
+    archtypes = new oMeshBundle(archtypeDir);
+    
+    for(int i = 0; i < modificators.size(); i++) {
+        std::string modPath = path + modificators[i] + "/";
+        //std::cout << modPath << "\n";
+        oDirectory dir(modPath);
+        mods.push_back(oMeshBundle(dir,*archtypes));
+    }
+    
+
 }
 
 std::vector<glm::vec3> oModificators::getShape(std::vector<float>& values) {

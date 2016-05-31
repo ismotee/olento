@@ -8,11 +8,15 @@
 
 #include "libnnInterface.h"
 #include <iostream>
-#include <mutex>
+#include "dClock.h"
+
+namespace nnInterface {
 
 NNet nn_net;
 
 std::vector<float> nn_output;
+std::vector<float> result;
+
 std::vector<float> nn_desired_out;
 std::vector<float> nn_input;
 
@@ -22,15 +26,28 @@ std::atomic<bool> desiredWritten;
 std::atomic<bool> nn_stop;
 std::atomic<bool> update;
 
-std::recursive_mutex mtx;
+    std::mutex mtx;
+
+dClock timer;
 
 void Init()
 {
+    
+    
     // count num_inputs && num_hidden_neurons dynamically
     int in = 4;
     int hid = 0;
+    int out = 8;
+    
     for(int i = in; i > 0;i--)
         hid += i;
+
+    nn_desired_out = std::vector<float>(out,0.5f);
+    nn_input = std::vector<float>(in,0.5f);
+    nn_output = std::vector<float>(out,0.5f);
+    result = std::vector<float>(out,0.5f);
+
+    
     
     nn_net.init(in, 1, hid, 8);
     
@@ -52,60 +69,61 @@ void StartRoutine() {
         nn_stop = false;
         while(!nn_stop) {
             // back propagation
+            timer.reset();
             
-            if(mtx.try_lock()){
-                if(desiredWritten == true) {
-                    nn_net.back(nn_desired_out);
-                    desiredWritten = false;
-                }
-
-
-                // feed forward
+            
+            mtx.lock();
+            if(desiredWritten == true) {
+                nn_net.back(nn_desired_out);
+                desiredWritten = false;
+            }
+            mtx.unlock();
+            
+            std::this_thread::yield();
+            
+            mtx.lock();
+            // feed forward
                 if(inWritten == true) {
                     nn_output = nn_net.forward(nn_input);
                     outRead = false;
                 }
-                mtx.unlock();
-            }
-               
-            
-            
+            mtx.unlock();
+        //    }
+            std::this_thread::yield();
         }
     }
     
 void SetInput(std::vector<float> input_)
     {
-        if(mtx.try_lock()) {
             nn_input = input_;
             inWritten = true;
-            mtx.unlock();
-        }
     }
     
 std::vector<float> GetOutput()
     {
-        std::vector<float> result;
-        if(outRead) return std::vector<float>();
-            if(mtx.try_lock()) {
-                std::cout << "teach\n";
-                outRead = true;
-                result = nn_output;
-                mtx.unlock();
-            }
+        if(outRead) {
+            result.clear();
+            return result;
+        }
+        
+        std::cout << "teach\n";
+        
+        outRead = true;
+        result = nn_output;
         return result;
 
     }
 
 void SetDesiredOut(std::vector<float> desired_out_)
     {
-        if(mtx.try_lock()) {
-            nn_desired_out = desired_out_;
-            desiredWritten = true;
-            mtx.unlock();
-        }
+
+        nn_desired_out = desired_out_;
+        desiredWritten = true;
+
     }
 
 
 void Close() {
 	nn_stop = true;
+}
 }

@@ -9,6 +9,17 @@
 /* Begin PBXBuildFile section */
 		838C26BC1C8F3D68001FF9B7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 838C26BB1C8F3D68001FF9B7 /* OpenGL.framework */; };
 		838C26BE1C8F3D8C001FF9B7 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */; };
+		839FAEFF1CFB9BBF003BBDA6 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 839FAEFE1CFB9BBF003BBDA6 /* SDL2.framework */; };
+		839FAF011CFB9BCE003BBDA6 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 839FAF001CFB9BCE003BBDA6 /* SDL2_image.framework */; };
+		839FAF031CFB9BDD003BBDA6 /* SDL2_net.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 839FAF021CFB9BDD003BBDA6 /* SDL2_net.framework */; };
+		839FAF061CFB9C4B003BBDA6 /* libnnInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839FAF041CFB9C4B003BBDA6 /* libnnInterface.cpp */; };
+		839FAF091CFB9C5C003BBDA6 /* material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839FAF071CFB9C5C003BBDA6 /* material.cpp */; };
+		839FAF141CFB9C85003BBDA6 /* dobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839FAF0B1CFB9C85003BBDA6 /* dobject.cpp */; };
+		839FAF151CFB9C85003BBDA6 /* libnn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839FAF0C1CFB9C85003BBDA6 /* libnn.cpp */; };
+		839FAF161CFB9C85003BBDA6 /* olento.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839FAF0E1CFB9C85003BBDA6 /* olento.cpp */; };
+		839FAF171CFB9C85003BBDA6 /* oLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839FAF0F1CFB9C85003BBDA6 /* oLoader.cpp */; };
+		839FAF181CFB9C85003BBDA6 /* random.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839FAF101CFB9C85003BBDA6 /* random.cpp */; };
+		839FAF191CFB9C85003BBDA6 /* server.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 839FAF121CFB9C85003BBDA6 /* server.cpp */; };
 		83DA591A1CBFAEFC00F267A6 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA59071CBFAEFC00F267A6 /* main.cpp */; };
 		83DA591B1CBFAEFC00F267A6 /* objloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA59081CBFAEFC00F267A6 /* objloader.cpp */; };
 		83DA591C1CBFAEFC00F267A6 /* oCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83DA590C1CBFAEFC00F267A6 /* oCamera.cpp */; };
@@ -35,6 +46,23 @@
 		838C26B11C8F3B41001FF9B7 /* olento.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = olento.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		838C26BB1C8F3D68001FF9B7 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
+		839FAEFE1CFB9BBF003BBDA6 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		839FAF001CFB9BCE003BBDA6 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
+		839FAF021CFB9BDD003BBDA6 /* SDL2_net.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_net.framework; path = ../../../../../Library/Frameworks/SDL2_net.framework; sourceTree = "<group>"; };
+		839FAF041CFB9C4B003BBDA6 /* libnnInterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = libnnInterface.cpp; path = olento/libnnInterface.cpp; sourceTree = "<group>"; };
+		839FAF051CFB9C4B003BBDA6 /* libnnInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libnnInterface.h; path = olento/libnnInterface.h; sourceTree = "<group>"; };
+		839FAF071CFB9C5C003BBDA6 /* material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = material.cpp; path = olento/material.cpp; sourceTree = "<group>"; };
+		839FAF081CFB9C5C003BBDA6 /* material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = material.h; path = olento/material.h; sourceTree = "<group>"; };
+		839FAF0A1CFB9C85003BBDA6 /* dClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dClock.h; path = olento/dClock.h; sourceTree = "<group>"; };
+		839FAF0B1CFB9C85003BBDA6 /* dobject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dobject.cpp; path = olento/dobject.cpp; sourceTree = "<group>"; };
+		839FAF0C1CFB9C85003BBDA6 /* libnn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = libnn.cpp; path = olento/libnn.cpp; sourceTree = "<group>"; };
+		839FAF0D1CFB9C85003BBDA6 /* libnn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libnn.h; path = olento/libnn.h; sourceTree = "<group>"; };
+		839FAF0E1CFB9C85003BBDA6 /* olento.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = olento.cpp; path = olento/olento.cpp; sourceTree = "<group>"; };
+		839FAF0F1CFB9C85003BBDA6 /* oLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = oLoader.cpp; path = olento/oLoader.cpp; sourceTree = "<group>"; };
+		839FAF101CFB9C85003BBDA6 /* random.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = random.cpp; path = olento/random.cpp; sourceTree = "<group>"; };
+		839FAF111CFB9C85003BBDA6 /* random.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = random.h; path = olento/random.h; sourceTree = "<group>"; };
+		839FAF121CFB9C85003BBDA6 /* server.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = server.cpp; path = olento/server.cpp; sourceTree = "<group>"; };
+		839FAF131CFB9C85003BBDA6 /* server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = server.h; path = olento/server.h; sourceTree = "<group>"; };
 		83DA59031CBFAEFC00F267A6 /* dFace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dFace.h; path = olento/dFace.h; sourceTree = "<group>"; };
 		83DA59051CBFAEFC00F267A6 /* dobject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dobject.h; path = olento/dobject.h; sourceTree = "<group>"; };
 		83DA59071CBFAEFC00F267A6 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = olento/main.cpp; sourceTree = "<group>"; };
@@ -64,6 +92,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				839FAF031CFB9BDD003BBDA6 /* SDL2_net.framework in Frameworks */,
+				839FAF011CFB9BCE003BBDA6 /* SDL2_image.framework in Frameworks */,
+				839FAEFF1CFB9BBF003BBDA6 /* SDL2.framework in Frameworks */,
 				838C26BE1C8F3D8C001FF9B7 /* GLUT.framework in Frameworks */,
 				838C26BC1C8F3D68001FF9B7 /* OpenGL.framework in Frameworks */,
 			);
@@ -75,6 +106,9 @@
 		838C26A81C8F3B41001FF9B7 = {
 			isa = PBXGroup;
 			children = (
+				839FAF021CFB9BDD003BBDA6 /* SDL2_net.framework */,
+				839FAF001CFB9BCE003BBDA6 /* SDL2_image.framework */,
+				839FAEFE1CFB9BBF003BBDA6 /* SDL2.framework */,
 				83DA59211CBFB54600F267A6 /* resources */,
 				83DA59021CBFAEB000F267A6 /* olento */,
 				838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */,
@@ -94,6 +128,20 @@
 		83DA59021CBFAEB000F267A6 /* olento */ = {
 			isa = PBXGroup;
 			children = (
+				839FAF0A1CFB9C85003BBDA6 /* dClock.h */,
+				839FAF0B1CFB9C85003BBDA6 /* dobject.cpp */,
+				839FAF0C1CFB9C85003BBDA6 /* libnn.cpp */,
+				839FAF0D1CFB9C85003BBDA6 /* libnn.h */,
+				839FAF0E1CFB9C85003BBDA6 /* olento.cpp */,
+				839FAF0F1CFB9C85003BBDA6 /* oLoader.cpp */,
+				839FAF101CFB9C85003BBDA6 /* random.cpp */,
+				839FAF111CFB9C85003BBDA6 /* random.h */,
+				839FAF121CFB9C85003BBDA6 /* server.cpp */,
+				839FAF131CFB9C85003BBDA6 /* server.h */,
+				839FAF071CFB9C5C003BBDA6 /* material.cpp */,
+				839FAF081CFB9C5C003BBDA6 /* material.h */,
+				839FAF041CFB9C4B003BBDA6 /* libnnInterface.cpp */,
+				839FAF051CFB9C4B003BBDA6 /* libnnInterface.h */,
 				83DA59031CBFAEFC00F267A6 /* dFace.h */,
 				83DA59051CBFAEFC00F267A6 /* dobject.h */,
 				83DA59071CBFAEFC00F267A6 /* main.cpp */,
@@ -175,11 +223,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				839FAF171CFB9C85003BBDA6 /* oLoader.cpp in Sources */,
 				83DA591E1CBFAEFC00F267A6 /* shader.cpp in Sources */,
 				83DA591B1CBFAEFC00F267A6 /* objloader.cpp in Sources */,
+				839FAF151CFB9C85003BBDA6 /* libnn.cpp in Sources */,
+				839FAF091CFB9C5C003BBDA6 /* material.cpp in Sources */,
+				839FAF191CFB9C85003BBDA6 /* server.cpp in Sources */,
 				83DA591A1CBFAEFC00F267A6 /* main.cpp in Sources */,
+				839FAF061CFB9C4B003BBDA6 /* libnnInterface.cpp in Sources */,
+				839FAF161CFB9C85003BBDA6 /* olento.cpp in Sources */,
+				839FAF181CFB9C85003BBDA6 /* random.cpp in Sources */,
 				83DA591C1CBFAEFC00F267A6 /* oCamera.cpp in Sources */,
 				83DA591D1CBFAEFC00F267A6 /* oWindow.cpp in Sources */,
+				839FAF141CFB9C85003BBDA6 /* dobject.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
