@@ -51,7 +51,6 @@ userInput handleEvent(SDL_Event e) {
 
 	static userInput ui;
 
-<<<<<<< Updated upstream
 	const float MUUTOS = 0.02;
 
 	if (e.type == SDL_QUIT)
@@ -130,103 +129,12 @@ userInput handleEvent(SDL_Event e) {
 			ui.arvot[7] -= MUUTOS;
 			break;
 
-=======
-	const float MUUTOS = 0.1;
-	static std::vector<int> keyboard(8, 0);
-
-		if (e.type == SDL_QUIT)
-			ui.run = false;
-
-		else if (e.type == SDL_KEYUP || e.type == SDL_KEYDOWN) {
-			std::cerr << "got key event\n";
-			switch (e.key.keysym.sym) {
-			
-			//moodin vaihtaminen
-			case SDLK_TAB:
-				if (e.type == SDL_KEYDOWN) {
-					if (ui.moodi == KATSELLAAN) ui.moodi = MUOKATAAN;
-					else ui.moodi = KATSELLAAN;
-				}
-				break;
-			case SDLK_RETURN:
-				if (e.type == SDL_KEYDOWN) {
-					if (ui.moodi == MUOKATAAN) ui.moodi = KOULUTETAAN;
-					else if (ui.moodi == KOULUTETAAN) ui.moodi = MUOKATAAN;
-				}
-				break;
-
-			//muodon säätö
-			case SDLK_q:
-				if (e.type == SDL_KEYDOWN) keyboard[0] = 1;
-				else keyboard[0] = 0;
-				break;
-			case SDLK_a:
-				if (e.type == SDL_KEYDOWN)keyboard[0] = -1;
-				else keyboard[0] = 0;
-				break;
-			case SDLK_w:
-				if (e.type == SDL_KEYDOWN) keyboard[1] = 1;
-				else keyboard[1] = 0;
-				break;
-			case SDLK_s:
-				if (e.type == SDL_KEYDOWN)keyboard[1] = -1;
-				else keyboard[1] = 0;
-				break;
-			case SDLK_e:
-				if (e.type == SDL_KEYDOWN) keyboard[2] = 1;
-				else keyboard[2] = 0;
-				break;
-			case SDLK_d:
-				if (e.type == SDL_KEYDOWN)keyboard[2] = -1;
-				else keyboard[2] = 0;
-				break;
-			case SDLK_r:
-				if (e.type == SDL_KEYDOWN) keyboard[3] = 1;
-				else keyboard[3] = 0;
-				break;
-			case SDLK_f:
-				if (e.type == SDL_KEYDOWN)keyboard[3] = -1;
-				else keyboard[3] = 0;
-				break;
-			case SDLK_t:
-				if (e.type == SDL_KEYDOWN) keyboard[4] = 1;
-				else keyboard[4] = 0;
-				break;
-			case SDLK_g:
-				if (e.type == SDL_KEYDOWN)keyboard[4] = -1;
-				else keyboard[4] = 0;
-				break;
-			case SDLK_y:
-				if (e.type == SDL_KEYDOWN) keyboard[5] = 1;
-				else keyboard[5] = 0;
-				break;
-			case SDLK_h:
-				if (e.type == SDL_KEYDOWN)keyboard[5] = -1;
-				else keyboard[5] = 0;
-				break;
-			case SDLK_u:
-				if (e.type == SDL_KEYDOWN) keyboard[6] = 1;
-				else keyboard[6] = 0;
-				break;
-			case SDLK_j:
-				if (e.type == SDL_KEYDOWN)keyboard[6] = -1;
-				else keyboard[6] = 0;
-				break;
-			case SDLK_i:
-				if (e.type == SDL_KEYDOWN) keyboard[7] = 1;
-				else keyboard[7] = 0;
-				break;
-			case SDLK_k:
-				if (e.type == SDL_KEYDOWN)keyboard[7] = -1;
-				else keyboard[7] = 0;
-				break;
-			}
->>>>>>> Stashed changes
 		}
 
-	for (int i = 0; i < ui.arvot.size(); i++)
-		bound(ui.arvot[i], 0, 1);
+		for (int i = 0; i < ui.arvot.size(); i++)
+			bound(ui.arvot[i], 0, 1);
 
+	}
 	return ui;
 }
 
@@ -295,14 +203,10 @@ int main(int argc, char* argv[]) {
 			}
             mtx.unlock();
 		}
-<<<<<<< Updated upstream
 
-		std::thread(asetaMuoto, muodonArvot).detach();
-=======
-        nnInterface::mtx.unlock();
-        
+		nnInterface::mtx.unlock();       
 		asetaMuoto(muodonArvot);
->>>>>>> Stashed changes
+
 		olentoServer::asetaVastausviesti(muodonArvot);
 		updateGL();
 
