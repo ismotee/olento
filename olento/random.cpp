@@ -20,3 +20,25 @@ void wrap(float& value, float min, float max) {
 	while (value < min) value += w;
 	while (value > max) value -= w;
 }
+
+
+float vektorienEro(std::vector<float> A, std::vector<float> B) {
+
+	if (A.size() != B.size() || A.empty() || B.empty())
+		return -1;
+
+	float summa = 0;
+
+	for (int i = 0; i < A.size(); i++) {
+		summa += fabs(A[i] - B[i]);
+	}
+
+	//summa /= (float)A.size();
+	return summa;
+}
+
+
+float floatabs(float arvo) {
+	if (arvo > 0) return arvo;
+	else return (arvo * (-1));
+}
