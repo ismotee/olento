@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		83021B4B1CFE290200D2BBB3 /* archiver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83021B491CFE290200D2BBB3 /* archiver.cpp */; };
 		838C26BC1C8F3D68001FF9B7 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 838C26BB1C8F3D68001FF9B7 /* OpenGL.framework */; };
 		838C26BE1C8F3D8C001FF9B7 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */; };
 		839FAEFF1CFB9BBF003BBDA6 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 839FAEFE1CFB9BBF003BBDA6 /* SDL2.framework */; };
@@ -43,6 +44,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		83021B491CFE290200D2BBB3 /* archiver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = archiver.cpp; path = olento/archiver.cpp; sourceTree = "<group>"; };
+		83021B4A1CFE290200D2BBB3 /* archiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = archiver.h; path = olento/archiver.h; sourceTree = "<group>"; };
 		838C26B11C8F3B41001FF9B7 /* olento.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = olento.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		838C26BB1C8F3D68001FF9B7 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		838C26BD1C8F3D8C001FF9B7 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
@@ -128,6 +131,8 @@
 		83DA59021CBFAEB000F267A6 /* olento */ = {
 			isa = PBXGroup;
 			children = (
+				83021B491CFE290200D2BBB3 /* archiver.cpp */,
+				83021B4A1CFE290200D2BBB3 /* archiver.h */,
 				839FAF0A1CFB9C85003BBDA6 /* dClock.h */,
 				839FAF0B1CFB9C85003BBDA6 /* dobject.cpp */,
 				839FAF0C1CFB9C85003BBDA6 /* libnn.cpp */,
@@ -230,6 +235,7 @@
 				839FAF091CFB9C5C003BBDA6 /* material.cpp in Sources */,
 				839FAF191CFB9C85003BBDA6 /* server.cpp in Sources */,
 				83DA591A1CBFAEFC00F267A6 /* main.cpp in Sources */,
+				83021B4B1CFE290200D2BBB3 /* archiver.cpp in Sources */,
 				839FAF061CFB9C4B003BBDA6 /* libnnInterface.cpp in Sources */,
 				839FAF161CFB9C85003BBDA6 /* olento.cpp in Sources */,
 				839FAF181CFB9C85003BBDA6 /* random.cpp in Sources */,

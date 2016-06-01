@@ -32,7 +32,7 @@
 
 //Ikkunan koko
 int width = 1000;
-int height = 800;
+int height =800;
 
 GLuint programID;
 
@@ -53,7 +53,7 @@ xyPalette paletti;
 
 dObject obj;
 
-std::atomic<bool> varattu = false;
+std::atomic<bool> varattu;
 
 void setLight() {
 	GLuint LightA_ID = glGetUniformLocation(programID, "LightPosition_A_worldspace");
@@ -72,7 +72,7 @@ void setLight() {
 	glm::vec3 lightPos_B = glm::vec3(15, 1, 1);
 	float lightPower_B = 50.0f;
 
-	float ambientPower = 0.35f;
+	float ambientPower = 0.45f;
 
 	glUniform3f(LightA_ID, lightPos_A.x, lightPos_A.y, lightPos_A.z);
 	glUniform3f(LightB_ID, lightPos_B.x, lightPos_B.y, lightPos_B.z);
@@ -122,8 +122,8 @@ void initialize() {
 	oDirectory dir(dirStr);
 
     mods.load(meshDir, "arkkityypit", modDirs);
-	std::string vertexShaderPath = dir.path + "shaders/StandardShading.vertexshader";
-	std::string fragmentShaderPath = dir.path + "shaders/StandardShading.fragmentshader";
+	std::string vertexShaderPath = dir.path + "shaders/multiLight.vertexshader";
+	std::string fragmentShaderPath = dir.path + "shaders/multiLight.fragmentshader";
 
 	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
 

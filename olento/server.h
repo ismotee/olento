@@ -9,7 +9,14 @@
 
 namespace olentoServer{
 
-	const int MAX_PAKETTEJA = 1000;
+    union CharFloat {
+        float f;
+        char c[0];
+    
+    };
+    
+    
+	const int MAX_PAKETTEJA = 100;
 
 	const unsigned short PORT = 1234;            // The port our server will listen for incoming connecions on
 	const unsigned short BUFFER_SIZE = 1400;             // Size of our message buffer

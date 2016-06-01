@@ -18,7 +18,7 @@
 
 namespace oWindow{
 
-	void init(int window_w = 500, int window_h = 500);
+	void init(int window_w = 1000, int window_h = 1000);
 	void show();
 	bool getCloseEvent();
 	void close();

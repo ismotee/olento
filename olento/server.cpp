@@ -67,8 +67,8 @@ namespace olentoServer{
 		paketitVarattu = true;
 
 		if (!paketit.empty()) {
-			result = paketit[0];
-			paketit.erase(paketit.begin());
+			result = paketit.back();
+			paketit.clear();
 		}
 
 		paketitVarattu = false;
@@ -78,17 +78,21 @@ namespace olentoServer{
 
 
 	vector<float> luoPaketti(char* data, int kokoTavuina) {
-		stringstream ss;
-		vector<float> uusiPaketti;
-		ss.write(data, kokoTavuina);
 
-		while (ss.good()) {
-			float f;
-			ss >> f;
-			uusiPaketti.push_back(f);
-		}
-
-		return uusiPaketti;
+        vector<float> uusiPaketti;
+        CharFloat cf;
+        
+        if(kokoTavuina % 4 == 0) {
+            for(int i = 0; i < kokoTavuina; i += 4) {
+                cf.c[0] = data[i];
+                cf.c[1] = data[i+1];
+                cf.c[2] = data[i+2];
+                cf.c[3] = data[i+3];
+                uusiPaketti.push_back(cf.f);
+            }
+        }
+        
+        return uusiPaketti;
 	}
 
 
@@ -244,6 +248,7 @@ namespace olentoServer{
 							//Jos vektori on täynnä, poista alkupäästä. HUOM tätä pitää optimoida!
 							while (paketit.size() > MAX_PAKETTEJA) {
 								paketit.erase(paketit.begin());
+                                std::cout << "ei mahu\n";
 							}
 
 							paketitVarattu = false;
