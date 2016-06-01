@@ -178,7 +178,7 @@ void NLayer::setInputs(std::vector<float> inputs)
         for(int i = 0; i < neurons.size();i++)
             neurons[i]->setInput(inputs[i]);
     else
-        std::cerr << "wrong input vector size!!!\n";
+        std::cerr << "wrong input vector size: "<< inputs.size() <<"\n";
 }
 
 std::vector<float> NLayer::getOutput()

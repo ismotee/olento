@@ -33,7 +33,7 @@ float vektorienEro(std::vector<float> A, std::vector<float> B) {
 		summa += fabs(A[i] - B[i]);
 	}
 
-	//summa /= (float)A.size();
+	summa /= (float)A.size();
 	return summa;
 }
 

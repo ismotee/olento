@@ -220,7 +220,7 @@ void updateGL() {
 	//obj.changeVerticesTowards(aimVerts, 0.1);
 	while (varattu)
 		std::this_thread::yield();
-	obj.changeVertices(aimVerts);
+	obj.changeVerticesTowards(aimVerts,0.2f);
 
 	setMaterial(mat_n);
 	setColor(color_x, color_y);

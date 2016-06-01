@@ -26,9 +26,9 @@ namespace nnInterface {
 
 	dClock timer;
 
-	int in = 2;
+	int in = 102;
 	int hid = 0;
-	int out = 3;
+	int out = 8;
 
 	void Init()
 	{
@@ -114,7 +114,7 @@ namespace nnInterface {
     
     void TeeTilanne (std::vector<float> input, std::vector<float> output)
     {
-        std::cout << "input: " << input[0] << " " << input[1] << "\n";
+        std::cout << "input.size: " << input.size() << "\n";
         std::cout << "output: " << output[0] << " " << output[1] << " "<< output[2]<< "\n";
         
         tilanteet.push_back(tilanne(input,output));
@@ -126,7 +126,7 @@ namespace nnInterface {
     {
         std::vector<float> erot(tilanteet.size());
         
-        std::this_thread::yield();
+        //std::this_thread::yield();
         
         
         if(nn_input.size() == in) {
