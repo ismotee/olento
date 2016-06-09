@@ -1,4 +1,6 @@
 #include "random.h"
+#include "math.h"
+
 
 float randf(float min, float max) {
 	return ((float)rand() / RAND_MAX) * (max - min) + min;
@@ -41,4 +43,14 @@ float vektorienEro(std::vector<float> A, std::vector<float> B) {
 float floatabs(float arvo) {
 	if (arvo > 0) return arvo;
 	else return (arvo * (-1));
+}
+
+float VectorLength (std::vector<float> vec)
+{
+    float result = 0;
+    for(int i = 0; i < vec.size(); i++)
+    {
+        result += vec[i] * vec[i];
+    }
+    return sqrt(result);
 }

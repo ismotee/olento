@@ -76,7 +76,7 @@ public:
 class InputNeuron : public Neuron
 {
 public:
-    InputNeuron(float learn_rate = 0.0001f);
+    InputNeuron(float learn_rate = 0.0005f);
     
     float input;
     

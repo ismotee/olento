@@ -30,6 +30,8 @@ std::mutex mtx;
 userInput ui;
 
 void print(userInput ui) {
+   
+    /*
     std::cout << "moodi: ";
     if (ui.moodi == KOULUTETAAN) std::cout << "Koulutetaan";
     else if (ui.moodi == MUOKATAAN) std::cout << "Muokataan";
@@ -38,14 +40,14 @@ void print(userInput ui) {
         std::cout << "Katsellaan";
     
     std::cout << "\n";
-    
-    for (int i = 0; i < ui.arvot.size(); i++) {
-        std::cout << ui.arvot[i];
-        if (i < ui.arvot.size() - 1)
-            std::cout << ", ";
-        else
-            std::cout << "\n";
-    }
+    */
+    //for (int i = 0; i < ui.arvot.size(); i++) {
+    //    std::cout << ui.arvot[i];
+    //    if (i < ui.arvot.size() - 1)
+    //        std::cout << ", ";
+    //    else
+    //        std::cout << "\n";
+    //}
     
     
     
@@ -194,16 +196,13 @@ int main(int argc, char* argv[]) {
         paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
         if(!paketti.empty())
             paketti.resize(102);
-        //paketti = testInputs;
-        /* paketti.resize(2);
-         paketti[0] = ui.mouse_x;
-         paketti[1] = ui.mouse_y;
-         */
+
         nnInterface::mtx.lock();
         
         if (ui.moodi == KATSELLAAN) {
             
             if(!paketti.empty()) {
+                dClock clk;
                 std::vector<float> outputs;
                 //annetaan inputit nnetille
                 nnInterface::SetInput(paketti);
@@ -215,15 +214,17 @@ int main(int argc, char* argv[]) {
                 }
                 //std::cout << "tuli output\n";
                 
-                std::cout << "outputs: " << outputs[0] << " " << outputs[1] << " " << outputs[2] << "\n";
+                std::cout << "outputs: " << outputs[0] << " " << outputs[1] << " " << outputs[2] << " " << outputs[3] << " " << outputs[4] << "\n";
+                
                 
                 //skaalaa
                 for (int i = 0; i < outputs.size(); i++) {
-                    muodonArvot[i] += (outputs[i] * 2 - 1) * 0.01f;
+                    muodonArvot[i] += (outputs[i] * 2 - 1) * 0.5f;
                     bound(muodonArvot[i],0.0001f,0.9999f);
                 }
                 
                 nnInterface::LaskeDesiredOut(muodonArvot);
+                std::cout << "laskeDesired: " << clk.get() << "\n";
             }
         }
         
@@ -243,7 +244,8 @@ int main(int argc, char* argv[]) {
         }
         
         nnInterface::mtx.unlock();
-        asetaMuoto(muodonArvot);
+        std::thread(asetaMuoto,muodonArvot).detach();
+        //asetaMuoto(muodonArvot);
         
         olentoServer::asetaVastausviesti(muodonArvot);
         updateGL();
@@ -251,7 +253,7 @@ int main(int argc, char* argv[]) {
         print(ui);
         
         //ajasta luuppi
-        std::cout << "Kesti " << t.get() << " s\n";
+       // std::cout << "Kesti " << t.get() << " s\n";
         t.delay(30);
         
     } while (ui.run);

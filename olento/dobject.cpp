@@ -214,7 +214,7 @@ void dObject::sortElementsByDistance() {
 		elements[e_i + 2] = faces[sortedFaces[f_i].value].vertsIds[2];
 	}
 
-    std::cerr << "ok (" << t.get() << " s)\n";
+    std::cerr << "sortByDistance: ok (" << t.get() << " s)\n";
 }
 
 

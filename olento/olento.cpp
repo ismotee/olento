@@ -220,7 +220,7 @@ void updateGL() {
 	//obj.changeVerticesTowards(aimVerts, 0.1);
 	while (varattu)
 		std::this_thread::yield();
-	obj.changeVerticesTowards(aimVerts,0.2f);
+	obj.changeVertices(aimVerts);
 
 	setMaterial(mat_n);
 	setColor(color_x, color_y);
@@ -228,7 +228,7 @@ void updateGL() {
 	obj.calculateAllNormals();
 
 	//Järjestä elementit läpinäkyvyyttä varten.
-	obj.sortElementsByDistance(oCamera::position);
+	//obj.sortElementsByDistance(oCamera::position);
 
 	//päivitä ja näytä
 	oBuffers::updateBuffers(obj);

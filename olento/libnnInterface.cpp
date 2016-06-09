@@ -114,20 +114,12 @@ namespace nnInterface {
     
     void TeeTilanne (std::vector<float> input, std::vector<float> output)
     {
-        std::cout << "input.size: " << input.size() << "\n";
-        std::cout << "output: " << output[0] << " " << output[1] << " "<< output[2]<< "\n";
-        
         tilanteet.push_back(tilanne(input,output));
-    
-    
     }
 
     void LaskeDesiredOut (std::vector<float> nykyinenPaikka)
     {
         std::vector<float> erot(tilanteet.size());
-        
-        //std::this_thread::yield();
-        
         
         if(nn_input.size() == in) {
             for(int i = 0; i < tilanteet.size(); i++) {
@@ -145,17 +137,23 @@ namespace nnInterface {
             std::cout << "\n";
         
         std::cout << "pieninEro: " << pieninEro << "\n";
+        std::cout << "Lahin tilanne: " << lahinTilanneId << "\n";
         std::cout << "desired: " ;
             
-
+        
             
         for(int i = 0; i < nykyinenPaikka.size(); i++) {
-            nn_desired_out[i] =  (tilanteet[lahinTilanneId].desiredOutData[i] - nykyinenPaikka[i]) * 10;
-            bound(nn_desired_out[i],-1,1);
-            //nn_desired_out[i] = tilanteet[lahinTilanneId].desiredOutData[i];
-            std::cout << nn_desired_out[i] << " ";
-        }
-        
+            nn_desired_out[i] =  (tilanteet[lahinTilanneId].desiredOutData[i] - nykyinenPaikka[i]);
+         }
+
+            float desiredPituus = VectorLength(nn_desired_out);
+            
+            for(int i = 0; i < nn_desired_out.size(); i++) {
+                nn_desired_out[i] *= desiredPituus;
+                bound(nn_desired_out[i],-1,1);
+                nn_desired_out[i] = (nn_desired_out[i] + 1) * 0.5f;
+                std::cout << nn_desired_out[i] << " ";
+            }
         std::cout << "\n";
         
         desiredWritten = true;
