@@ -219,7 +219,7 @@ int main(int argc, char* argv[]) {
                 
                 //skaalaa
                 for (int i = 0; i < outputs.size(); i++) {
-                    muodonArvot[i] += (outputs[i] * 2 - 1) * 0.5f;
+                    muodonArvot[i] += (outputs[i] * 2 - 1) * 0.1f;
                     bound(muodonArvot[i],0.0001f,0.9999f);
                 }
                 

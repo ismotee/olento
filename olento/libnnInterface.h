@@ -8,6 +8,7 @@
 #include <thread>
 #include <mutex>
 #include <string>
+#include <sstream>
 
 /*
  
@@ -85,18 +86,65 @@ namespace nnInterface {
         tilanne(std::vector<float> input, std::vector<float> desired) : inputData(input), desiredOutData(desired) {}
 
         std::string toString() {
-            std::string vastaus = "inputs: ";
+            std::string vastaus = "start\nI\n";
             for (int i = 0; i < inputData.size(); i++) {
                 vastaus += " " + std::to_string(inputData[i]);
             }
-            vastaus += "\n";
+            vastaus += "\nD\n";
             for (int i = 0; i < desiredOutData.size(); i++) {
                 vastaus += " " + std::to_string(desiredOutData[i]);
             }
             vastaus += "\n";
             return vastaus;
         }
+        
+        void fromString(std::string str)
+        {
+            
+            std::stringstream ss;
+            
+            inputData.clear();
+            desiredOutData.clear();
+            
+            ss.str(str);
+            std::string the_line;
+            
+            
+            while(ss.good() ){
+                std::getline(ss, the_line);
+                
+                if(the_line.compare("I") == 0) {
+                    //seuraavassa rivissä on arvot. Kopioidaan ne omaan streamiin
+                    std::getline(ss, the_line);
+                    std::stringstream values;
+                    values.str(the_line);
+                    
+                    //Kopioidaan arvot streamista vektoriin
+                    while(values.good() ) {
+                        float value;
+                        values >> value;
+                        inputData.push_back(value);
+                    }
+                        
+                }
+                
+                else if(the_line.compare("D") == 0) {
+                    std::getline(ss, the_line);
+                    std::stringstream values;
+                    values.str(the_line);
+                    while(values.good() ) {
+                        float value;
+                        values >> value;
+                        desiredOutData.push_back(value);
+                    }
+                }
+                    
+            }
+        }
+        
     };
+
+    std::vector<std::string> parsiTilanteet(std::string inputString);
     
     void Init();
     
