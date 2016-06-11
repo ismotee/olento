@@ -3,7 +3,7 @@
 #ifndef DFACE_H
 #define DFACE_H
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 class dFace 
 {

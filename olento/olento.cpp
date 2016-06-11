@@ -36,7 +36,7 @@ int height =800;
 
 GLuint programID;
 
-std::string dirStr = "olento/resources/";
+std::string dirStr = "resources/";
 std::string objectDir = dirStr + "meshes/olento_testi.obj";
 std::string meshDir = dirStr + "meshes/";
 std::vector<std::string> modDirs = {"ylos", "sivulle", "ulos", "kierteinen"};

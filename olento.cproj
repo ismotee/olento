@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D1745C94-583A-4620-B996-519C8D779A3F}</ProjectGuid>
+    <Compiler>
+      <Compiler ctype="GppCompiler" />
+    </Compiler>
+    <Language>CPP</Language>
+    <Target>Bin</Target>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug</OutputPath>
+    <Externalconsole>true</Externalconsole>
+    <OutputName>olento</OutputName>
+    <CompileTarget>Bin</CompileTarget>
+    <DefineSymbols>DEBUG MONODEVELOP</DefineSymbols>
+    <SourceDirectory>.</SourceDirectory>
+    <ExtraCompilerArguments>-std=c++11</ExtraCompilerArguments>
+    <Includes>
+      <Includes>
+        <Include>${ProjectDir}/olento/include</Include>
+      </Includes>
+    </Includes>
+    <ExtraLinkerArguments>-lSDL2 -lSDL2_image -lSDL2_net -lGLEW -lGL -lpthread</ExtraLinkerArguments>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" command="cp -R olento/resources bin/Debug" workingdir="${ProjectDir}" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release</OutputPath>
+    <Externalconsole>true</Externalconsole>
+    <OutputName>olento</OutputName>
+    <CompileTarget>Bin</CompileTarget>
+    <OptimizationLevel>3</OptimizationLevel>
+    <DefineSymbols>MONODEVELOP</DefineSymbols>
+    <SourceDirectory>.</SourceDirectory>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="olento\archiver.cpp" />
+    <Compile Include="olento\dobject.cpp" />
+    <Compile Include="olento\libnn.cpp" />
+    <Compile Include="olento\libnnInterface.cpp" />
+    <Compile Include="olento\main.cpp" />
+    <Compile Include="olento\material.cpp" />
+    <Compile Include="olento\objloader.cpp" />
+    <Compile Include="olento\oCamera.cpp" />
+    <Compile Include="olento\olento.cpp" />
+    <Compile Include="olento\oLoader.cpp" />
+    <Compile Include="olento\oWindow.cpp" />
+    <Compile Include="olento\random.cpp" />
+    <Compile Include="olento\server.cpp" />
+    <Compile Include="olento\shader.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="olento\archiver.h" />
+    <None Include="olento\dClock.h" />
+    <None Include="olento\dFace.h" />
+    <None Include="olento\dobject.h" />
+    <None Include="olento\libnn.h" />
+    <None Include="olento\libnnInterface.h" />
+    <None Include="olento\material.h" />
+    <None Include="olento\objloader.h" />
+    <None Include="olento\objloader.hpp" />
+    <None Include="olento\oBuffers.h" />
+    <None Include="olento\oCamera.h" />
+    <None Include="olento\oDirectory.h" />
+    <None Include="olento\olento.h" />
+    <None Include="olento\oLoader.h" />
+    <None Include="olento\oMesh.h" />
+    <None Include="olento\oMeshBundle.h" />
+    <None Include="olento\oModificators.h" />
+    <None Include="olento\oWindow.h" />
+    <None Include="olento\random.h" />
+    <None Include="olento\server.h" />
+    <None Include="olento\shader.hpp" />
+  </ItemGroup>
+</Project>

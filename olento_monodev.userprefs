@@ -1,0 +1,17 @@
+﻿<Properties StartupItem="olento.cproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../../../../../../usr/include/c++/5/bits/stl_vector.h">
+    <Files>
+      <File FileName="olento/archiver.cpp" Line="1" Column="1" />
+      <File FileName="Makefile" Line="3" Column="61" />
+      <File FileName="olento/dFace.h" Line="1" Column="1" />
+      <File FileName="olento/shader.cpp" Line="109" Column="1" />
+      <File FileName="olento/main.cpp" Line="100" Column="39" />
+      <File FileName="../../../../../../usr/include/c++/5/bits/stl_vector.h" Line="682" Column="75" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
