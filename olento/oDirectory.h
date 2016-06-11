@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <iostream>
+#include <algorithm>
 
 class oDirectory {
 public:
@@ -54,6 +55,7 @@ oDirectory::oDirectory (std::string _path): path(_path)
         }
             
         closedir (dir);
+        std::sort(files.begin(),files.end());
     } else {
         /* could not open directory */
         //std::cout << "could not open directory " << path << "\n";

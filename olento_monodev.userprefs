@@ -1,16 +1,19 @@
 ﻿<Properties StartupItem="olento.cproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="olento/oWindow.cpp">
+  <MonoDevelop.Ide.Workbench ActiveDocument="olento/oDirectory.h">
     <Files>
       <File FileName="olento/archiver.cpp" Line="1" Column="1" />
-      <File FileName="Makefile" Line="3" Column="61" />
+      <File FileName="Makefile" Line="1" Column="1" />
       <File FileName="olento/dFace.h" Line="1" Column="1" />
-      <File FileName="olento/shader.cpp" Line="109" Column="1" />
+      <File FileName="olento/shader.cpp" Line="1" Column="1" />
       <File FileName="olento/main.cpp" Line="1" Column="1" />
-      <File FileName="../../../../../../usr/include/c++/5/bits/stl_vector.h" Line="647" Column="29" />
-      <File FileName="olento/olento.cpp" Line="44" Column="1" />
+      <File FileName="../../../../../usr/include/c++/5/bits/stl_vector.h" Line="1" Column="1" />
+      <File FileName="olento/olento.cpp" Line="1" Column="1" />
       <File FileName="olento/oWindow.h" Line="1" Column="1" />
       <File FileName="olento/oWindow.cpp" Line="142" Column="1" />
+      <File FileName="olento/oLoader.cpp" Line="1" Column="1" />
+      <File FileName="olento/oModificators.h" Line="67" Column="5" />
+      <File FileName="olento/oDirectory.h" Line="20" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

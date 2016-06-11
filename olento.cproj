@@ -30,6 +30,7 @@
         <Command type="AfterBuild" command="cp -R olento/resources bin/Debug" workingdir="${ProjectDir}" />
       </CustomCommands>
     </CustomCommands>
+    <OptimizationLevel>3</OptimizationLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release</OutputPath>
