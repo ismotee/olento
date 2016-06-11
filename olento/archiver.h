@@ -16,6 +16,7 @@ namespace Archiver {
     void load(char* start, size_t size, std::string filename);
     void save(char* start, size_t size, std::string filename);
     void saveString(std::string data, std::string filename);
+    std::string loadString(std::string filename);
 }
 
 

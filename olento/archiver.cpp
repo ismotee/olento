@@ -9,6 +9,7 @@
 #include "archiver.h"
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 namespace Archiver {
 
@@ -67,5 +68,19 @@ namespace Archiver {
         
     }
 
+    std::string loadString(std::string filename) {
+        std::string result;
+        
+        std::ifstream file(filename);
+        std::stringstream ss;
+        
+        if(file.is_open()) {
+            //kopioidaan koko tiedosto stringstreamiin
+            ss << file.rdbuf();
+            file.close();
+        }
+        return ss.str();
+    }
+    
     
 }
