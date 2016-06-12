@@ -11,6 +11,8 @@
 #include <SDL2/SDL.h>
 #include <mutex>
 
+
+
 enum moodiT {
     KOULUTETAAN, ASETA_TOIVE, MUOKATAAN, KATSELLAAN
 };
@@ -28,6 +30,8 @@ struct userInput{
 
 std::mutex mtx;
 userInput ui;
+std::vector<float> muodonArvot;
+
 
 void print(userInput ui) {
    
@@ -91,7 +95,10 @@ userInput handleEvent(SDL_Event e) {
                 break;
             case SDLK_TAB:
                 if (ui.moodi == KATSELLAAN) ui.moodi = MUOKATAAN;
-                else ui.moodi = KATSELLAAN;
+                else {
+                	ui.moodi = KATSELLAAN;
+            	    ui.arvot = muodonArvot;
+                }
                 break;
                 
                 //Reset
@@ -181,8 +188,7 @@ int main(int argc, char* argv[]) {
     std::vector<float> testInputs(4, 0.5);
     dClock t;
     
-    std::vector<float> muodonArvot;
-    
+
     
     do {
         //ota aikaa
@@ -222,7 +228,7 @@ int main(int argc, char* argv[]) {
                     muodonArvot[i] += (outputs[i] * 2 - 1) * 0.1f;
                     bound(muodonArvot[i],0.0001f,0.9999f);
                 }
-                
+                ui.arvot = muodonArvot;
                 nnInterface::LaskeDesiredOut(muodonArvot);
                 std::cout << "laskeDesired: " << clk.get() << "\n";
             }

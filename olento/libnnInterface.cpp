@@ -5,6 +5,7 @@
 #include "archiver.h"
 
 namespace nnInterface {
+    const char* TILANTEET_PATH = "resources/tilanteet.net";
     
     NNet nn_net;
     
@@ -35,20 +36,21 @@ namespace nnInterface {
         //std::vector<tilanne>* tilanneLoad = new std::vector<tilanne>();
         //Archiver::load((char*)tilanneLoad, sizeof(tilanne), "/Users/ismotorvinen/Documents/3d/olento/tilanteet.net");
         
-        const char* TILANTEET_PATH = "/Users/ismotorvinen/Documents/3d/olento/tilanteet.net";
-        
+
         std::string loaded = Archiver::loadString(TILANTEET_PATH);
         std::cout << "tilanteet ladattu tiedostosta. Rimpsun mitta: " << loaded.length() << "\n";
        
         if(!loaded.empty()) {
             std::vector<std::string> ladatutTilanteet = parsiTilanteet(loaded);
-            std::cout << "tilanteita: " << ladatutTilanteet.size() << "\n";
-            
-            tilanteet.resize(ladatutTilanteet.size());
-            
+            tilanteet.clear();
+
             for(int i=0; i<ladatutTilanteet.size(); i++) {
-                tilanteet[i].fromString(ladatutTilanteet[i]);
+                tilanteet.push_back(tilanne());
+                tilanteet.back().fromString(ladatutTilanteet[i]);
             }
+
+            std::cout << "tilanteita: " << tilanteet.size() << "\n";
+
         }
         
         // count num_inputs && num_hidden_neurons dynamically
@@ -133,7 +135,8 @@ namespace nnInterface {
     void TeeTilanne (std::vector<float> input, std::vector<float> output)
     {
         tilanteet.push_back(tilanne(input,output));
-        Archiver::saveString(tilanteet.back().toString(), "/Users/ismotorvinen/Documents/3d/olento/tilanteet.net");
+        Archiver::saveString(tilanteet.back().toString(), TILANTEET_PATH);
+        std::cout << "tilanne tehty!\n";
     }
     
     void LaskeDesiredOut (std::vector<float> nykyinenPaikka)
@@ -143,6 +146,8 @@ namespace nnInterface {
         if(nn_input.size() == in) {
             for(int i = 0; i < tilanteet.size(); i++) {
                 erot[i] = vektorienEro(nn_input, tilanteet[i].inputData);
+                if(erot[i] == -1)
+                	std::cout << "nnInterface, LaskeDesiredOut: Väärä vektorikoko: "<< nn_input.size() << " " << tilanteet[i].inputData.size() << "\n";
             }
             
             float pieninEro = 10000000;
@@ -169,7 +174,7 @@ namespace nnInterface {
             
             for(int i = 0; i < nn_desired_out.size(); i++) {
                 nn_desired_out[i] *= desiredPituus;
-                bound(nn_desired_out[i],-1,1);
+                bound(nn_desired_out[i],-0.9,0.9);
                 nn_desired_out[i] = (nn_desired_out[i] + 1) * 0.5f;
                 std::cout << nn_desired_out[i] << " ";
             }
@@ -200,11 +205,12 @@ namespace nnInterface {
             std::string line;
             std::string tilanneStr;
             std::getline(inss, line);
-            std::cout << "eka while\n";
+
+            tilanneStr = "\n";
+
             while(line.compare("start") !=0 && inss.good()) {
-                tilanneStr += line;
+                tilanneStr += line + "\n";
                 std::getline(inss, line);
-                std::cout << "toka while\n";
             }
             
             result.push_back(tilanneStr);

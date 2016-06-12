@@ -9,6 +9,7 @@
 #include <mutex>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 /*
  
@@ -110,36 +111,41 @@ namespace nnInterface {
             std::string the_line;
             
             
-            while(ss.good() ){
+            while(!ss.eof() ){
                 std::getline(ss, the_line);
-                
+
                 if(the_line.compare("I") == 0) {
                     //seuraavassa rivissä on arvot. Kopioidaan ne omaan streamiin
                     std::getline(ss, the_line);
                     std::stringstream values;
                     values.str(the_line);
-                    
+
+                    float value;
                     //Kopioidaan arvot streamista vektoriin
-                    while(values.good() ) {
-                        float value;
-                        values >> value;
+                    while(values >> value) {
                         inputData.push_back(value);
+                        std::cout << inputData.back() << " ";
                     }
-                        
+               
                 }
-                
-                else if(the_line.compare("D") == 0) {
+
+                std::cout << "\n";
+                  
+                if(the_line.compare("D") == 0) {
                     std::getline(ss, the_line);
                     std::stringstream values;
-                    values.str(the_line);
-                    while(values.good() ) {
-                        float value;
-                        values >> value;
+                    values.str(the_line);         
+
+                    float value;
+                    while(values >> value) {
                         desiredOutData.push_back(value);
+                        std::cout << desiredOutData.back() << " ";
                     }
                 }
                     
             }
+            std::cout << "input vektori: " << inputData.size() << "\n";
+            std::cout << "desired vektori: " << desiredOutData.size() << "\n";
         }
         
     };
