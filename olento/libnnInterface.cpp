@@ -7,7 +7,7 @@
 namespace nnInterface {
     const char* TILANTEET_PATH = "resources/tilanteet.net";
     
-    NNet nn_net;
+    std::vector<NNet> nn_nets;
     
     std::vector<tilanne> tilanteet;
     
@@ -26,16 +26,18 @@ namespace nnInterface {
     std::mutex mtx;
     
     dClock timer;
-    
+
+    int nets = 8;
     int in = 102;
     int hid = 0;
-    int out = 8;
+    int out = 1;
     
     void Init()
     {
         //std::vector<tilanne>* tilanneLoad = new std::vector<tilanne>();
         //Archiver::load((char*)tilanneLoad, sizeof(tilanne), "/Users/ismotorvinen/Documents/3d/olento/tilanteet.net");
-        
+
+        nn_nets.resize(nets,NNet());
 
         std::string loaded = Archiver::loadString(TILANTEET_PATH);
         std::cout << "tilanteet ladattu tiedostosta. Rimpsun mitta: " << loaded.length() << "\n";
@@ -54,26 +56,31 @@ namespace nnInterface {
         }
         
         // count num_inputs && num_hidden_neurons dynamically
-        nn_desired_out = std::vector<float>(out, 0.5f);
+        nn_desired_out = std::vector<float>(nets*out, 0.5f);
         nn_input = std::vector<float>(in, 0.5f);
-        nn_output = std::vector<float>(out, 0.5f);
-        result = std::vector<float>(out, 0.5f);
-        
-        for (int i = in; i > 0; i--)
-            hid += i;
-        
-        nn_net.init(in, 1, hid, out);
+        nn_output = std::vector<float>(nets*out, 0.5f);
+        result = std::vector<float>(nets*out, 0.5f);
+
+
+                
+    for (int i = in; i > 0; i--)
+        hid += i;
+
+    for(int k = 0; k < nn_nets.size(); k++) {    
+
+        nn_nets[k].init(in, 1, hid, out);
         
         //tee linkitykset
-        int reduction = 0;
-        for (int i = 0; i < in; i++) {
-            reduction += i;
-            for (int j = 0; j < in; j++) {
-                nn_net.link(0, i, 1, i*in + j - reduction);
-                nn_net.link(0, j, 1, i*in + j - reduction);
-            }
-        }
-        
+        	int reduction = 0;
+        	for (int i = 0; i < in; i++) {
+
+            	reduction += i;
+            	for (int j = 0; j < in; j++) {
+					nn_nets[k].link(0, i, 1, i*in + j - reduction);	
+	                nn_nets[k].link(0, j, 1, i*in + j - reduction);
+          		}
+        	}
+    	}
     }
     
     void StartRoutine() {
@@ -85,7 +92,11 @@ namespace nnInterface {
             // back propagation
             mtx.lock();
             if (desiredWritten == true) {
-                nn_net.back(nn_desired_out);
+            	for(int i = 0; i < nn_nets.size();i++) {
+            		std::vector<float> dOut;
+            		dOut.push_back(nn_desired_out[i]);
+                	nn_nets[i].back(dOut);
+                }
                 //voisi kirjoittaa tiedostoon tässä välissä
                 desiredWritten = false;
             }
@@ -96,9 +107,10 @@ namespace nnInterface {
             mtx.lock();
             // feed forward
             if (inWritten == true) {
-                nn_output = nn_net.forward(nn_input);
-                if (nn_output.size() > out) {
-                    nn_output.resize(out);
+            	for(int i = 0; i < nn_nets.size(); i++)
+            		nn_output[i] = nn_nets[i].forward(nn_input)[0];
+                if (nn_output.size() > out*nets) {
+                    nn_output.resize(out*nets);
                     std::cerr << "liian iso output\n";
                 }
                 outRead = false;

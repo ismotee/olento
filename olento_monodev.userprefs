@@ -1,13 +1,13 @@
 ﻿<Properties StartupItem="olento.cproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="olento/oMuisto.cpp">
+  <MonoDevelop.Ide.Workbench ActiveDocument="olento/libnnInterface.cpp">
     <Files>
       <File FileName="olento/archiver.cpp" Line="1" Column="1" />
-      <File FileName="olento/libnnInterface.cpp" Line="1" Column="1" />
+      <File FileName="olento/libnnInterface.cpp" Line="32" Column="17" />
       <File FileName="olento/libnnInterface.h" Line="1" Column="1" />
       <File FileName="olento/main.cpp" Line="1" Column="1" />
-      <File FileName="olento/oMuisto.cpp" Line="11" Column="25" />
-      <File FileName="olento/oMuisto.h" Line="17" Column="32" />
+      <File FileName="olento/libnn.h" Line="1" Column="1" />
+      <File FileName="olento/libnn.cpp" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
