@@ -7,7 +7,6 @@
 #include <algorithm>
 #include "oLoader.h"
 #include "dFace.h"
-#include "dClock.h"
 
 class dFacesConnected;
 class dObject;

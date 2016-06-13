@@ -8,8 +8,9 @@ struct material{
 	float alpha; //0...1
 	float specularity; //0...1
 	float hardness; // 1...7
+	float ambient; //0...1
 	material(){}
-	material(float, float, float);
+	material(float, float, float, float);
 
 };
 

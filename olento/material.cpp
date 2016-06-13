@@ -8,13 +8,18 @@ material materials[5];
 //kovakiiltoinen opaque
 
 void createMaterials() {
-	materials[0] = material(0.1,1,10);
-	materials[1] = material(0.2, 0.05, 1);
-	materials[2] = material(1, 0.02, 1);
-	materials[3] = material(1, 1, 10);
+	materials[0] = material(0.1, 1, 10, 0.4);
+	materials[1] = material(0.2, 0.05, 1, 0.5);
+	materials[2] = material(1, 0.1, 1, 0.4);
+	materials[3] = material(1, 1, 15, 0.2);
 }
 
-material::material(float alpha_, float specularity_, float hardness_) : alpha(alpha_), specularity(specularity_), hardness(hardness_) {}
+material::material(float alpha_, float specularity_, float hardness_, float ambient_) : 
+					alpha(alpha_), 
+					specularity(specularity_), 
+					hardness(hardness_),
+					ambient(ambient_) 
+{}
 
 
 material mixMaterials(material A, material B, float amount) {
@@ -23,6 +28,7 @@ material mixMaterials(material A, material B, float amount) {
 	result.alpha = glm::mix(A.alpha, B.alpha, amount);
 	result.specularity = glm::mix(A.specularity, B.specularity, amount);
 	result.hardness = glm::mix(A.hardness, B.hardness, amount);
+	result.ambient = glm::mix(A.ambient, B.ambient, amount);
 
 	return result;
 }
@@ -53,6 +59,7 @@ material createRandomMaterial() {
 	result.alpha = alphas[rand() % 4];
 	result.specularity = randf(0, 1);
 	result.hardness = randf(1, 7);
+	result.ambient = randf(0.1, 0.6);
 
 	return result;
 }

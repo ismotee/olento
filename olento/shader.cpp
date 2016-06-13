@@ -9,10 +9,16 @@ using namespace std;
 #include <stdlib.h>
 #include <string.h>
 
-#ifndef __APPLE__
-#include <glew.h>
-#else
+//OpenGL-kirjastot
+//Käytetään OpenGL3 Applelle ja GLEWiä muille alustoille
+#ifdef __APPLE__
 #include <OpenGL/gl3.h>
+#endif
+#ifdef __linux__
+#include <GL/glew.h>
+#endif
+#ifdef _WIN32
+#include <glew.h>
 #endif
 
 #include "shader.hpp"
@@ -32,7 +38,7 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 			VertexShaderCode += "\n" + Line;
 		VertexShaderStream.close();
 	}else{
-		printf("Impossible to open %s. Are you in the right directory ? Don't forget to read the FAQ !\n", vertex_file_path);
+		printf("Tiedostoa %s ei voitu avata!\n", vertex_file_path);
 		getchar();
 		return 0;
 	}

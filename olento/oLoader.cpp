@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string.h>
 
+#include <stdio.h>
+
 bool oLoader::loadOBJ(
 	std::string path,
 	std::vector<glm::vec3>& vertices)
@@ -11,7 +13,7 @@ bool oLoader::loadOBJ(
 
 	FILE * file = fopen(path.c_str(), "r");
 	if (file == NULL){
-		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
+		printf("oLoader: Tiedostoa %s ei voitu avata!\n", path.c_str());
 		getchar();
 		return false;
 	}
@@ -58,8 +60,7 @@ bool oLoader::loadOBJ(
 
 	FILE * file = fopen(path.c_str(), "r");
 	if (file == NULL){
-		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
-		getchar();
+		printf("oLoader: Tiedostoa %s ei voitu avata!\n", path.c_str());
 		return false;
 	}
 

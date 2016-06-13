@@ -1,4 +1,5 @@
 #include "dobject.h"
+#include "dClock.h"
 #include <iostream>
 
 using namespace std;
@@ -39,7 +40,7 @@ oRawDataT::oRawDataT() : length(0), data(NULL) {}
 
 bool dObject::loadFromFile(std::string path) {
     if (!oLoader::loadOBJ(path, vertices, elements, faces)) {
-        //cerr << "Couldn't read file' " << path.c_str() << "!\n";
+        cerr << "dObject: Couldn't read file " << path.c_str() << "!\n";
         return false;
     }
 
@@ -53,7 +54,7 @@ bool dObject::loadFromFile(std::string path) {
 
     makeFacesConnected();
     calculateAllNormals();
-
+    cerr << "Ladattiin objekti tiedostosta " << path.c_str() << "\n";
     return true;
 }
 
@@ -193,8 +194,6 @@ bool compare(sortT l, sortT r) {
 
 void dObject::sortElementsByDistance() {
 
-	dClock t;
-
 	//Järjestä facet väliaikaiseen vektoriin siten että lähin on ensin
 	std::vector<sortT> sortedFaces;
 	sortedFaces.resize(faces.size());
@@ -213,8 +212,6 @@ void dObject::sortElementsByDistance() {
 		elements[e_i + 1] = faces[sortedFaces[f_i].value].vertsIds[1];
 		elements[e_i + 2] = faces[sortedFaces[f_i].value].vertsIds[2];
 	}
-
-    std::cerr << "sortByDistance: ok (" << t.get() << " s)\n";
 }
 
 

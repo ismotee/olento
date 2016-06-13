@@ -1,0 +1,10 @@
+#version 330 core
+
+layout(location=2) in vec3 worldpoint;
+out vec2 imgpoint;
+
+void main() {
+	gl_Position.xyz = worldpoint;
+	gl_Position.w = 1.0;
+	imgpoint = worldpoint.xy;
+}

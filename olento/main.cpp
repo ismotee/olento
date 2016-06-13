@@ -1,5 +1,5 @@
 //main.cpp
-#include "olento.h"
+#include "olentogl.h"
 #include "random.h"
 #include "dClock.h"
 #include "server.h"
@@ -83,7 +83,11 @@ userInput handleEvent(SDL_Event e) {
         //std::cerr << SDL_GetKeyName(e.key.keysym.sym) << " pressed\n";
         
         switch (e.key.keysym.sym) {
-                
+
+        	case SDLK_F12:
+        		ui.run = false;
+        		break;
+
                 //Moodin vaihto
             case SDLK_RETURN:
                 ui.moodi = ASETA_TOIVE;
@@ -181,7 +185,7 @@ int main(int argc, char* argv[]) {
     
     std::thread net(nnInterface::StartRoutine);
     
-    initialize();
+    olentogl::initialize();
     
     SDL_Event e;
     std::vector<float> paketti;
@@ -250,11 +254,12 @@ int main(int argc, char* argv[]) {
         }
         
         nnInterface::mtx.unlock();
-        std::thread(asetaMuoto,muodonArvot).detach();
-        //asetaMuoto(muodonArvot);
-        
+        //std::thread(asetaMuoto,muodonArvot).detach();
+        olentogl::asetaMuoto(muodonArvot);
+        olentogl::show();
+
         olentoServer::asetaVastausviesti(muodonArvot);
-        updateGL();
+        //updateGL();
         
         print(ui);
         
