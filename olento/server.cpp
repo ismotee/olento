@@ -225,7 +225,7 @@ namespace olentoServer{
 
 						else if (strcmp(buffer, "get;\n") == 0) {
 							//lähetä vastaus
-							//std::cerr << "Send response: " << sendBuffer << endl;
+							std::cerr << "Send response: " << response << endl;
 							SDLNet_TCP_Send(clientSocket[clientNumber], (void *)response.c_str(), response.length());
 
 						}

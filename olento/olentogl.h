@@ -29,6 +29,7 @@ namespace olentogl {
 		GLuint elementBufferID;
 		material mat;
 		glm::vec3 color;
+		glm::vec3 position;
 		void show();
 		bool create(std::string objfile = DEFAULT_OBJ_PATH);
 		void updateBuffers();
@@ -42,8 +43,9 @@ namespace olentogl {
 		GLuint elementBufferID;
 		GLuint textureID;
 
-		bool create();
+		bool create(std::string path);
 		void show();
+		void asetaKuva(std::string path);
 
 	};
 
@@ -62,7 +64,7 @@ namespace olentogl {
 		void tulosta();
 };
 
-	bool initialize(int w = 1920, int h = 1080);
+	bool initialize(int w = 1000, int h = 800, bool fullscreen = false);
 
 	void show();
 	void handleEvents();
@@ -74,6 +76,8 @@ namespace olentogl {
 	void setColor(glm::vec3 color);
 	void setView();
 	void asetaMuoto(std::vector<float> arvot);
+	void setPosition(glm::vec3 pos);
+	void vaihdaKuva(); 
 };
 
 #endif

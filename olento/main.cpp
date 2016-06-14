@@ -32,7 +32,6 @@ std::mutex mtx;
 userInput ui;
 std::vector<float> muodonArvot;
 
-
 void print(userInput ui) {
    
     /*
@@ -98,10 +97,14 @@ userInput handleEvent(SDL_Event e) {
                 else if (ui.moodi == KOULUTETAAN) ui.moodi = MUOKATAAN;
                 break;
             case SDLK_TAB:
-                if (ui.moodi == KATSELLAAN) ui.moodi = MUOKATAAN;
+                if (ui.moodi == KATSELLAAN) {
+                	ui.moodi = MUOKATAAN;
+                	std::cerr << "muokataan\n";
+                }
                 else {
                 	ui.moodi = KATSELLAAN;
             	    ui.arvot = muodonArvot;
+            	    std::cerr << "katsellaan\n";
                 }
                 break;
                 
@@ -185,29 +188,42 @@ int main(int argc, char* argv[]) {
     
     std::thread net(nnInterface::StartRoutine);
     
-    olentogl::initialize();
+    olentogl::initialize(1920, 1080, false);
     
     SDL_Event e;
     std::vector<float> paketti;
     std::vector<float> testInputs(4, 0.5);
     dClock t;
-    
+    dClock paketti_t;
 
-    
+    dClock runTime;
+
     do {
         //ota aikaa
         t.reset();
-        
+
+        if(runTime.get() > 10) {
+        	olentogl::vaihdaKuva();
+        	runTime.reset();
+        }
+
         //hae käyttäjän syöte
         while (SDL_PollEvent(&e))
             handleEvent(e);
         
         //hae paketti
         paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
-        if(!paketti.empty())
+        if(!paketti.empty()) {
+        	std::cout << "Tuli paketti! (" << paketti.size() << ") Väli: " << paketti_t.get() << "s\n";
+        	paketti_t.reset();
             paketti.resize(102);
+        }
 
-        nnInterface::mtx.lock();
+        //paketti[0] : lavan id (1/2)
+        //paketti[1] : naamojen määrä (float)
+
+
+        //nnInterface::mtx.lock();
         
         if (ui.moodi == KATSELLAAN) {
             
@@ -220,7 +236,7 @@ int main(int argc, char* argv[]) {
                 //haetaan vaste nnetiltä
                 while (outputs.empty()) {
                     outputs = nnInterface::GetOutput();
-                    //std::cout << "outputs oli tyhjä\n";
+                    std::cout << "outputs oli tyhjä\n";
                 }
                 //std::cout << "tuli output\n";
                 
@@ -248,12 +264,11 @@ int main(int argc, char* argv[]) {
         }
         
         if (ui.moodi == MUOKATAAN) {
-            muodonArvot = ui.arvot;
-            
-            
+            muodonArvot = ui.arvot;                        
         }
         
-        nnInterface::mtx.unlock();
+        //nnInterface::mtx.unlock();
+
         //std::thread(asetaMuoto,muodonArvot).detach();
         olentogl::asetaMuoto(muodonArvot);
         olentogl::show();

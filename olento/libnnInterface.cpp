@@ -175,8 +175,7 @@ namespace nnInterface {
             std::cout << "pieninEro: " << pieninEro << "\n";
             std::cout << "Lahin tilanne: " << lahinTilanneId << "\n";
             std::cout << "desired: " ;
-            
-            
+
             
             for(int i = 0; i < nykyinenPaikka.size(); i++) {
                 nn_desired_out[i] =  (tilanteet[lahinTilanneId].desiredOutData[i] - nykyinenPaikka[i]);

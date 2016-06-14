@@ -22,11 +22,22 @@ string vertexShaderPath = resourcesDir + "shaders/standard.vertexshader";
 string fragmentShaderPath = resourcesDir + "shaders/standard.fragmentshader";
 string imgVertexShaderPath = resourcesDir + "shaders/images.vertexshader";
 string imgFragmentShaderPath = resourcesDir + "shaders/images.fragmentshader";
-string backgroundPath = resourcesDir + "tausta.png";
+//string backgroundPath = resourcesDir + "tausta.png";
+
+vector<string> backgroundPaths = {
+	resourcesDir + "tausta1.png",
+	resourcesDir + "tausta2.png",
+	resourcesDir + "tausta3.png"
+};
+
 string palettePath = resourcesDir + "palette.png";
 
 string meshDir = resourcesDir + "meshes/";
 vector<string> modDirs = {"ylos", "sivulle", "ulos", "kierteinen"};
+
+glm::mat4 modelMatrix;
+glm::mat4 viewMatrix;
+glm::mat4 projectionMatrix;
 
 int screenWidth = 0;
 int screenHeight = 0;
@@ -50,56 +61,33 @@ int activeObject = 0;
 
 bool running = false;
 
-/*
-bool setBackground(std::string filename) {
-	//ladataan kuva
-	SDL_Surface* tmp = IMG_Load(filename.c_str());
-	if (tmp == NULL) {
-		std::cout << "Kuvaa ei voitu ladata: " << filename.c_str() << " (" << SDL_GetError() << ")\n";
-		return false;
-	}
 
-	//luodaan tekstuuri
-	glGenTextures(1, &backgroundTextureID);
-	glBindTexture(GL_TEXTURE_2D, backgroundTextureID);
-
-	std::cout << "Asetetaan tekstuuri SDL_Surfacesta...\n";
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tmp->w, tmp->h, 0, GL_RGB, GL_UNSIGNED_BYTE, tmp->pixels);
-	std::cout << "ok\n";
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	SDL_FreeSurface(tmp);
-	std::cout << "taustakuva asetettu\n";
-	return true;
-}
-*/
-
-
-bool initialize(int window_w, int window_h) {
+bool initialize(int window_w, int window_h, bool fullscreen) {
 
 	/*** SDL-kontekstin luonti ***/
 	screenWidth = window_w;
 	screenHeight = window_h;
 
-	//Asetetaan SDL videolle & versionumerot
 	SDL_Init(SDL_INIT_VIDEO);
+	IMG_Init(IMG_INIT_PNG);
+
+	//Asetetaan SDL videolle & versionumerot
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 3 );
     SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
-    IMG_Init(IMG_INIT_PNG);
-
-   	//Multisamplen asetukset
+    //Multisamplen asetukset
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
 	GLenum err = glGetError();
 	if(err!=0) cerr << "Set SDL attributes: " << err << "\n";
 
+	Uint32 windowFlags = SDL_WINDOW_OPENGL;
+	if(fullscreen) windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+
 	//Luodaan ikkuna ja konteksti
-	window = SDL_CreateWindow("OpenGL", 0, 0, screenWidth, screenHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP);
+	window = SDL_CreateWindow("OpenGL", 0, 0, screenWidth, screenHeight, windowFlags);
 	if (window == NULL) {
 		cerr << "Ikkunaa ei voitu luoda! " << SDL_GetError() << "\n";
 		return false;
@@ -128,6 +116,7 @@ bool initialize(int window_w, int window_h) {
 	if(err!=0) cerr << "GLEW: " << err << "\n";
 
 	//Blendausasetuksia
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -169,7 +158,7 @@ bool initialize(int window_w, int window_h) {
     mods.load(meshDir, "arkkityypit", modDirs);
 
     //luodaan taustakuva ja paletti
-	background.create();
+	background.create(backgroundPaths[0]);
 	if (!paletti.loadFromFile(palettePath))
 		std::cerr << "Palettia ei voitu ladata! (" << palettePath << ")\n";
 
@@ -191,7 +180,10 @@ void show() {
 
 	background.show();
 
+	glClear(GL_DEPTH_BUFFER_BIT);
+
 	for(int i=0; i<kappaleet.size(); i++) {
+		setPosition(kappaleet[i].position);
 		kappaleet[i].show();
 	}
 
@@ -209,7 +201,6 @@ void handleEvents() {
 		else if(e.type == SDL_KEYDOWN) {
 			if(e.key.keysym.sym == SDLK_F12)
 				running = false;
-
 		}
 	}
 }
@@ -258,24 +249,42 @@ void setView() {
     GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
 	
     // Projection matrix : 45∞ Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-    glm::mat4 Projection = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
+    projectionMatrix = glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, 100.0f);
     // Or, for an ortho camera :
     //glm::mat4 Projection = glm::ortho(-10.0f,10.0f,-10.0f,10.0f,0.0f,100.0f); // In world coordinates
     
     // Camera matrix
-    glm::mat4 View = glm::lookAt(
+    viewMatrix = glm::lookAt(
                                  cameraPosition,
                                  glm::vec3(0, 0, 0), // look at the origin
                                  glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
                                  );
     // Model matrix : an identity matrix (model will be at the origin)
-    glm::mat4 Model = glm::mat4(1.0f);
+    modelMatrix = glm::mat4(1.0f);
     // Our ModelViewProjection : multiplication of our 3 matrices
-    glm::mat4 MVP = Projection * View * Model; // Remember, matrix multiplication is the other way around
+    glm::mat4 MVP = projectionMatrix * viewMatrix * modelMatrix; // Remember, matrix multiplication is the other way around
 
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
-    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &Model[0][0]);
-    glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &View[0][0]);
+    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
+    glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &viewMatrix[0][0]);
+
+}
+
+
+void setPosition(glm::vec3 pos) {
+	glUseProgram(programID);
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+    GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
+
+    modelMatrix = glm::mat4(1.0f); //identity
+    //TODO: transform!
+
+    glm::mat4 MVP = projectionMatrix * viewMatrix * modelMatrix;
+    glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
+
+    GLenum err = glGetError(); 
+	if(err!=0) cerr << "SetPosition: " << err << "\n";
 
 }
 
@@ -288,8 +297,6 @@ void setMaterial(material mat) {
 	GLuint AlphaID = glGetUniformLocation(programID, "alpha");
 	GLuint ambientID = glGetUniformLocation(programID, "ambientPower");
 
-	cerr << "Set material: " << mat.specularity << ", " << mat.hardness << ", " << mat.alpha << "\n";
-
 	glUniform1f(SpecularID, mat.specularity);
 	glUniform1f(HardnessID, mat.hardness);
 	glUniform1f(AlphaID, mat.alpha);
@@ -298,7 +305,6 @@ void setMaterial(material mat) {
 	GLenum err = glGetError(); 
 	if(err!=0) cerr << "SetMaterial: " << err << "\n";
 }
-
 
 
 void setMaterial(float mat_n) {
@@ -338,6 +344,16 @@ void valitseObjekti(int indeksi) {
 }
 
 
+void vaihdaKuva() {
+	static int valittuKuva = 0;
+	valittuKuva ++;
+	if(valittuKuva >= backgroundPaths.size() )
+		valittuKuva = 0;
+
+	background.asetaKuva(backgroundPaths[valittuKuva] );
+}
+
+
 void oObj::updateBuffers() {
 
 	obj.sortElementsByDistance(cameraPosition);
@@ -362,6 +378,7 @@ void oObj::show() {
 
 	glUseProgram(programID);
 	glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 
 	//päivitetään verteksit ja normaalit bufferiin.
 	updateBuffers();
@@ -383,6 +400,10 @@ void oObj::show() {
 
 
 bool oObj::create(string objfile) {
+
+	mat = getMaterial(3);
+	color = glm::vec3(0.5, 0.5, 0.5);
+	position = glm::vec3(0, 0, 0);
 
 	//luodaan GL-bufferit
 	glGenBuffers(1, &vertexBufferID);
@@ -425,12 +446,10 @@ bool oObj::create(string objfile) {
 	//ladataan objekti
 	obj.loadFromFile(objfile);
 
-	mat = getMaterial(3);
-	color = glm::vec3(1,0,0);
-
 	//työnnetään verteksit bufferiin
 	updateBuffers();
 }
+
 
 void oObj::asetaMuoto(vector<float> values) {
   
@@ -457,7 +476,7 @@ void oObj::asetaMuoto(vector<float> values) {
   std::vector<glm::vec3> newVerts = mods.getShape(shapeValues);
 
   //aseta vertekstit kappaleeseen
-  obj.changeVertices(newVerts);
+  obj.changeVerticesTowards(newVerts, 0.005);
 
   //5: materiaali, 6 & 7: väri
   mat = getMaterial(values[5]);
@@ -479,41 +498,15 @@ void oObj::asetaMuoto(vector<float> values) {
 }
 
 
-bool oImage::create() {
+bool oImage::create(string path) {
+	//käytetään ohjelmaa
+	glUseProgram(imgProgramID);
+
 	//luodaan buffer ja tekstuuri
 	glGenBuffers(1, &vertexBufferID);
 	glGenTextures(1, &textureID);
 
-	//ladataan kuva tekstuuriin
-	SDL_Surface* tmp = IMG_Load(backgroundPath.c_str() );
-	if (tmp == NULL) {
-		std::cout << "Kuvaa ei voitu ladata: " << backgroundPath.c_str() << " (" << SDL_GetError() << ")\n";
-		return false;
-	}
-
-	if(tmp->format->BytesPerPixel != 4)
-		cerr << "Varoitus: BPP on " << (int)tmp->format->BytesPerPixel << "\n";
-
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
-	glTexImage2D(
-			GL_TEXTURE_2D, 
-			0, 
-			GL_RGBA, 
-			tmp->w, tmp->h, 
-			0, 
-			GL_RGBA, 
-			GL_UNSIGNED_BYTE, 
-			tmp->pixels
-		);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	SDL_FreeSurface(tmp);
-
-
-	//käytetään ohjelmaa
-	glUseProgram(imgProgramID);
+	asetaKuva(path);
 
 	//luodaan verteksit
 	float newV[] = {
@@ -552,11 +545,43 @@ bool oImage::create() {
 }
 
 
+void oImage::asetaKuva(string path) {
+
+	glUseProgram(imgProgramID);
+
+	//ladataan kuva tekstuuriin
+	SDL_Surface* tmp = IMG_Load(path.c_str() );
+	if (tmp == NULL) {
+		std::cout << "Kuvaa ei voitu ladata: " << path.c_str() << " (" << SDL_GetError() << ")\n";
+	}
+
+	if(tmp->format->BytesPerPixel != 4)
+		cerr << "Varoitus: BPP on " << (int)tmp->format->BytesPerPixel << "\n";
+
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	glTexImage2D(
+			GL_TEXTURE_2D, 
+			0, 
+			GL_RGBA, 
+			tmp->w, tmp->h, 
+			0, 
+			GL_RGBA, 
+			GL_UNSIGNED_BYTE, 
+			tmp->pixels
+		);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	SDL_FreeSurface(tmp);
+
+}
+
+
 void oImage::show() {
 	glUseProgram(imgProgramID);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_CULL_FACE);
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
+	//glDisable(GL_DEPTH_TEST);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 
@@ -613,7 +638,7 @@ bool xyPalette::loadFromFile(std::string filename){
 
 	std::cout << "Created palette, size: " << size << ", w: " << w << ", h: " << h << ", bpp: " << (int)surface->format->BytesPerPixel << "\n";
 	if ((int)surface->format->BytesPerPixel != 4)
-		std::cerr << "Varoitus! Paletin BPP pit鋓si olla 4\n";
+		std::cerr << "Varoitus! Paletin BPP pitäisi olla 4\n";
 	SDL_FreeSurface(surface);
 	return true;
 }
@@ -628,7 +653,7 @@ glm::vec3 xyPalette::getColor(float x, float y) {
 	//std::cerr << "getColor " << i_x << ", " << i_y << " (" << i << ")\n";
 
 	if (i<0 || i>size)
-		std::cerr << "Huono v鋜i-indeksi: " << i << " !\n";
+		std::cerr << "Huono väri-indeksi: " << i << " !\n";
 
 	return colors[i];
 }
@@ -640,7 +665,7 @@ void xyPalette::tulosta() {
 	for (int i = 0; i < size; i++)
 		std::cout << "r: " << colors[i].r << ", g: " << colors[i].g << ", b: " << colors[i].b << "\n";
 
-	std::cout << size << " v鋜i鋅n";
+	std::cout << size << " väriä\n";
 
 }
 

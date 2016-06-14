@@ -49,7 +49,6 @@
     <Compile Include="olento\main.cpp" />
     <Compile Include="olento\material.cpp" />
     <Compile Include="olento\oCamera.cpp" />
-    <Compile Include="olento\oWindow.cpp" />
     <Compile Include="olento\random.cpp" />
     <Compile Include="olento\server.cpp" />
     <Compile Include="olento\shader.cpp" />
@@ -68,14 +67,12 @@
     <None Include="olento\libnn.h" />
     <None Include="olento\libnnInterface.h" />
     <None Include="olento\material.h" />
-    <None Include="olento\oBuffers.h" />
     <None Include="olento\oCamera.h" />
     <None Include="olento\oDirectory.h" />
     <None Include="olento\oLoader.h" />
     <None Include="olento\oMesh.h" />
     <None Include="olento\oMeshBundle.h" />
     <None Include="olento\oModificators.h" />
-    <None Include="olento\oWindow.h" />
     <None Include="olento\random.h" />
     <None Include="olento\server.h" />
     <None Include="olento\shader.hpp" />
