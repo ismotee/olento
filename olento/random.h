@@ -13,5 +13,6 @@ void wrap(float& value, float min, float max);
 float vektorienEro(std::vector<float> A, std::vector<float> B);
 float floatabs(float arvo);
 float VectorLength (std::vector<float> vec);
+std::vector<int> jarjestaTaulukkoPienimmastaSuurimpaan(std::vector<float> taulukko);
 
 #endif
