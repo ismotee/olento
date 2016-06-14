@@ -161,7 +161,37 @@ namespace nnInterface {
                 if(erot[i] == -1)
                 	std::cout << "nnInterface, LaskeDesiredOut: Väärä vektorikoko: "<< nn_input.size() << " " << tilanteet[i].inputData.size() << "\n";
             }
-            
+
+            std::vector <int> jarjestetytIdt = jarjestaTaulukkoPienimmastaSuurimpaan(erot);
+
+            std::vector <std::vector<float> > laskettuSuunta;
+
+            for(int i = 0; i < tilanteet.size(); i++)
+            	laskettuSuunta.push_back(tilanteet[jarjestetytIdt[i]].desiredOutData);
+
+           	std::vector<float> summattu;
+           	summattu = laskettuSuunta[0];
+
+           	int additiveId = 0;
+
+           	for(int i = 1; i < tilanteet.size(); i++) {
+           		additiveId++;
+           		for(int j = 0; j < nn_desired_out.size(); j++) {
+
+           			summattu[j] += (laskettuSuunta[0][j] - laskettuSuunta[i][j]) / (additiveId *2) ;
+           		}
+           	}
+           	/*
+          	for(int i = 0; i<summattu.size();i++)
+           		summattu[i] /= tilanteet.size();
+           	*/
+           	std::cout << "summattu: " << summattu[0] << " " << 
+           	summattu[1] << " " << summattu[2] << " " << 
+           	summattu[3] << " " << summattu[4] << " " << 
+           	summattu[5] << " " << summattu[6] << " " <<
+           	summattu[7] << "\n";
+           	/*
+
             float pieninEro = 10000000;
             int lahinTilanneId = 0;
             
@@ -176,9 +206,10 @@ namespace nnInterface {
             std::cout << "Lahin tilanne: " << lahinTilanneId << "\n";
             std::cout << "desired: " ;
 
-            
+            */
+
             for(int i = 0; i < nykyinenPaikka.size(); i++) {
-                nn_desired_out[i] =  (tilanteet[lahinTilanneId].desiredOutData[i] - nykyinenPaikka[i]);
+                nn_desired_out[i] =  (summattu[i] - nykyinenPaikka[i]);
             }
             
             float desiredPituus = VectorLength(nn_desired_out);

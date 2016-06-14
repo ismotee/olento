@@ -1,6 +1,6 @@
 #include "random.h"
 #include "math.h"
-
+#include <algorithm> // std::sort
 
 float randf(float min, float max) {
 	return ((float)rand() / RAND_MAX) * (max - min) + min;
@@ -53,4 +53,41 @@ float VectorLength (std::vector<float> vec)
         result += vec[i] * vec[i];
     }
     return sqrt(result);
+}
+
+
+struct sortT{
+	int key;
+	float value;
+};
+
+
+bool sortCompareValues(sortT A, sortT B) {
+	return(A.value < B.value);
+}
+
+
+bool sortCompareKeys(sortT A, sortT B) {
+	return(A.key < B.key);
+}
+
+
+
+std::vector<int> jarjestaTaulukkoPienimmastaSuurimpaan(std::vector<float> taulukko)
+{
+	std::vector<int> tulos(taulukko.size());
+	std::vector<sortT> sortti(taulukko.size());
+
+	for(int i = 0; i < taulukko.size(); i++)
+	{
+		sortti[i].key = i;
+		sortti[i].value = taulukko[i];
+	}
+
+	std::sort(sortti.begin(), sortti.end(), sortCompareValues );
+
+	for(int i=0; i<sortti.size(); i++)
+		tulos[i] = sortti[i].key;
+
+	return tulos;
 }
