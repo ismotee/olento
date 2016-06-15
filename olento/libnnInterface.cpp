@@ -5,7 +5,7 @@
 #include "archiver.h"
 
 namespace nnInterface {
-    const char* TILANTEET_PATH = "resources/tilanteet.net";
+    const char* TILANTEET_PATH = "/media/olento/Uusi asema/ohjelmointi/c++/olento/olento/resources/tilanteet.net";
     
     std::vector<NNet> nn_nets;
     
@@ -169,44 +169,22 @@ namespace nnInterface {
             for(int i = 0; i < tilanteet.size(); i++)
             	laskettuSuunta.push_back(tilanteet[jarjestetytIdt[i]].desiredOutData);
 
-           	std::vector<float> summattu;
-           	summattu = laskettuSuunta[0];
+           	std::vector<float> summattu(laskettuSuunta[0].size());
 
-           	int additiveId = 0;
+           	int additiveId = 1;
 
            	for(int i = 1; i < tilanteet.size(); i++) {
-           		additiveId++;
+           		additiveId+=i;
            		for(int j = 0; j < nn_desired_out.size(); j++) {
 
-           			summattu[j] += (laskettuSuunta[0][j] - laskettuSuunta[i][j]) / (additiveId *2) ;
+           			summattu[j] += (laskettuSuunta[i][j]- summattu[j]) / (additiveId *2 + erot[i]) ;
            		}
            	}
-           	/*
-          	for(int i = 0; i<summattu.size();i++)
+
+          	for(int i = 0; i<summattu.size();i++) {
            		summattu[i] /= tilanteet.size();
-           	*/
-           	std::cout << "summattu: " << summattu[0] << " " << 
-           	summattu[1] << " " << summattu[2] << " " << 
-           	summattu[3] << " " << summattu[4] << " " << 
-           	summattu[5] << " " << summattu[6] << " " <<
-           	summattu[7] << "\n";
-           	/*
-
-            float pieninEro = 10000000;
-            int lahinTilanneId = 0;
-            
-            for(int i = 0; i < erot.size(); i++)
-                if(erot[i] < pieninEro) {
-                    pieninEro = erot[i];
-                    lahinTilanneId = i;
-                }
-            std::cout << "\n";
-            
-            std::cout << "pieninEro: " << pieninEro << "\n";
-            std::cout << "Lahin tilanne: " << lahinTilanneId << "\n";
-            std::cout << "desired: " ;
-
-            */
+           		summattu[i] += laskettuSuunta[0][i]; 
+           	}
 
             for(int i = 0; i < nykyinenPaikka.size(); i++) {
                 nn_desired_out[i] =  (summattu[i] - nykyinenPaikka[i]);
@@ -218,7 +196,6 @@ namespace nnInterface {
                 nn_desired_out[i] *= desiredPituus;
                 bound(nn_desired_out[i],-0.9,0.9);
                 nn_desired_out[i] = (nn_desired_out[i] + 1) * 0.5f;
-                std::cout << nn_desired_out[i] << " ";
             }
             std::cout << "\n";
             
