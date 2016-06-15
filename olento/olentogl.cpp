@@ -124,6 +124,8 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
 	glEnable(GL_POLYGON_SMOOTH);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glShadeModel(GL_SMOOTH);
+
 
 	//tarkistetaan errorit
 	err = glGetError(); 
@@ -139,7 +141,7 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
 	if (err!=0) cerr << "Generate VAO: " << err << "\n";
 
 	//taustaväri
-	glClearColor(0.7f, 0.9f, 1.0f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//shaderien lataaminen
 	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str() );
@@ -218,7 +220,7 @@ void setLight() {
 
 	//takavalo
 	glm::vec3 lightPos_A = glm::vec3(-15, -1, -1);
-	float lightPower_A = 500.0f;
+	float lightPower_A = 200.0f;
 
 	//etu
 	glm::vec3 lightPos_B = glm::vec3(15, 1, 1);
@@ -306,8 +308,25 @@ void setMaterial(material mat) {
 	if(err!=0) cerr << "SetMaterial: " << err << "\n";
 }
 
+void setMaterialTowards(material target, float amount) {
+	static material mat;
+
+	mat = mixMaterials(mat, target, amount);
+	setMaterial(mat);
+}
+
+
 
 void setMaterial(float mat_n) {
+	setMaterial(getMaterial(mat_n));
+}
+
+
+void setMaterialTowards(float target, float amount) {
+	static float mat_n = 0.5;
+
+	mat_n = glm::mix(mat_n, target, amount);
+
 	setMaterial(getMaterial(mat_n));
 }
 
@@ -323,6 +342,14 @@ void setColor(float r, float g, float b) {
 
 void setColor(glm::vec3 color) {
 	setColor(color.r, color.g, color.b);
+}
+
+
+void setColorTowards(glm::vec3 target, float amount) {
+	static glm::vec3 color(0.5, 0.5, 0.5);
+
+	color = glm::mix(color, target, amount);
+	setColor(color);
 }
 
 
@@ -386,8 +413,8 @@ void oObj::show() {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 
-	setMaterial(mat);
-	setColor(color);
+	setMaterialTowards(mat, 0.1);
+	setColorTowards(color, 0.1);
 
 	glDrawElements(GL_TRIANGLES, obj.getElementData().length, GL_UNSIGNED_INT, 0);
 
@@ -476,7 +503,7 @@ void oObj::asetaMuoto(vector<float> values) {
   std::vector<glm::vec3> newVerts = mods.getShape(shapeValues);
 
   //aseta vertekstit kappaleeseen
-  obj.changeVerticesTowards(newVerts, 0.005);
+  obj.changeVerticesTowards(newVerts, 0.01);
 
   //5: materiaali, 6 & 7: väri
   mat = getMaterial(values[5]);

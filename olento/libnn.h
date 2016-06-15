@@ -64,7 +64,7 @@ struct NeuronData
 class HiddenNeuron : public Neuron
 {
 public:
-    HiddenNeuron(float learn_rate = 0.0004f);
+    HiddenNeuron(float learn_rate = 0.004f);
     
     std::vector<Neuron*> upper;
     
@@ -77,7 +77,7 @@ public:
 class InputNeuron : public Neuron
 {
 public:
-    InputNeuron(float learn_rate = 0.0001f);
+    InputNeuron(float learn_rate = 0.001f);
     
     float input;
     

@@ -70,8 +70,12 @@ namespace olentogl {
 	void handleEvents();
 	void setLight();
 	bool isRunning();
+
 	void setMaterial(float mat_n);
+	void setMaterialTowards(float target, float amount);
 	void setMaterial(material mat);
+	void setMaterialTowards(material target, float amount);
+
 	void setColor(float r, float g, float b);
 	void setColor(glm::vec3 color);
 	void setView();

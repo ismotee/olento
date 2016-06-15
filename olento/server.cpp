@@ -2,10 +2,13 @@
 #include <SDL2/SDL_net.h>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <string.h>
 #include <thread>
+
 #include "server.h"
+#include "dClock.h"
 
 using namespace std;
 
@@ -35,10 +38,18 @@ namespace olentoServer{
 
 
 	void tulostaPaketti(std::vector<float> paketti) {
+		cout << "Paketti:\n";		
 		for (int i = 0; i < paketti.size(); i++) {
-			cout << "piste: " << paketti[i] << "\n";
+			cout << paketti[i] << "\n";
 		}
 	}
+
+
+	void tallennaPaketti(std::vector<float> paketti) {
+
+
+	}
+
 
 	bool initializeServer() {
 
@@ -399,4 +410,115 @@ namespace olentoServer{
 		msgLength = response.length();*/
 	}
 
+/*
+	Tallenna tiedot:
+	Paketti
+		- kasvojen pisteet
+		- kasvojen määrä
+		- lavan id
+	Muodon arvot
+	NNet output
+	Kellonaika
+
+*/
+
+string floatsToString(vector<float> v) {
+	string result;
+	for(int i = 0; i < v.size(); i++) {
+		stringstream luku;
+		luku << v[i];
+		result += luku.str();
+		if(i < v.size()-1) result += " ";
+	}
+	return result;
 }
+
+
+void tallennaTiedot(vector<float> paketti, vector<float> muodonArvot, vector<float> muodonMuutos, string filename) {
+
+	int lavaID = -1; 
+	int naamat = -1;
+
+	//Tarkistetaan paketin koko ja erotellaan naamojen määrä sekä lavan id
+	if(paketti.size() >= 104) {
+		lavaID = paketti[0];
+		naamat = paketti[1];
+		paketti.erase(paketti.begin(), paketti.begin()+2 );
+		paketti.resize(102);
+	}
+
+	ofstream file;
+	file.open(filename.c_str() , ios::app);
+	if(file.is_open() ) {
+
+		file << "Kellonaika ";
+		file << dClock::getTimeString() << "\n";
+
+		if(lavaID >= 0) file << "LavanID " << lavaID << "\n";
+		if(naamat >= 0) file << "Naamoja " << naamat << "\n";
+
+		file << "Paketti ";
+		file << floatsToString(paketti) << "\n";
+
+		file << "MuodonArvot ";
+		file << floatsToString(muodonArvot) << "\n";
+
+		file << "MuodonMuutos ";
+		file << floatsToString(muodonMuutos) << "\n\n";
+	}
+
+	file.close();
+
+}
+
+std::vector<std::vector<float> > lataaHistoria(std::string filename) {
+	ifstream file;
+	stringstream line_ss;
+	string line;
+	string word;
+
+	cerr << "Ladataan historia tiedostosta " << filename.c_str() << "\n";
+
+	std::vector< std::vector<float> > result;
+
+	file.open(filename.c_str() );
+
+	if(file.is_open() ) {
+		while(getline(file, line) ) {
+			line_ss.str(line);
+			line_ss >> word;
+			std::cout << "server, line_ss: " << word << "\n";
+			if(word.compare("MuodonArvot")==0) {
+				std::cout << "muodonArvot: \n";
+				std::vector<float> muoto;
+
+
+				//kopioi luvut riviltä. Pitäisi olla 8.
+				for(int i=0; i<8; i++) {
+					float f;
+					line_ss >> f;
+					muoto.push_back(f);
+					std::cout << i << ": " << muoto.back() << "\n";
+				}
+
+				std::cout << "\n";
+
+				if(muoto.size() != 8) {
+					cerr << "Historia: Liian vähän muodon arvoja (" << muoto.size() << ")\n";
+					muoto.resize(8);
+				}
+
+				result.push_back(muoto);
+			}
+		}
+
+		file.close();
+	}
+
+	std::cerr << "Ladattiin historia, " << result.size() << " tapahtumaa\n";
+
+	return result;
+
+}
+
+}//end of namespace

@@ -166,18 +166,19 @@ namespace nnInterface {
 
             std::vector <std::vector<float> > laskettuSuunta;
 
-            for(int i = 0; i < tilanteet.size(); i++)
+            for(int i = 0; i < tilanteet.size() && i < 8; i++)
             	laskettuSuunta.push_back(tilanteet[jarjestetytIdt[i]].desiredOutData);
 
            	std::vector<float> summattu(laskettuSuunta[0].size());
 
            	int additiveId = 1;
 
-           	for(int i = 1; i < tilanteet.size(); i++) {
+           	for(int i = 1; i < tilanteet.size() && i < 8; i++) {
            		additiveId+=i;
            		for(int j = 0; j < nn_desired_out.size(); j++) {
 
-           			summattu[j] += (laskettuSuunta[i][j]- summattu[j]) / (additiveId *2 + erot[i]) ;
+           			//summattu[j] += (laskettuSuunta[i][j]- summattu[j]) / (additiveId *2 + erot[i]) ;
+           			summattu[j] += (laskettuSuunta[i][j]- summattu[j]) / (additiveId * (2 + erot[i]) ) ;
            		}
            	}
 
