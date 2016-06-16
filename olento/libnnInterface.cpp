@@ -5,7 +5,7 @@
 #include "archiver.h"
 
 namespace nnInterface {
-    const char* TILANTEET_PATH = "/media/olento/Uusi asema/ohjelmointi/c++/olento/olento/resources/tilanteet.net";
+    const char* TILANTEET_PATH = "resources/tilanteet.net";
     
     std::vector<NNet> nn_nets;
     
@@ -22,7 +22,9 @@ namespace nnInterface {
     std::atomic<bool> desiredWritten;
     std::atomic<bool> nn_stop;
     std::atomic<bool> update;
-    
+
+    int neighbours_n = 8;
+
     std::mutex mtx;
     
     dClock timer;
@@ -31,6 +33,12 @@ namespace nnInterface {
     int in = 102;
     int hid = 0;
     int out = 1;
+
+    void setNeighbours_n(int value) {
+    	if(value > 0)
+    		neighbours_n = value;
+    }
+
     
     void Init()
     {
@@ -111,7 +119,7 @@ namespace nnInterface {
             		nn_output[i] = nn_nets[i].forward(nn_input)[0];
                 if (nn_output.size() > out*nets) {
                     nn_output.resize(out*nets);
-                    std::cerr << "liian iso output\n";
+                    std::cout << "liian iso output\n";
                 }
                 outRead = false;
             }
@@ -166,14 +174,14 @@ namespace nnInterface {
 
             std::vector <std::vector<float> > laskettuSuunta;
 
-            for(int i = 0; i < tilanteet.size() && i < 8; i++)
+            for(int i = 0; i < tilanteet.size() && i < neighbours_n; i++) //muuta tämä 8 muuttujaksi
             	laskettuSuunta.push_back(tilanteet[jarjestetytIdt[i]].desiredOutData);
 
            	std::vector<float> summattu(laskettuSuunta[0].size());
 
            	int additiveId = 1;
 
-           	for(int i = 1; i < tilanteet.size() && i < 8; i++) {
+           	for(int i = 1; i < tilanteet.size() && i < neighbours_n; i++) { //ja tämä
            		additiveId+=i;
            		for(int j = 0; j < nn_desired_out.size(); j++) {
 

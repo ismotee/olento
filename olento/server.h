@@ -23,7 +23,7 @@ namespace olentoServer{
 	const unsigned short BUFFER_SIZE = 1400;     		// Size of our message buffer
 	const unsigned short MAX_SOCKETS = 100;             // Max number of sockets
 	const unsigned short MAX_CLIENTS = MAX_SOCKETS - 1; // Max number of clients in our socket set (-1 because server's listening socket takes the 1st socket in the set)
-	const std::string DEFAULT_HIS_FILE = "/media/olento/Uusi asema/ohjelmointi/c++/olento/olento/resources/history.his";
+	const std::string DEFAULT_HIS_FILE = "resources/history.his";
 
 	std::vector<float> haePaketti();
 	void tulostaPaketti(std::vector<float> paketti);

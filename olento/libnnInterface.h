@@ -151,7 +151,9 @@ namespace nnInterface {
     };
 
     std::vector<std::string> parsiTilanteet(std::string inputString);
-    
+
+    void setNeighbours_n(int value);
+
     void Init();
     
     void StartRoutine();

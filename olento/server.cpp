@@ -57,7 +57,7 @@ namespace olentoServer{
 
 		if (!isReady) {
 			if (SDLNet_Init() == -1) {
-				std::cerr << "Failed to intialise SDL_net: " << SDLNet_GetError() << std::endl;
+				std::cout << "Failed to intialise SDL_net: " << SDLNet_GetError() << std::endl;
 				return false;
 			}
 			else {
@@ -113,7 +113,7 @@ namespace olentoServer{
 		//Tarkoitettu ajettavaksi omassa threadissa
 
 		if (!setup())
-			cerr << "Ei voitu asettaa serveriä!\n"; //Abort!
+			cout << "Ei voitu asettaa serveriä!\n"; //Abort!
 
 		std::thread(kuuntele).detach();
 	}
@@ -236,7 +236,7 @@ namespace olentoServer{
 
 						else if (strcmp(buffer, "get;\n") == 0) {
 							//lähetä vastaus
-							std::cerr << "Send response: " << response << endl;
+							std::cout << "Send response: " << response << endl;
 							SDLNet_TCP_Send(clientSocket[clientNumber], (void *)response.c_str(), response.length());
 
 						}
@@ -307,18 +307,18 @@ namespace olentoServer{
 			return true;
 
 		if (!initializeServer()) {
-			std::cerr << "Ei voitu alustaa SDL_Net:iä\n";
+			std::cout << "Ei voitu alustaa SDL_Net:iä\n";
 			return false;
 		}
 
 		// Create the socket set with enough space to store our desired number of connections (i.e. sockets)
 		socketSet = SDLNet_AllocSocketSet(MAX_SOCKETS);
 		if (socketSet == NULL) {
-			std::cerr << "Failed to allocate the socket set: " << SDLNet_GetError() << "\n";
+			std::cout << "Failed to allocate the socket set: " << SDLNet_GetError() << "\n";
 			return false;
 		}
 		else {
-			std::cerr << "Allocated socket set with size:  " << MAX_SOCKETS << ", of which " << MAX_CLIENTS << " are availble for use by clients." << std::endl;
+			std::cout << "Allocated socket set with size:  " << MAX_SOCKETS << ", of which " << MAX_CLIENTS << " are availble for use by clients." << std::endl;
 		}
 
 
@@ -379,7 +379,7 @@ namespace olentoServer{
 
 		SDLNet_Quit();
 
-		cerr << "OlentoServer suljettiin\n";
+		cout << "OlentoServer suljettiin\n";
 
 	}
 
@@ -515,7 +515,7 @@ std::vector<std::vector<float> > lataaHistoria(std::string filename) {
 				}
 				*//*
 				if(muoto.size() != 8) {
-					cerr << "Historia: Liian vähän muodon arvoja (" << muoto.size() << ")\n";
+					cout << "Historia: Liian vähän muodon arvoja (" << muoto.size() << ")\n";
 					muoto.resize(8);
 				}
 
@@ -527,7 +527,7 @@ std::vector<std::vector<float> > lataaHistoria(std::string filename) {
 		file.close();
 	}
 
-	std::cerr << "Ladattiin historia, " << result.size() << " tapahtumaa\n";
+	std::cout << "Ladattiin historia, " << result.size() << " tapahtumaa\n";
 
 	return result;
 
@@ -544,8 +544,7 @@ vector< vector<float> > lataaHistoria(std::string filename) {
 	vector< vector<float> > historia;
 
 	if(file.is_open()) {
-		cout << "file is open\n";
-	
+
 		string line;
 
 		while(getline(file, line) ) {
@@ -582,6 +581,8 @@ vector< vector<float> > lataaHistoria(std::string filename) {
 
 		file.close();
 	}
+
+	cout << "Ladattiin historia. " << historia.size() << " tapahtumaa\n";
 
 	return historia;
 }

@@ -40,7 +40,7 @@ oRawDataT::oRawDataT() : length(0), data(NULL) {}
 
 bool dObject::loadFromFile(std::string path) {
     if (!oLoader::loadOBJ(path, vertices, elements, faces)) {
-        cerr << "dObject: Couldn't read file " << path.c_str() << "!\n";
+        cout << "dObject: Couldn't read file " << path.c_str() << "!\n";
         return false;
     }
 
@@ -54,7 +54,7 @@ bool dObject::loadFromFile(std::string path) {
 
     makeFacesConnected();
     calculateAllNormals();
-    cerr << "Ladattiin objekti tiedostosta " << path.c_str() << "\n";
+    cout << "Ladattiin objekti tiedostosta " << path.c_str() << "\n";
     return true;
 }
 
@@ -66,9 +66,9 @@ int dObject::generateId() {
 
 
 dObject::dObject() {
-    cerr << "Warning: Using dObject default constructor. Object not loaded!\n";
+    cout << "Warning: Using dObject default constructor. Object not loaded!\n";
     id = generateId();
-    cerr << "Created dObject " << id <<"\n";
+    cout << "Created dObject " << id <<"\n";
 }
 
 
@@ -76,14 +76,14 @@ dObject::dObject(std::string path)
 {
     id = generateId();
 
-    cerr << "dObject constructor ... \n";
-    cerr << "   id: " << id << "\n";
-    cerr << "   path: " << path.c_str() << "\n";
+    cout << "dObject constructor ... \n";
+    cout << "   id: " << id << "\n";
+    cout << "   path: " << path.c_str() << "\n";
 
     if(!loadFromFile(path) ) {
-        cerr << "   Couldn't load object!\n";
+        cout << "   Couldn't load object!\n";
     }
-    cerr << "Created object " << id << "\n";
+    cout << "Created object " << id << "\n";
 }
 
 
@@ -100,7 +100,7 @@ elements(_elements)
 
 	calculateAllNormals();
 
-    cerr << "Created object " << id << "\n";
+    cout << "Created object " << id << "\n";
 }
 
 void dObject::changeVertices(std::vector<glm::vec3>& new_vertices)
@@ -112,7 +112,7 @@ void dObject::changeVertices(std::vector<glm::vec3>& new_vertices)
 void dObject::makeFaces() //tätä pitäisi optimoida!
 {
 	dClock c;
-    std::cerr << "makeFaces...";
+    std::cout << "makeFaces...";
 
 	for (std::vector<unsigned int>::iterator it = elements.begin();
 		it != elements.end();
@@ -127,13 +127,13 @@ void dObject::makeFaces() //tätä pitäisi optimoida!
 
 	}
 
-    std::cerr << " ok (" << c.get() << " s)\n";
+    std::cout << " ok (" << c.get() << " s)\n";
 }
 
 void dObject::makeFacesConnected()
 {
     dClock c;
-    //std::cerr << "makeFacesConnected... ";
+    //std::cout << "makeFacesConnected... ";
 
 	vFacesConnected.resize(vertices.size());
 
@@ -141,25 +141,25 @@ void dObject::makeFacesConnected()
 		vFacesConnected[elements[i]].addFace(i / 3);
 	}
 
-    //std::cerr << "ok (" << c.get() << " s)\n";
+    //std::cout << "ok (" << c.get() << " s)\n";
 }
 
 
 void dObject::calculateAllNormals()
 {
-    //std::cerr << "calculateAllNormals: vFacesConnected.size = " << vFacesConnected.size() << "\n";
+    //std::cout << "calculateAllNormals: vFacesConnected.size = " << vFacesConnected.size() << "\n";
 	dClock c;
 	for (int i = 0; i < faces.size(); i++) {
 		faces[i].calculateFaceNormal(vertices);
 	}
 
-    //std::cerr << "face normals done (took "<< c.get() <<" s)\n";
+    //std::cout << "face normals done (took "<< c.get() <<" s)\n";
 	c.reset();
 	for (int i = 0; i < vFacesConnected.size() && i < normals.size(); i++) {
 		normals[i] = vFacesConnected[i].calculateVertexNormal(faces);
 	}
 
-    //std::cerr << "vertex normals done (took " << c.get() << " s)\n";
+    //std::cout << "vertex normals done (took " << c.get() << " s)\n";
 }
 
 void dObject::changeVerticesTowards(std::vector<glm::vec3>& aim_vertices, float multi)

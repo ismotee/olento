@@ -36,14 +36,17 @@ std::vector< std::vector<float> > historia;
 
 int aktiivinenLava = 1; //joko 1 tai 2
 float naamoja = 0; //naamojen m‰‰r‰ viimeksi aktiivisella lavalla
+
 float min_naamoja = 0.7; //naamojen v‰himm‰ism‰‰r‰
+float herkkyys = 0.22;
+int neighbours_n = 8;
 
 
 std::vector<float> haeHistoriasta() {
 	static int i;
 
 	if(historia.empty() ) {
-		std::cerr << "Ei historiaa!\n";
+		std::cout << "Ei historiaa!\n";
 		return std::vector<float>(0);
 	}
 
@@ -82,10 +85,10 @@ userInput handleEvent(SDL_Event e) {
     
     else if (e.type == SDL_KEYDOWN) {
         
-        //std::cerr << SDL_GetKeyName(e.key.keysym.sym) << " pressed\n";
+        //std::cout << SDL_GetKeyName(e.key.keysym.sym) << " pressed\n";
         
         switch (e.key.keysym.sym) {
-
+        	using namespace std;
         	case SDLK_F12:
         		ui.run = false;
         		break;
@@ -102,12 +105,12 @@ userInput handleEvent(SDL_Event e) {
             case SDLK_TAB:
                 if (ui.moodi == KATSELLAAN) {
                 	ui.moodi = MUOKATAAN;
-                	std::cerr << "muokataan\n";
+                	std::cout << "muokataan\n";
                 }
                 else {
                 	ui.moodi = KATSELLAAN;
             	    ui.arvot = muodonArvot;
-            	    std::cerr << "katsellaan\n";
+            	    std::cout << "katsellaan\n";
                 }
                 break;
                 
@@ -121,7 +124,41 @@ userInput handleEvent(SDL_Event e) {
                     ui.arvot[i] = randf(0, 1);
                 break;
                 //Muodon s‰‰tˆ
-                
+
+            case SDLK_KP_7:
+            	min_naamoja += 0.5;
+            	cerr << "min_naamoja: " << min_naamoja << "\n";
+            	break;
+
+            case SDLK_KP_4:
+            	min_naamoja -= 0.5;
+            	if(min_naamoja < 0) min_naamoja = 0;
+            	cerr << "min_naamoja: " << min_naamoja << "\n";
+            	break;
+
+            case SDLK_KP_8:
+            	herkkyys += 0.01;
+            	cerr << "herkkyys: " << herkkyys << "\n";
+            	break;
+
+            case SDLK_KP_5:
+            	herkkyys -= 0.01;
+            	if(herkkyys < 0.01) herkkyys = 0.01;
+            	cerr << "herkkyys: " << herkkyys << "\n";
+            	break;
+
+            case SDLK_KP_9:
+            	neighbours_n += 1;
+            	cerr << "neighbours_n: " << neighbours_n << "\n";
+            	break;
+
+            case SDLK_KP_6:
+            	neighbours_n -= 1;
+            	if(neighbours_n < 1) neighbours_n = 1;
+            	cerr << "neighbours_n: " << neighbours_n << "\n";
+            	break;
+
+                                                
             case SDLK_q:
                 ui.arvot[0] += MUUTOS;
                 break;
@@ -203,7 +240,7 @@ int main(int argc, char* argv[]) {
 //    dClock kappaleenVaihdonOdotus;
     dClock playback_t;
 
-    std::string PLAYBACK_FILE = "/media/olento/Uusi asema/ohjelmointi/c++/olento/olento/resources/playback.his";
+    std::string PLAYBACK_FILE = "resources/playback.his";
 
    	historia = olentoServer::lataaHistoria(PLAYBACK_FILE);
 
@@ -295,7 +332,7 @@ int main(int argc, char* argv[]) {
                 
                 //muuta muotoa
                 for (int i = 0; i < outputs.size(); i++) {
-                    muodonArvot[i] += (outputs[i] * 2 - 1) * 0.22f;
+                    muodonArvot[i] += (outputs[i] * 2 - 1) * herkkyys;
                     bound(muodonArvot[i],0.0001f,0.9999f);
                 }
 
@@ -338,9 +375,9 @@ int main(int argc, char* argv[]) {
         	//hae uusi tieto sekunnin v‰lein
         	if(playback_t.get() >= 1.0) {        		
         		muodonArvot = haeHistoriasta();
-        		//std::cerr << "ok\n";
+        		//std::cout << "ok\n";
         		if(muodonArvot.size() != 8) {
-        			std::cerr << dClock::getTimeString() << "HaeHistoriasta: Tuli " << muodonArvot.size() << " arvoa!\n";
+        			std::cout << dClock::getTimeString() << "HaeHistoriasta: Tuli " << muodonArvot.size() << " arvoa!\n";
         			muodonArvot.resize(8);
         		}
         		playback_t.reset();

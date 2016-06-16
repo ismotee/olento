@@ -18,7 +18,7 @@ using namespace std;
 
 namespace olentogl {
 
-string resourcesDir = "/media/olento/Uusi asema/ohjelmointi/c++/olento/olento/resources/";
+string resourcesDir = "resources/";
 string vertexShaderPath = resourcesDir + "shaders/standard.vertexshader";
 string fragmentShaderPath = resourcesDir + "shaders/standard.fragmentshader";
 string imgVertexShaderPath = resourcesDir + "shaders/images.vertexshader";
@@ -82,7 +82,7 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
 	GLenum err = glGetError();
-	if(err!=0) cerr << "Set SDL attributes: " << err << "\n";
+	if(err!=0) cout << "Set SDL attributes: " << err << "\n";
 
 	Uint32 windowFlags = SDL_WINDOW_OPENGL;
 	if(fullscreen) windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
@@ -90,31 +90,31 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
 	//Luodaan ikkuna ja konteksti
 	window = SDL_CreateWindow("OpenGL", 0, 0, screenWidth, screenHeight, windowFlags);
 	if (window == NULL) {
-		cerr << "Ikkunaa ei voitu luoda! " << SDL_GetError() << "\n";
+		cout << "Ikkunaa ei voitu luoda! " << SDL_GetError() << "\n";
 		return false;
 	}
 
 	context = SDL_GL_CreateContext(window);
 	if (context == NULL) {
-		cerr << "Kontekstia ei voitu luoda! " << SDL_GetError() << "\n";
+		cout << "Kontekstia ei voitu luoda! " << SDL_GetError() << "\n";
 		return false;
 	}
 
 	err = glGetError(); 
-	if(err!=0) cerr << "Create context: " << err << "\n";
+	if(err!=0) cout << "Create context: " << err << "\n";
 
 	//GLEW'n asetukset. Ei käytetä Applen alustalla.
 	#ifndef __APPLE__
 		glewExperimental = GL_TRUE;
 		GLenum glewError = glewInit();
 		if (glewError != GLEW_OK) {
-			cerr << "Error initializing GLEW! " <<  glewGetErrorString(glewError) << "\n";
+			cout << "Error initializing GLEW! " <<  glewGetErrorString(glewError) << "\n";
 			return false;
 		}
 	#endif
 
 	err = glGetError(); 
-	if(err!=0) cerr << "GLEW: " << err << "\n";
+	if(err!=0) cout << "GLEW: " << err << "\n";
 
 	//Blendausasetuksia
 	glEnable(GL_DEPTH_TEST);
@@ -130,7 +130,7 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
 
 	//tarkistetaan errorit
 	err = glGetError(); 
-	if(err!=0) cerr << "Setup GL: " << err << "\n";
+	if(err!=0) cout << "Setup GL: " << err << "\n";
 
 	/*** GL:n asetukset ***/
 
@@ -139,7 +139,7 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
 	glBindVertexArray(vertexArrayID);
 
 	err = glGetError(); 
-	if (err!=0) cerr << "Generate VAO: " << err << "\n";
+	if (err!=0) cout << "Generate VAO: " << err << "\n";
 
 	//taustaväri
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -148,7 +148,7 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
 	programID = LoadShaders(vertexShaderPath.c_str(), fragmentShaderPath.c_str() );
 	imgProgramID = LoadShaders(imgVertexShaderPath.c_str(), imgFragmentShaderPath.c_str() );
 	err = glGetError(); 
-	if(err!=0) cerr << "Load shaders: " << err << "\n";
+	if(err!=0) cout << "Load shaders: " << err << "\n";
 
 	createMaterials();
 	setLight();
@@ -163,7 +163,7 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
     //luodaan taustakuva ja paletti
 	background.create(backgroundPaths[0]);
 	if (!paletti.loadFromFile(palettePath))
-		std::cerr << "Palettia ei voitu ladata! (" << palettePath << ")\n";
+		std::cout << "Palettia ei voitu ladata! (" << palettePath << ")\n";
 
 	setMaterial(1);
 	setColor(1,0,0);
@@ -171,7 +171,7 @@ bool initialize(int window_w, int window_h, bool fullscreen) {
 
 	//Jos tähän asti päästään, onnistuttiin.
 	err = glGetError(); 
-	if(err!=0) cerr << "Init: " << err << "\n";
+	if(err!=0) cout << "Init: " << err << "\n";
 	running = true;
 	return true;
 }
@@ -192,7 +192,7 @@ void show() {
 
 	SDL_GL_SwapWindow(window);
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "Show: " << err << "\n";
+	if(err!=0) cout << "Show: " << err << "\n";
 }
 
 
@@ -236,7 +236,7 @@ void setLight() {
 	glUniform1f(AmbientPower_ID, ambientPower);
 
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "SetLight: " << err << "\n";
+	if(err!=0) cout << "SetLight: " << err << "\n";
 
 }
 
@@ -287,7 +287,7 @@ void setPosition(glm::vec3 pos) {
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &modelMatrix[0][0]);
 
     GLenum err = glGetError(); 
-	if(err!=0) cerr << "SetPosition: " << err << "\n";
+	if(err!=0) cout << "SetPosition: " << err << "\n";
 
 }
 
@@ -306,7 +306,7 @@ void setMaterial(material mat) {
 	glUniform1f(ambientID, mat.ambient);
 
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "SetMaterial: " << err << "\n";
+	if(err!=0) cout << "SetMaterial: " << err << "\n";
 }
 
 void setMaterialTowards(material target, float amount) {
@@ -337,7 +337,7 @@ void setColor(float r, float g, float b) {
 	GLuint DiffuseID = glGetUniformLocation(programID, "diffuseColor");
 	glUniform3f(DiffuseID, r, g, b);
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "SetColor: " << err << "\n";
+	if(err!=0) cout << "SetColor: " << err << "\n";
 }
 
 
@@ -368,7 +368,7 @@ void valitseObjekti(int indeksi) {
 	if(indeksi >=0 && indeksi < kappaleet.size() )
 		activeObject = indeksi;
 	else
-		cerr << "Huono indeksi: " << indeksi << "! Kappaleita on " << kappaleet.size() << "\n";
+		cout << "Huono indeksi: " << indeksi << "! Kappaleita on " << kappaleet.size() << "\n";
 }
 
 
@@ -425,7 +425,7 @@ void oObj::updateBuffers() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, obj.getElementData().length, obj.getElementData().data, GL_STATIC_DRAW);
 
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "Update buffers: " << err << "\n";
+	if(err!=0) cout << "Update buffers: " << err << "\n";
 }
 
 
@@ -450,7 +450,7 @@ void oObj::show() {
 	glDisableVertexAttribArray(1);
 
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "Show:draw: " << err << "\n";
+	if(err!=0) cout << "Show:draw: " << err << "\n";
 }
 
 
@@ -493,7 +493,7 @@ bool oObj::create(string objfile) {
 		);
 
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "oObj:create: " << err << "\n";
+	if(err!=0) cout << "oObj:create: " << err << "\n";
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -509,7 +509,7 @@ bool oObj::create(string objfile) {
 void oObj::asetaMuoto(vector<float> values) {
   
   if (values.size() != 8) {
-    std::cerr << "Varoitus: Annettiin muodolle " << values.size() << " arvoa\n";
+    std::cout << "Varoitus: Annettiin muodolle " << values.size() << " arvoa\n";
     return;
   }
   
@@ -596,7 +596,7 @@ bool oImage::create(string path) {
 	glDisableVertexAttribArray(2);
 
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "oImage:create: " << err << "\n";
+	if(err!=0) cout << "oImage:create: " << err << "\n";
 }
 
 
@@ -611,7 +611,7 @@ void oImage::asetaKuva(string path) {
 	}
 
 	if(tmp->format->BytesPerPixel != 4)
-		cerr << "Varoitus: BPP on " << (int)tmp->format->BytesPerPixel << "\n";
+		cout << "Varoitus: BPP on " << (int)tmp->format->BytesPerPixel << "\n";
 
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
@@ -641,7 +641,7 @@ void oImage::show() {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
 
 	GLenum err = glGetError(); 
-	if(err!=0) cerr << "oImage:show:set attribute: " << err << "\n";
+	if(err!=0) cout << "oImage:show:set attribute: " << err << "\n";
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -652,7 +652,7 @@ void oImage::show() {
 	glDisableVertexAttribArray(2);
 
 	err = glGetError(); 
-	if(err!=0) cerr << "oImage:show:Draw: " << err << "\n";
+	if(err!=0) cout << "oImage:show:Draw: " << err << "\n";
 }
 
 
@@ -693,7 +693,7 @@ bool xyPalette::loadFromFile(std::string filename){
 
 	std::cout << "Created palette, size: " << size << ", w: " << w << ", h: " << h << ", bpp: " << (int)surface->format->BytesPerPixel << "\n";
 	if ((int)surface->format->BytesPerPixel != 4)
-		std::cerr << "Varoitus! Paletin BPP pitäisi olla 4\n";
+		std::cout << "Varoitus! Paletin BPP pitäisi olla 4\n";
 	SDL_FreeSurface(surface);
 	return true;
 }
@@ -705,10 +705,10 @@ glm::vec3 xyPalette::getColor(float x, float y) {
 
 	int i = w*i_y + i_x;
 
-	//std::cerr << "getColor " << i_x << ", " << i_y << " (" << i << ")\n";
+	//std::cout << "getColor " << i_x << ", " << i_y << " (" << i << ")\n";
 
 	if (i<0 || i>size)
-		std::cerr << "Huono väri-indeksi: " << i << " !\n";
+		std::cout << "Huono väri-indeksi: " << i << " !\n";
 
 	return colors[i];
 }

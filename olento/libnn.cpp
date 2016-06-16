@@ -76,7 +76,7 @@ float HiddenNeuron::back()
 
 void HiddenNeuron::setInput(float value)
 {
-    std::cerr << "don't use this set input function!!!\n";
+    std::cout << "don't use this set input function!!!\n";
     upper[0]->output = value;
 }
 
@@ -120,7 +120,7 @@ void InputNeuron::setInput(float value)
 
 void InputNeuron::addLink(Neuron* neuron)
 {
-    std::cerr << "cannot link input layer with addLink command\n";
+    std::cout << "cannot link input layer with addLink command\n";
 }
 // end of Neuron
 
@@ -178,7 +178,7 @@ void NLayer::setInputs(std::vector<float> inputs)
         for(int i = 0; i < neurons.size();i++)
             neurons[i]->setInput(inputs[i]);
     else
-        std::cerr << "wrong input vector size: "<< inputs.size() <<"\n";
+        std::cout << "wrong input vector size: "<< inputs.size() <<"\n";
 }
 
 std::vector<float> NLayer::getOutput()
@@ -203,7 +203,7 @@ void NLayer::setError(std::vector<float> errors)
     }
     else
     {
-        std::cerr << "wrong errors vector size!! (" << errors.size() << ")\n";
+        std::cout << "wrong errors vector size!! (" << errors.size() << ")\n";
     }
 
 }
@@ -347,7 +347,7 @@ void NNet::linkHidden(int source_layer, int source_id, int dest_layer, int dest_
     }
     else
     {
-        std::cerr << "bad link indexes!!!\n";
+        std::cout << "bad link indexes!!!\n";
     }
 }
 

@@ -17,7 +17,7 @@
 #include "material.h"
 #include "dobject.h"
 
-#define DEFAULT_OBJ_PATH "/media/olento/Uusi asema/ohjelmointi/c++/GLalusta/GLalusta/resources/meshes/default.obj"
+#define DEFAULT_OBJ_PATH "resources/meshes/default.obj"
 
 namespace olentogl {
 
