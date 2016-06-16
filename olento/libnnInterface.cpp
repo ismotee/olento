@@ -198,14 +198,14 @@ namespace nnInterface {
                 bound(nn_desired_out[i],-0.9,0.9);
                 nn_desired_out[i] = (nn_desired_out[i] + 1) * 0.5f;
             }
-            std::cout << "\n";
+            //std::cout << "\n";
             
             desiredWritten = true;
         }
         else
             std::cout << "vaaran kokoinen nn_input: " << nn_input.size();
         
-        std::cout << "\n";
+        //std::cout << "\n";
     }
     
     void Close() {

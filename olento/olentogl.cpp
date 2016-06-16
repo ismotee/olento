@@ -12,6 +12,7 @@
 
 #include "shader.hpp"
 #include "random.h"
+#include "dClock.h"
 
 using namespace std;
 
@@ -373,11 +374,38 @@ void valitseObjekti(int indeksi) {
 
 void vaihdaKuva() {
 	static int valittuKuva = 0;
-	valittuKuva ++;
-	if(valittuKuva >= backgroundPaths.size() )
-		valittuKuva = 0;
+	bool changed = false;
 
-	background.asetaKuva(backgroundPaths[valittuKuva] );
+	if(dClock::getTime_hours() >= 21) {
+		if(valittuKuva != 3) {
+			valittuKuva = 3;
+			changed =true;
+		}
+	}
+	else if (dClock::getTime_hours() >= 20) {
+		if(valittuKuva != 2) {
+			valittuKuva = 2;
+			changed =true;
+		}
+	}
+	else if (dClock::getTime_hours() >= 18) {
+		if(valittuKuva != 1) {
+			valittuKuva = 1;
+			changed =true;
+		}
+	}
+	else {
+		if(valittuKuva != 0) {
+			valittuKuva = 0;
+			changed =true;
+		}
+	}
+
+	if(valittuKuva < backgroundPaths.size() && changed ) {
+		cout << dClock::getTimeString() << " Vaihdetaan taustakuva " << valittuKuva << "\n";
+		background.asetaKuva(backgroundPaths[valittuKuva] );
+	}
+
 }
 
 

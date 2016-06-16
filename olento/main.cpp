@@ -25,22 +25,22 @@ struct userInput{
     //userInput() : arvot(8, 0.5), run(true), moodi(MUOKATAAN) {}
     float mouse_x;
     float mouse_y;
-    userInput() : arvot(8, 0.5), run(true), moodi(MUOKATAAN), mouse_x(0), mouse_y(0) {}
+    userInput() : arvot(8, 0.5), run(true), moodi(KATSELLAAN), mouse_x(0), mouse_y(0) {}
 };
 
 std::mutex mtx;
 userInput ui;
-std::vector<float> muodonArvot;
+std::vector<float> muodonArvot(8, 0.5);
 
 std::vector< std::vector<float> > historia;
 
 int aktiivinenLava = 1; //joko 1 tai 2
 float naamoja = 0; //naamojen m‰‰r‰ viimeksi aktiivisella lavalla
-float min_naamoja = 0.9; //naamojen v‰himm‰ism‰‰r‰
+float min_naamoja = 0.7; //naamojen v‰himm‰ism‰‰r‰
 
 
 std::vector<float> haeHistoriasta() {
-	static int i = -1;
+	static int i;
 
 	if(historia.empty() ) {
 		std::cerr << "Ei historiaa!\n";
@@ -52,6 +52,8 @@ std::vector<float> haeHistoriasta() {
 	if(i >= historia.size() || i < 0) 
 		i=0;
 
+
+	//std::cout << dClock::getTimeString() << " Playback [" << i << "]: " << olentoServer::floatsToString(historia[i]) << "\n";
 
 	return historia[i];
 
@@ -189,7 +191,7 @@ int main(int argc, char* argv[]) {
     
     std::thread net(nnInterface::StartRoutine);
     
-    olentogl::initialize(1920, 1080, false);
+    olentogl::initialize(1600, 900, false);
     
     SDL_Event e;
     std::vector<float> paketti;
@@ -197,11 +199,13 @@ int main(int argc, char* argv[]) {
     dClock t;
     dClock paketti_t;
 
-    dClock runTime;
-    dClock kappaleenVaihdonOdotus;
+//    dClock runTime;
+//    dClock kappaleenVaihdonOdotus;
     dClock playback_t;
 
     std::string PLAYBACK_FILE = "/media/olento/Uusi asema/ohjelmointi/c++/olento/olento/resources/playback.his";
+
+   	historia = olentoServer::lataaHistoria(PLAYBACK_FILE);
 
     do {
         //ota aikaa
@@ -209,10 +213,7 @@ int main(int argc, char* argv[]) {
 
         int hours = dClock::getTime_hours();
 
-        /*if(hours == 18 || hours == 20 || hours == 21) {
-        	olentogl::vaihdaKuva();
-        	runTime.reset();
-        }*/
+       	olentogl::vaihdaKuva();
 
         //hae k‰ytt‰j‰n syˆte
         while (SDL_PollEvent(&e))
@@ -254,21 +255,22 @@ int main(int argc, char* argv[]) {
 
 	        	//Jos naamoja ei ole miss‰‰n kovin paljoa, vaihdetaan playback p‰‰lle
 	        	if(naamoja < min_naamoja) {
-	        		ui.moodi = PLAYBACK;
-	        		historia = olentoServer::lataaHistoria(PLAYBACK_FILE);
-	        		std::cout << dClock::getTimeString() << " Playback p‰‰ll‰\n";
+	        		if(ui.moodi != PLAYBACK) {
+		        		ui.moodi = PLAYBACK;
+//		        		historia = olentoServer::lataaHistoria(PLAYBACK_FILE);
+		        		std::cout << dClock::getTimeString() << " Ei n‰y naamoja. Playback p‰‰lle.\n";
+		        	}
 	        	}
 
 	        	//jos naamoja on, vaihdetaan takaisin playbackilta
 	        	else if (ui.moodi == PLAYBACK) {
 	        		ui.moodi = KATSELLAAN;
-	        		std::cout << dClock::getTimeString() << " Playback pois\n";
+	        		std::cout << dClock::getTimeString() << " Naamoja n‰kyy! Playback pois\n";
 	        	}
 
 	        	//std::cout << "Lavalla " << aktiivinenLava << " tapahtuu! Naamoja on " << naamoja << "\n";
         	}
         }
-
 
 
         //nnInterface::mtx.lock();
@@ -284,16 +286,16 @@ int main(int argc, char* argv[]) {
                 //haetaan vaste nnetilt‰
                 while (outputs.empty()) {
                     outputs = nnInterface::GetOutput();
-                    std::cout << "outputs oli tyhj‰\n";
+                    //std::cout << "outputs oli tyhj‰\n";
                 }
                 //std::cout << "tuli output\n";
                 
-                std::cout << "outputs: " << outputs[0] << " " << outputs[1] << " " << outputs[2] << " " << outputs[3] << " " << outputs[4] << "\n";
-                
+                //std::cout << "outputs: " << olentoServer::floatsToString(outputs) << "\n";
+                //std::cout << "muodonArvot: " << olentoServer::floatsToString(muodonArvot) << "\n";
                 
                 //muuta muotoa
                 for (int i = 0; i < outputs.size(); i++) {
-                    muodonArvot[i] += (outputs[i] * 2 - 1) * 0.2f;
+                    muodonArvot[i] += (outputs[i] * 2 - 1) * 0.22f;
                     bound(muodonArvot[i],0.0001f,0.9999f);
                 }
 
@@ -304,8 +306,14 @@ int main(int argc, char* argv[]) {
                 olentoServer::tallennaTiedot(paketti, muodonArvot, outputs);
 
                 nnInterface::LaskeDesiredOut(muodonArvot);
-                std::cout << "laskeDesired: " << clk.get() << "\n";
+                //std::cout << "laskeDesired: " << clk.get() << "\n";
             }
+            //playback jos paketteja ei kuulu v‰h‰‰n aikaan
+	       	else if(paketti_t.get() > 10) {
+    	   		std::cout << dClock::getTimeString() << " Ei paketteja " << paketti_t.get() << " sekuntiin. Playback p‰‰lle.\n";
+       			ui.moodi = PLAYBACK;
+       		}
+
         }
         
         if (ui.moodi == ASETA_TOIVE) {
@@ -321,19 +329,18 @@ int main(int argc, char* argv[]) {
             muodonArvot = ui.arvot;
             if(playback_t.get() > 1.0) {
 	            std::vector<float> tyhjaVektori;
-	            olentoServer::tallennaTiedot(tyhjaVektori, muodonArvot, tyhjaVektori, PLAYBACK_FILE);
+	            //olentoServer::tallennaTiedot(tyhjaVektori, muodonArvot, tyhjaVektori, PLAYBACK_FILE);
 	            playback_t.reset();
 	        }
 	    }
 
         if (ui.moodi == PLAYBACK) {
         	//hae uusi tieto sekunnin v‰lein
-        	if(playback_t.get() >= 1.0) {
-        		std::cerr << "Haetaan arvot historiasta\n";
+        	if(playback_t.get() >= 1.0) {        		
         		muodonArvot = haeHistoriasta();
-        		std::cerr << "ok\n";
+        		//std::cerr << "ok\n";
         		if(muodonArvot.size() != 8) {
-        			std::cerr << "Tuli " << muodonArvot.size() << " arvoa!\n";
+        			std::cerr << dClock::getTimeString() << "HaeHistoriasta: Tuli " << muodonArvot.size() << " arvoa!\n";
         			muodonArvot.resize(8);
         		}
         		playback_t.reset();

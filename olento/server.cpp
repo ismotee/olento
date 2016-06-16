@@ -259,7 +259,7 @@ namespace olentoServer{
 							//Jos vektori on täynnä, poista alkupäästä. HUOM tätä pitää optimoida!
 							while (paketit.size() > MAX_PAKETTEJA) {
 								paketit.erase(paketit.begin());
-                                std::cout << "ei mahu\n";
+                                std::cout << "server: ei mahu\n";
 							}
 
 							paketitVarattu = false;
@@ -470,44 +470,56 @@ void tallennaTiedot(vector<float> paketti, vector<float> muodonArvot, vector<flo
 	file.close();
 
 }
-
+/*
 std::vector<std::vector<float> > lataaHistoria(std::string filename) {
 	ifstream file;
 	stringstream line_ss;
 	string line;
 	string word;
 
-	cerr << "Ladataan historia tiedostosta " << filename.c_str() << "\n";
+	cout << "Ladataan historia tiedostosta " << filename.c_str() << "\n";
 
 	std::vector< std::vector<float> > result;
 
 	file.open(filename.c_str() );
 
 	if(file.is_open() ) {
-		while(getline(file, line) ) {
+		while(!file.eof()) {
+			getline(file, line);
 			line_ss.str(line);
 			line_ss >> word;
 			std::cout << "server, line_ss: " << word << "\n";
 			if(word.compare("MuodonArvot")==0) {
-				std::cout << "muodonArvot: \n";
+
 				std::vector<float> muoto;
 
+				//kopioi luvut riviltä. Pitäisi olla 8. 
 
-				//kopioi luvut riviltä. Pitäisi olla 8.
-				for(int i=0; i<8; i++) {
-					float f;
-					line_ss >> f;
-					muoto.push_back(f);
-					std::cout << i << ": " << muoto.back() << "\n";
+				float value = -1;
+				int debugid = 0;
+
+				while((line_sss >> value)) 
+				{
+					muoto.push_back(value);
+					std::cout << "[" << debugid++ << "]" << value << "\n";
+
 				}
 
-				std::cout << "\n";
 
+				/*
+				for(int i=0; i<8; i++) {
+					float f;
+					cout << "[" << i << "] " << line_ss.str() << " " << f << "\n";
+					line_ss >> f;
+					muoto.push_back(f);
+				}
+				*//*
 				if(muoto.size() != 8) {
 					cerr << "Historia: Liian vähän muodon arvoja (" << muoto.size() << ")\n";
 					muoto.resize(8);
 				}
 
+				std::cout << floatsToString(muoto) << "\n";
 				result.push_back(muoto);
 			}
 		}
@@ -519,6 +531,59 @@ std::vector<std::vector<float> > lataaHistoria(std::string filename) {
 
 	return result;
 
+}
+*/
+
+vector< vector<float> > lataaHistoria(std::string filename) {
+
+	using namespace std;
+
+	ifstream file;
+	file.open(filename.c_str());
+
+	vector< vector<float> > historia;
+
+	if(file.is_open()) {
+		cout << "file is open\n";
+	
+		string line;
+
+		while(getline(file, line) ) {
+
+			string word;
+			float value;
+			stringstream line_ss;
+			line_ss.str(line);
+
+			line_ss >> word;
+			//cout << "word: " << word << "\n";
+			if(word.compare("MuodonArvot") == 0) {
+				vector<float> values;
+
+				while(line_ss >> value)
+					values.push_back(value);
+
+				historia.push_back(values);
+			}
+
+		}
+		/*
+		cout << "historia: " << historia.size() << "\n";
+
+		for(int i=0; i<historia.size(); i++) {
+		cout << "[" << i << "] " << "Muodon arvot:\n";
+			for(int j=0; j<historia[i].size(); j++) {
+				cout << historia[i][j] << " ";
+			}
+		cout << "\n";
+
+		}
+		*/
+
+		file.close();
+	}
+
+	return historia;
 }
 
 }//end of namespace

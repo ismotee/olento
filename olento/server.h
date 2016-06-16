@@ -35,6 +35,8 @@ namespace olentoServer{
 	void testi();
 	void asetaVastausviesti(std::vector<float> arvot);
 
+	std::string floatsToString(std::vector<float> v);
+
 	void tallennaTiedot(std::vector<float> paketti, std::vector<float> muodonArvot, std::vector<float> muodonMuutos, std::string filename = DEFAULT_HIS_FILE);
 	std::vector<std::vector<float> > lataaHistoria(std::string filename = DEFAULT_HIS_FILE);
 

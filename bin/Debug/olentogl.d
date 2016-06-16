@@ -135,4 +135,5 @@
  /media/olento/Uusi\ asema/ohjelmointi/c++/olento/olento/include/glm/gtc/../gtc/constants.inl \
  /media/olento/Uusi\ asema/ohjelmointi/c++/olento/olento/include/glm/gtc/matrix_transform.inl \
  /media/olento/Uusi\ asema/ohjelmointi/c++/olento/olento/shader.hpp \
- /media/olento/Uusi\ asema/ohjelmointi/c++/olento/olento/random.h
+ /media/olento/Uusi\ asema/ohjelmointi/c++/olento/olento/random.h \
+ /media/olento/Uusi\ asema/ohjelmointi/c++/olento/olento/dClock.h
