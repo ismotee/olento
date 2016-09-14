@@ -19,7 +19,8 @@ olento/libnn.cpp \
 olento/libnnInterface.cpp \
 olento/tilanne.cpp \
 olento/tilanteet.cpp \
-olento/genetic.cpp
+olento/genetic.cpp \
+olento/vektorilaskut.cpp
 
 OBJECTS=$(SOURCES:.cpp=.o)
 EXECUTABLE=olentodemo
