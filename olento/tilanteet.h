@@ -20,18 +20,18 @@ public:
     int koko() {return (int)vec_tilanteet.size();}
 
     void etsiInputArvojenMukaan(std::vector<float> input);
-    std::vector<int> teeLahimpienTilanteidenIndeksiTaulukko(std::vector<float> input);
+    std::vector<int> teeLahimpienTilanteidenIndeksiTaulukko(std::vector<float> input, int maara);
     tilanne annaLahinTilanne();
     int annaLahinTilanneId();
     tilanne annaViimeisinTilanne();
     tilanne annaTilanne(int i);
     std::vector<float> annaVertailuArvot(std::vector<float> vertailtavat);
-    void jarjestaLahinTilanne (std::vector<float> input);
+    //void jarjestaLahinTilanne (std::vector<float> input);
     std::vector<int> lahimmatTilanteetOutputinMukaan(int maara, std::vector<float> out);
     tilanne lahinTilanneListasta(std::vector<int> lista, std::vector<float> input);
     
     
-    void laskeGeenit();
+    //void laskeGeenit();
     
     void lataa(std::string tiedosto);
     void tallenna(std::string tiedosto);

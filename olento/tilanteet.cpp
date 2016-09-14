@@ -24,36 +24,40 @@ void tilanteet::etsiInputArvojenMukaan(std::vector<float> input) {
     lahinTilanneid = indeksi;
 }
 
-std::vector<int> tilanteet::teeLahimpienTilanteidenIndeksiTaulukko(std::vector<float> input) {
+std::vector<int> tilanteet::teeLahimpienTilanteidenIndeksiTaulukko(std::vector<float> input, int maara) {
 
-    std::vector<int> indeksiTaulukko;
-    indeksiTaulukko.resize(input.size(), 0);
+    std::vector<int> lista;
 
-    try {
-        if (input.size() != 102)
-            throw 1;
-
-        for (int j = 0; j < input.size(); j++) {
-
-            float pieninEro = 100000;
-            int indeksi = -1;
-
-            for (int i = 0; i < vec_tilanteet.size(); i++) {
-                float vertailu = vec_tilanteet[i].compare_one(j, input[j]);
-
-                if (vertailu < pieninEro) {
-                    pieninEro = vertailu;
-                    indeksiTaulukko[j] = i;
+    std::vector<float> vertaillut;
+    vertaillut.resize(vec_tilanteet.size(), -1);
+    
+    for(int i = 0; i < vec_tilanteet.size() ; i++)
+        vertaillut[i] = vec_tilanteet[i].compare(input);
+    
+    while (lista.size() < maara) {
+        int id = -1;
+        float vertailu = 100000;
+        
+        for (int i = 0; i < vertaillut.size(); i++) {
+            
+            if(vertaillut[i] < vertailu) {
+                bool listassa = false;
+                
+                for(int j = 0; j < lista.size();j++) {
+                    if(lista[j] == i) 
+                        listassa = true;
+                }
+                
+                if(!listassa) {
+                    vertailu = vertaillut[i];
+                    id = i;
                 }
             }
-
         }
-
-    } catch (int exp) {
-        std::cout << "huono taulukko.\n";
+        lista.push_back(id);
     }
+    return lista;
 
-    return indeksiTaulukko;
 }
 
 std::vector<float> tilanteet::annaVertailuArvot(std::vector<float> vertailtavat) {
@@ -138,6 +142,7 @@ bool tilanteet::tyhja() {
     return vec_tilanteet.empty();
 }
 
+/*
 void tilanteet::laskeGeenit() {
 
     for (int i = 0; i < vec_tilanteet.size(); i++) {
@@ -145,15 +150,16 @@ void tilanteet::laskeGeenit() {
         vec_tilanteet[i].epoch();
     }
 }
-
+*/
 int tilanteet::annaLahinTilanneId() {
     return lahinTilanneid;
 }
 
+/*
 void tilanteet::jarjestaLahinTilanne(std::vector<float> input) {
     vec_tilanteet[lahinTilanneid].jarjestaGeenit(input);
 }
-
+*/
 std::vector<int> tilanteet::lahimmatTilanteetOutputinMukaan(int maara, std::vector<float> out) {
     std::vector<int> lista;
 
@@ -183,7 +189,7 @@ std::vector<int> tilanteet::lahimmatTilanteetOutputinMukaan(int maara, std::vect
                 }
             }
         }
-        std::cout << "lista indeksi: " << id << "\n";
+
         lista.push_back(id);
     }
     return lista;

@@ -13,6 +13,7 @@
 #include <time.h>
 
 #include "tilanteet.h"
+#include "vektorilaskut.h"
 
 tilanteet tilanteet_;
 
@@ -35,7 +36,8 @@ struct userInput {
 std::mutex mtx;
 userInput ui;
 std::vector<float> muodonArvot(8, 0.5);
-std::vector<float> viimeisinPaketti;
+std::vector<float> viimeisinPaketti(102, 0);
+int viimeisinTilanne = -1;
 
 std::vector< std::vector<float> > historia;
 
@@ -228,21 +230,16 @@ userInput handleEvent(SDL_Event e) {
 int main(int argc, char* argv[]) {
 
     tilanteet_.lataa("resources/tilanteet.net");
-    tilanteet_.laskeGeenit();
+    //tilanteet_.laskeGeenit();
 
     olentoServer::aloita(); //k�ynnistyy omaan threadiin
-
-    //nnInterface::Init(); //initialize nnet
-
-
-    //std::thread net(nnInterface::StartRoutine);
 
     olentogl::initialize(1280, 800, false);
 
     SDL_Event e;
     std::vector<float> paketti;
     std::vector<float> outputs;
-    outputs.resize(8,0.5);
+    outputs.resize(8, 0.5);
 
     dClock t;
     dClock paketti_t;
@@ -283,30 +280,58 @@ int main(int argc, char* argv[]) {
 
 
         //nnInterface::mtx.lock();
-        
-        
-        
+
+
+
         if (ui.moodi == KATSELLAAN) {
 
-            if(paketti.size() == 102)
-                viimeisinPaketti = paketti;
-            
+            bool samaNaama;
+
+            if (paketti.size() == 102) {
+
+                if (vektori::pituus(vektori::erotus(viimeisinPaketti, paketti)) < 0.2) {
+                    samaNaama = true;
+                    viimeisinPaketti = vektori::miksaus(paketti, viimeisinPaketti, 0.85f);
+                    std::cout << "sama naama\n";
+                } else {
+                    viimeisinPaketti = vektori::miksaus(paketti, viimeisinPaketti, 0.7f);
+                    samaNaama = false;
+                }
+
+            }
+
             if (viimeisinPaketti.size() == 102) {
                 dClock clk;
 
-                
+
                 //maaritellaan paamaara
-                tilanteet_.etsiInputArvojenMukaan(viimeisinPaketti);
-                std::vector<float> kohdeKasvot = tilanteet_.annaLahinTilanne().getInput();
+                std::vector<int> lahimmatInputit = tilanteet_.teeLahimpienTilanteidenIndeksiTaulukko(viimeisinPaketti, 60);
+
+
+                    bool viimeInputLoytyy;
+
+                    for (int i = 0; i < lahimmatInputit.size(); i++) {
+                        if (lahimmatInputit[i] == viimeisinTilanne) {
+                            viimeInputLoytyy = true;
+                            break;
+                        }
+                    }
+
+
+                    if (!viimeInputLoytyy) {
+                        
+                        float rajaarvo = vektori::pituus(vektori::erotus(tilanteet_.annaTilanne(lahimmatInputit[0]).getOutput(),muodonArvot));
+                        std::cout << "rajaarvo: " << 1+rajaarvo*100 << "\n";
+                        
+                        int id = tilanteet_.lahimmatTilanteetOutputinMukaan(1 +(int)rajaarvo * 100, tilanteet_.annaTilanne(lahimmatInputit[0]).getOutput())[0];
+                        muodonArvot = vektori::miksaus(muodonArvot,tilanteet_.annaTilanne(id).getOutput(),0.15);
+                    }
+                        
+                        //muutoin sama kuin ennen
                 
-                //lasketaan suuntavektori
-                for(int i = 0; i < viimeisinPaketti.size();i++) {
-                    viimeisinPaketti[i] = 0.1 * (viimeisinPaketti[i] + 0.1 * (kohdeKasvot[i] - viimeisinPaketti[i]));
-                }
-                
-                //etsitään lahelta samankaltaisia muotoja ja valitaan niistä se joka eniten ohjaa kohti maaranpaata
-                tilanteet_.lahinTilanneListasta(tilanteet_.lahimmatTilanteetOutputinMukaan(5,muodonArvot), viimeisinPaketti);
-                muodonArvot = tilanteet_.annaLahinTilanne().annaGeneettinenOutput(kohdeKasvot);
+
+
+
 
                 //aseta viel� samat arvot ui:iin ett� on helpompi vaihtaa
                 ui.arvot = muodonArvot;
@@ -343,21 +368,21 @@ int main(int argc, char* argv[]) {
                 playback_t.reset();
             }
         }
-/*
-        if (ui.moodi == PLAYBACK) {
-            //hae uusi tieto sekunnin v�lein
-            if (playback_t.get() >= 1.0) {
-                muodonArvot = haeHistoriasta();
-                //std::cout << "ok\n";
-                if (muodonArvot.size() != 8) {
-                    std::cout << dClock::getTimeString() << "HaeHistoriasta: Tuli " << muodonArvot.size() << " arvoa!\n";
-                    muodonArvot.resize(8);
-                }
-                playback_t.reset();
-            }
+        /*
+                if (ui.moodi == PLAYBACK) {
+                    //hae uusi tieto sekunnin v�lein
+                    if (playback_t.get() >= 1.0) {
+                        muodonArvot = haeHistoriasta();
+                        //std::cout << "ok\n";
+                        if (muodonArvot.size() != 8) {
+                            std::cout << dClock::getTimeString() << "HaeHistoriasta: Tuli " << muodonArvot.size() << " arvoa!\n";
+                            muodonArvot.resize(8);
+                        }
+                        playback_t.reset();
+                    }
 
-        }
-*/
+                }
+         */
         //nnInterface::mtx.unlock();
 
         //std::thread(asetaMuoto,muodonArvot).detach();

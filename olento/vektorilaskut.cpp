@@ -1,4 +1,5 @@
 #include "vektorilaskut.h"
+#include <math.h>
 
 namespace vektori {
     
@@ -40,6 +41,19 @@ namespace vektori {
         
         return result;        
     }
+    
+    float summa(std::vector<float> a) {
+        float result = 0;
+        for(int i =0; i < a.size();i++)
+            result += a[i];
+        
+        return result;
+    }
+    
+    float pituus(std::vector<float> a) {
+        float result = sqrtf(pistetulo(a,a));
+        return result;
+    } 
     
 }
 

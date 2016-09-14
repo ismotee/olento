@@ -20,6 +20,7 @@ tilanne::tilanne(std::vector<float> in, std::vector<float> out) {
     input = in;
     output = out;
 
+    /*
     populations.clear();
 
     for (int i = 0; i < output.size(); i++) {
@@ -27,7 +28,7 @@ tilanne::tilanne(std::vector<float> in, std::vector<float> out) {
         populations.back().make_population(30, input.size(), 30);
         populations.back().evaluate_fitness(input, output[i]);
     }
-
+    */
 }
 
 tilanne::tilanne(std::string data) {
@@ -46,6 +47,8 @@ tilanne::tilanne(std::string data) {
     std::getline(ss, the_line);
     output = stovf(the_line);
 
+    
+    /*
     populations.clear();
 
     for (int i = 0; i < output.size(); i++) {
@@ -53,6 +56,7 @@ tilanne::tilanne(std::string data) {
         populations.back().make_population(30, input.size(), 30);
         populations.back().evaluate_fitness(input, output[i]);
     }
+     */
 }
 
 float tilanne::compare(std::vector<float> inp) {
@@ -68,14 +72,14 @@ float tilanne::compare(std::vector<float> inp) {
     }
     return result;
 }
-
+/*
 float tilanne::compare_one(int id, float inp) {
     if(id < input.size())
         return (float) std::abs(input[id] - inp);
     
     return 0;
 }
-
+*/
 std::string tilanne::toString() {
     std::stringstream ss;
 
@@ -97,7 +101,7 @@ std::string tilanne::toString() {
     return ss.str();
 
 }
-
+/*
 void tilanne::epoch() {
 
     if (!input.empty()) {
@@ -134,7 +138,7 @@ void tilanne::jarjestaGeenit(std::vector<float> inp) {
         populations[i].evaluate_fitness(inp,output[i]);
     }
 }
-
+*/
 float tilanne::compare_out(std::vector<float> out) {
     float result = 0;
 

@@ -9,7 +9,7 @@ class tilanne {
 
     std::vector<float> input;
     std::vector<float> output;
-    std::vector<genetic> populations;
+    //std::vector<genetic> populations;
 
 public:
     
@@ -20,13 +20,13 @@ public:
     std::vector<float> getOutput() {return output;}
     std::vector<float> getInput() {return input;}
     float compare(std::vector<float> inp);
-    float compare_one(int id,float inp);
+    //float compare_one(int id,float inp);
     float compare_out(std::vector<float> out);
     
-    void epoch();
-    void jarjestaGeenit(std::vector<float> inp);
+    //void epoch();
+    //void jarjestaGeenit(std::vector<float> inp);
     
-    std::vector<float> annaGeneettinenOutput (std::vector<float> numbers);
+    //std::vector<float> annaGeneettinenOutput (std::vector<float> numbers);
     
     std::string toString();
 
