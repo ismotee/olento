@@ -1,4 +1,4 @@
-﻿#include "oModificators.h"
+#include "oModificators.h"
 
 
 oModificators::oModificators()

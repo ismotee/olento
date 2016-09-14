@@ -37,6 +37,35 @@ Neuron::Neuron () :
 {
 }
 
+void Neuron::fromString(std::string data) {
+    
+    std::stringstream ss;
+    ss.str(data);
+    
+    float value;
+    int weight_id = 0;
+    ss >> output;
+    while(ss >> value) {
+        if(weight_id < weights.size()) {
+            weights[weight_id] = value;
+            weight_id++;
+        }
+        else {
+            std::cout << "neuron: data too big: " << weight_id << "\n";
+        }
+    }
+    
+}
+
+std::string Neuron::toString() {
+    std::stringstream ss;
+    ss << output << " ";
+    for(int i = 0; i < weights.size();i++)
+        ss << weights[i] << " ";
+
+    ss << "\n";
+    return ss.str();
+}
 
 HiddenNeuron::HiddenNeuron (float learn_rate)
 {
@@ -225,6 +254,36 @@ std::vector<NeuronData> NLayer::getNeuronData ()
     return data;
 }
 
+void NLayer::fromString(std::string data) {
+    std::stringstream ss;
+    ss.str(data);
+    std::string line;
+    
+    int neurons_id = 0;
+    
+    while(ss.good()) {
+        if(neurons_id < neurons.size()) {
+            std::getline(ss, line);
+            neurons[neurons_id]->fromString(line);
+            neurons_id++;
+        
+        } else {
+            std::cout << "NLayer: data too big!\n";
+        }
+    }
+    
+    
+    
+}
+
+std::string NLayer::toString() {
+    std::string result;
+    for(int i = 0; i < neurons.size(); i++) {
+        result += neurons[i]->toString();
+    }
+    return result;
+}
+
 // end of NLAYER
 
 NNetData::NNetData(){}
@@ -234,31 +293,93 @@ std::string NNetData::toString ()
 {
     std::stringstream ss;
 
-    ss << inputs_n << " " << hidden_layers_n << " " << hidden_neurons_n << " " << outputs_n << std::endl;
-    
-    for(int i = 0; i < nData.size(); i++) {
-        ss << "n" << std::endl;
-        
-        for(int j = 0; j < nData[i].weights.size(); j++) {
-            ss << nData[i].weights[j];
-            ss << " ";
-        }
-        
-        ss << nData[i].output;
-        ss << std::endl;
-        
-    }
-    
+    ss << inputs_n << " " << hidden_layers_n << " " << hidden_neurons_n << " " << outputs_n << "\n";
+
     for(int i = 0; i < lData.size();i++)
     {
-        ss << "l" << std::endl;
-        ss << lData[i].source_layer << " " << lData[i].source_id << " " << lData[i].dest_layer << " " << lData[i].dest_id << std::endl;
+        ss << "l" << "\n";
+        ss << lData[i].source_layer << " " << lData[i].source_id << " " << lData[i].dest_layer << " " << lData[i].dest_id << "\n";
     }
-    
+            
+    ss << "\n";
+       
     return ss.str();
     
 }
 
+NNetData NNetData::fromString(std::string str)
+{
+    NNetData data;
+    std::stringstream ss;
+              
+    ss.str(str);
+    std::string the_line;
+            
+    std::getline(ss,the_line);
+            
+    std::stringstream values;
+    values.str(the_line);
+            
+    // kirjoita init arvot
+    
+    values >> data.inputs_n;
+    values >> data.hidden_layers_n;
+    values >> data.hidden_neurons_n;
+    values >> data.outputs_n;
+
+    int neuron_id = 0;
+    
+    //aloitetaan lukemaan stringia
+
+
+    
+    while(!ss.eof() ){
+
+        std::getline(ss, the_line);
+
+
+        // l niin tehdaan linkki
+        if(the_line.compare("l") == 0) {
+            std::getline(ss, the_line);
+            std::stringstream values;
+            values.str(the_line);         
+
+            int src_layer;
+            int src_neuron;
+            int dst_layer;
+            int dst_neuron;
+
+
+            
+            values >> src_layer;
+            values >> src_neuron;
+            values >> dst_layer;
+            values >> dst_neuron;
+            
+            std::cerr << "linkki: " << src_layer << " " << src_neuron << " " << dst_layer << " " << dst_neuron << "\n";
+            
+            linkData link(src_layer,src_neuron,dst_layer,dst_neuron);
+            data.lData.push_back(link);
+        }
+
+        // jos n niin kirjoitetaan weight_str:aan
+        if(the_line.compare("n") == 0) {
+            float value;
+            std::getline(ss, the_line);
+            nData.push_back(NeuronData());
+            
+            values >> value;
+            nData.back().output = value;
+            
+            while(values >> value) {
+                nData.back().weights.push_back(value);
+            }
+                        
+        }
+        
+    }
+    
+}
 
 
 
@@ -368,25 +489,68 @@ void NNet::link(int source_layer, int source_id, int dest_layer, int dest_id)
     link(data);
 }
 
+void NNet::setWeights(std::vector<NeuronData> nData)
+{
+    int layer_id = 0;
+    int neuron_decr = 0;
+    
+    for(int i = 0; i < nData.size(); i++) {
+        for(int j = 0; j < nData[i].weights.size(); j++) {
+            if(layer_id == 0) {
+                inputLayer.neurons[i - neuron_decr]->weights[j] = nData[i].weights[j];
+                inputLayer.neurons[i - neuron_decr]->output = nData[i].output;
+                if(i == nnData.inputs_n) {
+                    layer_id++;
+                    neuron_decr += nnData.inputs_n;
+                }
+            } else if(1 + nnData.hidden_layers_n == layer_id) {
+                outputLayer.neurons[i - neuron_decr]->weights[j] = nData[i].weights[j];
+                outputLayer.neurons[i - neuron_decr]->output = nData[i].output;
+            } else {
+                hiddenLayers[layer_id -1].neurons[i - neuron_decr]->weights[j] = nData[i].weights[j];
+                hiddenLayers[layer_id -1].neurons[i - neuron_decr]->output = nData[i].output;
+                if(i - neuron_decr == nnData.hidden_neurons_n) {
+                    layer_id++;
+                    neuron_decr += nnData.hidden_neurons_n;
+                }
+            }
+        }
+    }
+}
+
+void NNet::setWeight(float value, int layer, int neuron, int weight)
+{
+    hiddenLayers[layer].neurons[neuron]->weights[weight] = value;    
+}
+
+void NNet::setInputWeight(float value, int neuron, int weight) {
+    inputLayer.neurons[neuron]->weights[weight] = value;
+}
+
+
 void NNet::saveNet(std::string filename)
 {
-    
     std::ofstream os(filename);
     
     if(os.is_open()) {
-        std::vector<NeuronData> nData = inputLayer.getNeuronData();
-    
-        nnData.nData.insert(nnData.nData.end(), nData.begin(), nData.end());
-    
-        for(int i = 0; i < hiddenLayers.size(); i++) {
-            nData = hiddenLayers[i].getNeuronData();
-            nnData.nData.insert(nnData.nData.end(), nData.begin(), nData.end());
-        }
-    
-        nData = outputLayer.getNeuronData();
-        nnData.nData.insert(nnData.nData.end(), nData.begin(),nData.end());
 
-        os << nnData.toString();
+        std::string data_str;
+        
+        //perustiedot kuten inputtien määrä, linkit, jne..
+        data_str = nnData.toString();
+        
+        data_str += " L 0 " + std::to_string(nnData.inputs_n) + "\n"; 
+        data_str += inputLayer.toString();
+ 
+        for(int i = 0; i < hiddenLayers.size();i++) {
+            data_str += " L " + std::to_string(i + 1) + " " + std::to_string(nnData.hidden_neurons_n) + "\n";
+            data_str += hiddenLayers[i].toString();
+        }
+        
+        //data_str += "L " + std::to_string(nnData.hidden_layers_n + 1) + " " + std::to_string(nnData.outputs_n) + "\n"; 
+        //data_str += outputLayer.toString();
+               
+        os << data_str;
         os.close();
 
     } else
@@ -394,9 +558,102 @@ void NNet::saveNet(std::string filename)
     
 }
 
+void NNet::loadNet(std::string filename) 
+{
+    std::ifstream is(filename);
+
+    if(is.is_open()) {
+        std::string line;
+        std::stringstream ss;
+
+        std::getline(is,line);
+        ss.str(line);
+        
+        int in_n;
+        int hl_n;
+        int hn_n;
+        int o_n;
+        
+        ss >> in_n;
+        ss >> hl_n;
+        ss >> hn_n;
+        ss >> o_n;
+        
+        std::cout << "ladataan: " << in_n << " "<< hl_n << " " << hn_n << " " << o_n << "\n";
+        
+        init(in_n,hl_n,hn_n,o_n);
+        
+        while(is.good()) {
+            std::stringstream loopstream;
+            // reading id_letter and possibly other data to stream
+            std::getline(is,line);
+            
+            loopstream.str(line);
+
+            std::string id_letter;
+            loopstream >> id_letter;
+            
+            //std::cout <<id_letter<<"\n";
+            // link
+            if(id_letter.compare("l") == 0) {
+                // get linking data from file
+                std::getline(is,line);
+                std::stringstream values;
+                values.str(line);         
+
+                // convert string to int
+                int src_layer;
+                int src_neuron;
+                int dst_layer;
+                int dst_neuron;
+                
+                values >> src_layer;
+                values >> src_neuron;
+                values >> dst_layer;
+                values >> dst_neuron;
+                
+                //std::cout << "tehdään linkki: " << src_layer << " " << src_neuron << " " << dst_layer << " " << dst_neuron << "\n";
+                //make a link
+                link(src_layer, src_neuron, dst_layer, dst_neuron);
+                
+            }
+            
+            if(id_letter.compare("L") == 0) {
+                int layer_id;
+                int neurons_n;
+                
+                //loopstream.str(line);
+                
+                loopstream >> layer_id;
+                loopstream >> neurons_n;
+                
+                std::cout << "Layer " << layer_id << ", " << neurons_n << " neuronia\n";
+                
+                std::string layerData;
+                
+                for(int i = 0; i < neurons_n - 1;i++) {
+                    std::getline(is, line);
+                    layerData += line + " \n";
+                }
+                
+                
+                if(layer_id == 0)
+                    inputLayer.fromString(layerData);
+                else if(layer_id == nnData.hidden_layers_n + 1)
+                    outputLayer.fromString(layerData);
+                else
+                    hiddenLayers[layer_id-1].fromString(layerData);
+                
+            }
+        
+        }
+    is.close();    
+    }
+}
+
 void NNet::printSize()
 {
     std::cout << "input Layer: " << inputLayer.neurons.size() <<
-    " hidden layer: " << hiddenLayers.size() << " output layer:" << outputLayer.neurons.size() << "\n";
+    " hidden layer: " << hiddenLayers.size() << " hidden layer neurons: " << hiddenLayers[0].neurons.size() << " output layer:" << outputLayer.neurons.size() << "\n";
 
 }

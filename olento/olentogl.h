@@ -1,4 +1,4 @@
-﻿#ifndef OLENTOGL_H
+#ifndef OLENTOGL_H
 #define OLENTOGL_H
 
 //OpenGL-kirjastot

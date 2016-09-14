@@ -1,4 +1,4 @@
-﻿#include "olentogl.h"
+#include "olentogl.h"
 #include "oModificators.h"
 
 //Muut kirjastot
@@ -442,7 +442,7 @@ void oObj::show() {
 	glEnableVertexAttribArray(1);
 
 	setMaterialTowards(mat, 0.1);
-	setColorTowards(color, 0.1);
+	setColorTowards(color, 0.05);
 
 	glDrawElements(GL_TRIANGLES, obj.getElementData().length, GL_UNSIGNED_INT, 0);
 
@@ -531,7 +531,7 @@ void oObj::asetaMuoto(vector<float> values) {
   std::vector<glm::vec3> newVerts = mods.getShape(shapeValues);
 
   //aseta vertekstit kappaleeseen
-  obj.changeVerticesTowards(newVerts, 0.01);
+  obj.changeVerticesTowards(newVerts, 0.03);
 
   //5: materiaali, 6 & 7: väri
   mat = getMaterial(values[5]);

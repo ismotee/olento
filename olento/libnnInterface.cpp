@@ -21,8 +21,7 @@ namespace nnInterface {
     std::atomic<bool> inWritten;
     std::atomic<bool> desiredWritten;
     std::atomic<bool> nn_stop;
-    std::atomic<bool> update;
-
+ 
     int neighbours_n = 8;
 
     std::mutex mtx;
@@ -82,13 +81,15 @@ namespace nnInterface {
         	int reduction = 0;
         	for (int i = 0; i < in; i++) {
 
-            	reduction += i;
-            	for (int j = 0; j < in; j++) {
-					nn_nets[k].link(0, i, 1, i*in + j - reduction);	
+                    reduction += i;
+                    for (int j = 0; j < in; j++) {
+			nn_nets[k].link(0, i, 1, i*in + j - reduction);	
 	                nn_nets[k].link(0, j, 1, i*in + j - reduction);
-          		}
+                    }
         	}
     	}
+        
+        //LoadNN("testitalle");
     }
     
     void StartRoutine() {
@@ -99,22 +100,22 @@ namespace nnInterface {
         while (!nn_stop) {
             // back propagation
             mtx.lock();
-            if (desiredWritten == true) {
+            if (desiredWritten == true && nn_nets.size() == nets) {
             	for(int i = 0; i < nn_nets.size();i++) {
             		std::vector<float> dOut;
             		dOut.push_back(nn_desired_out[i]);
                 	nn_nets[i].back(dOut);
                 }
-                //voisi kirjoittaa tiedostoon tässä välissä
+                //voisi kirjoittaa tiedostoon tï¿½ssï¿½ vï¿½lissï¿½
                 desiredWritten = false;
             }
             mtx.unlock();
             
-            std::this_thread::yield();
+            //std::this_thread::yield();
             
             mtx.lock();
             // feed forward
-            if (inWritten == true) {
+            if (inWritten == true && nn_nets.size() == nets) {
             	for(int i = 0; i < nn_nets.size(); i++)
             		nn_output[i] = nn_nets[i].forward(nn_input)[0];
                 if (nn_output.size() > out*nets) {
@@ -132,14 +133,16 @@ namespace nnInterface {
     
     void SetInput(std::vector<float> input_)
     {
-        nn_input = input_;
-        inWritten = true;
+        if(!nn_stop) {
+            nn_input = input_;
+            inWritten = true;
+        }
     }
     
     
     std::vector<float> GetOutput()
     {
-        if (outRead) {
+        if (outRead || nn_stop) {
             result.clear();
             return result;
         }
@@ -167,21 +170,21 @@ namespace nnInterface {
             for(int i = 0; i < tilanteet.size(); i++) {
                 erot[i] = vektorienEro(nn_input, tilanteet[i].inputData);
                 if(erot[i] == -1)
-                	std::cout << "nnInterface, LaskeDesiredOut: Väärä vektorikoko: "<< nn_input.size() << " " << tilanteet[i].inputData.size() << "\n";
+                	std::cout << "nnInterface, LaskeDesiredOut: Vï¿½ï¿½rï¿½ vektorikoko: "<< nn_input.size() << " " << tilanteet[i].inputData.size() << "\n";
             }
 
             std::vector <int> jarjestetytIdt = jarjestaTaulukkoPienimmastaSuurimpaan(erot);
 
             std::vector <std::vector<float> > laskettuSuunta;
 
-            for(int i = 0; i < tilanteet.size() && i < neighbours_n; i++) //muuta tämä 8 muuttujaksi
+            for(int i = 0; i < tilanteet.size() && i < neighbours_n; i++) //muuta tï¿½mï¿½ 8 muuttujaksi
             	laskettuSuunta.push_back(tilanteet[jarjestetytIdt[i]].desiredOutData);
 
            	std::vector<float> summattu(laskettuSuunta[0].size());
 
            	int additiveId = 1;
 
-           	for(int i = 1; i < tilanteet.size() && i < neighbours_n; i++) { //ja tämä
+           	for(int i = 1; i < tilanteet.size() && i < neighbours_n; i++) { //ja tï¿½mï¿½
            		additiveId+=i;
            		for(int j = 0; j < nn_desired_out.size(); j++) {
 
@@ -221,14 +224,14 @@ namespace nnInterface {
     }
     
     std::vector<std::string> parsiTilanteet(std::string inputString) {
-        //Tilanne alkaa start-rivistŠ ja pŠŠttyy seuraavaan start-riviin tai EOF
+        //Tilanne alkaa start-rivistï¿½ ja pï¿½ï¿½ttyy seuraavaan start-riviin tai EOF
         //Tungetaan vektoriin tilanne kerrallaan
         
         std::vector<std::string> result;
         std::stringstream inss;
         inss.str(inputString);
         
-        //ruvetaan kŠymŠŠn lŠpi
+        //ruvetaan kï¿½ymï¿½ï¿½n lï¿½pi
         while(inss.good() ) {
             std::string line;
             std::string tilanneStr;
@@ -244,5 +247,36 @@ namespace nnInterface {
             result.push_back(tilanneStr);
         }
         return result;
+    }
+
+
+    void SaveNN(std::string savefile)
+    {
+        mtx.lock();
+        for(int i = 0; i < nn_nets.size();i++){
+            std::string fullname;
+            fullname = savefile + std::to_string(i) + ".onn";
+            nn_nets[i].saveNet(fullname);
+            std::cout << "net " << i << " saved!\n";
+        }
+        mtx.unlock();
+    }
+    
+    void LoadNN(std::string filename)
+    {
+        //Close();
+        mtx.lock();
+        nn_nets.clear();
+        for(int i = 0; i < nets;i++) {
+            std::string fullname;
+            fullname = filename + std::to_string(i) + ".onn";
+            nn_nets.push_back(NNet());
+            nn_nets[i].loadNet(fullname);
+            std::cout << "net " << i << " loaded!\n";
+            nn_nets[i].printSize();
+
+        }
+        mtx.unlock();
+        //StartRoutine();
     }
 }

@@ -1,4 +1,6 @@
-﻿#include "oDirectory.h"
+#include "oDirectory.h"
+#include <algorithm>
+#include <sys/types.h>
 
 oDirectory::oDirectory (std::string _path): path(_path)
 {
@@ -27,6 +29,7 @@ oDirectory::oDirectory (std::string _path): path(_path)
         }
             
         closedir (dir);
+        std::sort(files.begin(),files.end());
     } else {
         /* could not open directory */
         std::cout << "could not open directory " << path << "\n";

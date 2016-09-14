@@ -12,108 +12,116 @@
 #include <mutex>
 #include <time.h>
 
+#include "tilanteet.h"
+
+tilanteet tilanteet_;
 
 enum moodiT {
     KOULUTETAAN, ASETA_TOIVE, MUOKATAAN, KATSELLAAN, PLAYBACK
 };
 
-
-struct userInput{
+struct userInput {
     std::vector<float> arvot;
     bool run;
     moodiT moodi;
     //userInput() : arvot(8, 0.5), run(true), moodi(MUOKATAAN) {}
     float mouse_x;
     float mouse_y;
-    userInput() : arvot(8, 0.5), run(true), moodi(KATSELLAAN), mouse_x(0), mouse_y(0) {}
+
+    userInput() : arvot(8, 0.5), run(true), moodi(KATSELLAAN), mouse_x(0), mouse_y(0) {
+    }
 };
 
 std::mutex mtx;
 userInput ui;
 std::vector<float> muodonArvot(8, 0.5);
+std::vector<float> viimeisinPaketti;
 
 std::vector< std::vector<float> > historia;
 
 int aktiivinenLava = 1; //joko 1 tai 2
-float naamoja = 0; //naamojen määrä viimeksi aktiivisella lavalla
+float naamoja = 0; //naamojen mï¿½ï¿½rï¿½ viimeksi aktiivisella lavalla
 
-float min_naamoja = 0.7; //naamojen vähimmäismäärä
+float min_naamoja = 0.0; //naamojen vï¿½himmï¿½ismï¿½ï¿½rï¿½
 float herkkyys = 0.22;
 int neighbours_n = 8;
 
-
 std::vector<float> haeHistoriasta() {
-	static int i;
+    static int i;
 
-	if(historia.empty() ) {
-		std::cout << "Ei historiaa!\n";
-		return std::vector<float>(0);
-	}
+    if (historia.empty()) {
+        std::cout << "Ei historiaa!\n";
+        return std::vector<float>(0);
+    }
 
-	i++;
+    i++;
 
-	if(i >= historia.size() || i < 0) 
-		i=0;
+    if (i >= historia.size() || i < 0)
+        i = 0;
 
 
-	//std::cout << dClock::getTimeString() << " Playback [" << i << "]: " << olentoServer::floatsToString(historia[i]) << "\n";
+    //std::cout << dClock::getTimeString() << " Playback [" << i << "]: " << olentoServer::floatsToString(historia[i]) << "\n";
 
-	return historia[i];
+    return historia[i];
 
 }
 
-
 userInput handleEvent(SDL_Event e) {
-    
-    
-    const float MUUTOS = 0.02;
-    
+
+
+    const float MUUTOS = 0.01;
+
     if (e.type == SDL_QUIT)
         ui.run = false;
-    
+
     else if (e.type == SDL_MOUSEMOTION) {
-        
+
         int x, y;
         const int w = 1000;
         const int h = 800;
-        
-        SDL_GetMouseState(&x, &y);
-        ui.mouse_x = (float)x / w;
-        ui.mouse_y = (float)y / h;
-        
-    }
-    
-    else if (e.type == SDL_KEYDOWN) {
-        
-        //std::cout << SDL_GetKeyName(e.key.keysym.sym) << " pressed\n";
-        
-        switch (e.key.keysym.sym) {
-        	using namespace std;
-        	case SDLK_F12:
-        		ui.run = false;
-        		break;
 
+        SDL_GetMouseState(&x, &y);
+        ui.mouse_x = (float) x / w;
+        ui.mouse_y = (float) y / h;
+
+    } else if (e.type == SDL_KEYDOWN) {
+
+        //std::cout << SDL_GetKeyName(e.key.keysym.sym) << " pressed\n";
+
+        switch (e.key.keysym.sym) {
+                using namespace std;
+            case SDLK_F12:
+                ui.run = false;
+                break;
+                /*    
+                case SDLK_F11:
+                    nnInterface::SaveNN("testitalle");
+                    break;
+
+                case SDLK_F10:
+                    nnInterface::LoadNN("testitalle");
+                    break;
+                 */
                 //Moodin vaihto
             case SDLK_RETURN:
                 ui.moodi = ASETA_TOIVE;
                 break;
-                
+
             case SDLK_SPACE:
                 if (ui.moodi == MUOKATAAN) ui.moodi = KOULUTETAAN;
                 else if (ui.moodi == KOULUTETAAN) ui.moodi = MUOKATAAN;
                 break;
             case SDLK_TAB:
                 if (ui.moodi == KATSELLAAN) {
-                	ui.moodi = MUOKATAAN;
-                	std::cout << "muokataan\n";
-                }
-                else {
-                	ui.moodi = KATSELLAAN;
-            	    ui.arvot = muodonArvot;
-            	    std::cout << "katsellaan\n";
+                    ui.moodi = MUOKATAAN;
+                    std::cout << "muokataan\n";
+                } else {
+                    ui.moodi = KATSELLAAN;
+                    ui.arvot = muodonArvot;
+                    std::cout << "katsellaan\n";
                 }
                 break;
-                
+
                 //Reset
             case SDLK_ESCAPE:
                 for (int i = 0; i < ui.arvot.size(); i++)
@@ -123,42 +131,42 @@ userInput handleEvent(SDL_Event e) {
                 for (int i = 0; i < ui.arvot.size(); i++)
                     ui.arvot[i] = randf(0, 1);
                 break;
-                //Muodon säätö
+                //Muodon sï¿½ï¿½tï¿½
 
             case SDLK_KP_7:
-            	min_naamoja += 0.5;
-            	cerr << "min_naamoja: " << min_naamoja << "\n";
-            	break;
+                min_naamoja += 0.5;
+                cerr << "min_naamoja: " << min_naamoja << "\n";
+                break;
 
             case SDLK_KP_4:
-            	min_naamoja -= 0.5;
-            	if(min_naamoja < 0) min_naamoja = 0;
-            	cerr << "min_naamoja: " << min_naamoja << "\n";
-            	break;
+                min_naamoja -= 0.5;
+                if (min_naamoja < 0) min_naamoja = 0;
+                cerr << "min_naamoja: " << min_naamoja << "\n";
+                break;
 
             case SDLK_KP_8:
-            	herkkyys += 0.01;
-            	cerr << "herkkyys: " << herkkyys << "\n";
-            	break;
+                herkkyys += 0.01;
+                cerr << "herkkyys: " << herkkyys << "\n";
+                break;
 
             case SDLK_KP_5:
-            	herkkyys -= 0.01;
-            	if(herkkyys < 0.01) herkkyys = 0.01;
-            	cerr << "herkkyys: " << herkkyys << "\n";
-            	break;
+                herkkyys -= 0.01;
+                if (herkkyys < 0.01) herkkyys = 0.01;
+                cerr << "herkkyys: " << herkkyys << "\n";
+                break;
 
             case SDLK_KP_9:
-            	neighbours_n += 1;
-            	cerr << "neighbours_n: " << neighbours_n << "\n";
-            	break;
+                neighbours_n += 1;
+                cerr << "neighbours_n: " << neighbours_n << "\n";
+                break;
 
             case SDLK_KP_6:
-            	neighbours_n -= 1;
-            	if(neighbours_n < 1) neighbours_n = 1;
-            	cerr << "neighbours_n: " << neighbours_n << "\n";
-            	break;
+                neighbours_n -= 1;
+                if (neighbours_n < 1) neighbours_n = 1;
+                cerr << "neighbours_n: " << neighbours_n << "\n";
+                break;
 
-                                                
+
             case SDLK_q:
                 ui.arvot[0] += MUUTOS;
                 break;
@@ -207,42 +215,46 @@ userInput handleEvent(SDL_Event e) {
             case SDLK_k:
                 ui.arvot[7] -= MUUTOS;
                 break;
-                
+
         }
-        
+
         for (int i = 0; i < ui.arvot.size(); i++)
             bound(ui.arvot[i], 0, 1);
-        
+
     }
     return ui;
 }
 
-
-
-
 int main(int argc, char* argv[]) {
-    
-    olentoServer::aloita(); //käynnistyy omaan threadiin
-    
-    nnInterface::Init(); //initialize nnet
-    
-    std::thread net(nnInterface::StartRoutine);
-    
-    olentogl::initialize(1600, 900, false);
-    
+
+    tilanteet_.lataa("resources/tilanteet.net");
+    tilanteet_.laskeGeenit();
+
+    olentoServer::aloita(); //kï¿½ynnistyy omaan threadiin
+
+    //nnInterface::Init(); //initialize nnet
+
+
+    //std::thread net(nnInterface::StartRoutine);
+
+    olentogl::initialize(1280, 800, false);
+
     SDL_Event e;
     std::vector<float> paketti;
-    std::vector<float> testInputs(4, 0.5);
+    std::vector<float> outputs;
+    outputs.resize(8,0.5);
+
     dClock t;
     dClock paketti_t;
+    int viimeksiValittuTilanneId = -1;
 
-//    dClock runTime;
-//    dClock kappaleenVaihdonOdotus;
+    //    dClock runTime;
+    //    dClock kappaleenVaihdonOdotus;
     dClock playback_t;
 
     std::string PLAYBACK_FILE = "resources/playback.his";
 
-   	historia = olentoServer::lataaHistoria(PLAYBACK_FILE);
+    historia = olentoServer::lataaHistoria(PLAYBACK_FILE);
 
     do {
         //ota aikaa
@@ -250,141 +262,102 @@ int main(int argc, char* argv[]) {
 
         int hours = dClock::getTime_hours();
 
-       	olentogl::vaihdaKuva();
+        olentogl::vaihdaKuva();
 
-        //hae käyttäjän syöte
+        //hae kï¿½yttï¿½jï¿½n syï¿½te
         while (SDL_PollEvent(&e))
             handleEvent(e);
-        
+
         //hae paketti
 
-        paketti = olentoServer::haePaketti(); //palauttaa tyhjän paketin jos paketteja ei ole tullut. Tarkista p.empty()
-        if(!paketti.empty()) {
-        	if(paketti.size() < 104) //paketin koko pitäisi olla 104. Jos tuli vähemmän, hylätään paketti.
-        		paketti.clear();
-        	else {
-	        	//std::cout << dClock::getTimeString() << " Tuli paketti! (" << paketti.size() << ") Väli: " << paketti_t.get() << "s\n";
-	        	//std::cout << "lavalta " << paketti[0] << ", naamoja on " << paketti[1] << "\n";
-	        	std::cout << dClock::getTimeString() << " Tuli paketti! Koko: " << paketti.size() << " Lava: " << paketti[0] << " Naamoja: " << paketti[1] << "\n";
-				paketti_t.reset();
-	            paketti.resize(104);
-	        	//paketti[0] : lavan id (1/2)
-	        	//paketti[1] : naamojen määrä (float)
-
-	        	if(paketti[0] != aktiivinenLava) { //Paketti tuli toiselta lavalta
-	        		if(paketti[1] > naamoja) {
-	        			//Toisella lavalla on enemmän naamoja kuin viimeksi aktiivisella lavalla! Vaihdetaan aktiivista lavaa.
-	        			aktiivinenLava = paketti[0];
-	        			naamoja = paketti[1];
-	        			std::cout << dClock::getTimeString() << " Vaihdetaan lavalle " << aktiivinenLava << "\n";
-	        		}
-	        		else { //Toisella lavalla on vähemmän naamoja. Hylätään paketti.
-	        			paketti.clear();
-	        		}
-	        	}
-
-	        	else {//Paketti tuli aktiiviselta lavalta
-	        		naamoja = paketti[1];	
-	        	}
-
-	        	//poistetaan nämä
-	        	if(paketti.size() >= 2) paketti.erase(paketti.begin(), paketti.begin()+2);
-
-	        	//Jos naamoja ei ole missään kovin paljoa, vaihdetaan playback päälle
-	        	if(naamoja < min_naamoja) {
-	        		if(ui.moodi != PLAYBACK) {
-		        		ui.moodi = PLAYBACK;
-//		        		historia = olentoServer::lataaHistoria(PLAYBACK_FILE);
-		        		std::cout << dClock::getTimeString() << " Ei näy naamoja. Playback päälle.\n";
-		        	}
-	        	}
-
-	        	//jos naamoja on, vaihdetaan takaisin playbackilta
-	        	else if (ui.moodi == PLAYBACK) {
-	        		ui.moodi = KATSELLAAN;
-	        		std::cout << dClock::getTimeString() << " Naamoja näkyy! Playback pois\n";
-	        	}
-
-	        	//std::cout << "Lavalla " << aktiivinenLava << " tapahtuu! Naamoja on " << naamoja << "\n";
-        	}
+        paketti = olentoServer::haePaketti(); //palauttaa tyhjï¿½n paketin jos paketteja ei ole tullut. Tarkista p.empty()
+        if (!paketti.empty()) {
+            if (paketti.size() < 102) //paketin koko pitï¿½isi olla 104. Jos tuli vï¿½hemmï¿½n, hylï¿½tï¿½ï¿½n paketti.
+                paketti.clear();
+            else {
+                std::cout << dClock::getTimeString() << " Tuli paketti! Koko: " << paketti.size() << " Lava: " << paketti[0] << " Naamoja: " << paketti[1] << "\n";
+                paketti_t.reset();
+                paketti.resize(102);
+            }
         }
 
 
         //nnInterface::mtx.lock();
         
+        
+        
         if (ui.moodi == KATSELLAAN) {
-            
-            if(!paketti.empty()) {
-                dClock clk;
-                std::vector<float> outputs;
-                //annetaan inputit nnetille
-                nnInterface::SetInput(paketti);
-                
-                //haetaan vaste nnetiltä
-                while (outputs.empty()) {
-                    outputs = nnInterface::GetOutput();
-                    //std::cout << "outputs oli tyhjä\n";
-                }
-                //std::cout << "tuli output\n";
-                
-                //std::cout << "outputs: " << olentoServer::floatsToString(outputs) << "\n";
-                //std::cout << "muodonArvot: " << olentoServer::floatsToString(muodonArvot) << "\n";
-                
-                //muuta muotoa
-                for (int i = 0; i < outputs.size(); i++) {
-                    muodonArvot[i] += (outputs[i] * 2 - 1) * herkkyys;
-                    bound(muodonArvot[i],0.0001f,0.9999f);
-                }
 
-                //aseta vielä samat arvot ui:iin että on helpompi vaihtaa
+            if(paketti.size() == 102)
+                viimeisinPaketti = paketti;
+            
+            if (viimeisinPaketti.size() == 102) {
+                dClock clk;
+
+                
+                //maaritellaan paamaara
+                tilanteet_.etsiInputArvojenMukaan(viimeisinPaketti);
+                std::vector<float> kohdeKasvot = tilanteet_.annaLahinTilanne().getInput();
+                
+                //lasketaan suuntavektori
+                for(int i = 0; i < viimeisinPaketti.size();i++) {
+                    viimeisinPaketti[i] = 0.1 * (viimeisinPaketti[i] + 0.1 * (kohdeKasvot[i] - viimeisinPaketti[i]));
+                }
+                
+                //etsitÃ¤Ã¤n lahelta samankaltaisia muotoja ja valitaan niistÃ¤ se joka eniten ohjaa kohti maaranpaata
+                tilanteet_.lahinTilanneListasta(tilanteet_.lahimmatTilanteetOutputinMukaan(5,muodonArvot), viimeisinPaketti);
+                muodonArvot = tilanteet_.annaLahinTilanne().annaGeneettinenOutput(kohdeKasvot);
+
+                //aseta vielï¿½ samat arvot ui:iin ettï¿½ on helpompi vaihtaa
                 ui.arvot = muodonArvot;
 
                 //tallenna paketti, muodon arvot ja NNetin ulostulot tiedostoon
-                olentoServer::tallennaTiedot(paketti, muodonArvot, outputs);
+                olentoServer::tallennaTiedot(viimeisinPaketti, muodonArvot, outputs);
 
-                nnInterface::LaskeDesiredOut(muodonArvot);
+                //nnInterface::LaskeDesiredOut(muodonArvot);
                 //std::cout << "laskeDesired: " << clk.get() << "\n";
+            }//playback jos paketteja ei kuulu vï¿½hï¿½ï¿½n aikaan
+
+            else if (paketti_t.get() > 10) {
+                //std::cout << dClock::getTimeString() << " Ei paketteja " << paketti_t.get() << " sekuntiin. Playback pï¿½ï¿½lle.\n";
+                //ui.moodi = PLAYBACK;
             }
-            //playback jos paketteja ei kuulu vähään aikaan
-	       	else if(paketti_t.get() > 10) {
-    	   		std::cout << dClock::getTimeString() << " Ei paketteja " << paketti_t.get() << " sekuntiin. Playback päälle.\n";
-       			ui.moodi = PLAYBACK;
-       		}
 
         }
-        
+
         if (ui.moodi == ASETA_TOIVE) {
-            if(!paketti.empty())
-            {
-                nnInterface::SetInput(paketti);
-                nnInterface::TeeTilanne(paketti, ui.arvot);
+            if (!paketti.empty()) {
+                //nnInterface::SetInput(paketti);
+                //nnInterface::TeeTilanne(paketti, ui.arvot);
+                tilanteet_.lisaa(paketti, ui.arvot);
+                tilanteet_.tallenna("resources/testi.net");
                 ui.moodi = MUOKATAAN;
             }
         }
-        
+
         if (ui.moodi == MUOKATAAN) {
             muodonArvot = ui.arvot;
-            if(playback_t.get() > 1.0) {
-	            std::vector<float> tyhjaVektori;
-	            //olentoServer::tallennaTiedot(tyhjaVektori, muodonArvot, tyhjaVektori, PLAYBACK_FILE);
-	            playback_t.reset();
-	        }
-	    }
-
+            if (playback_t.get() > 1.0) {
+                std::vector<float> tyhjaVektori;
+                olentoServer::tallennaTiedot(tyhjaVektori, muodonArvot, tyhjaVektori, PLAYBACK_FILE);
+                playback_t.reset();
+            }
+        }
+/*
         if (ui.moodi == PLAYBACK) {
-        	//hae uusi tieto sekunnin välein
-        	if(playback_t.get() >= 1.0) {        		
-        		muodonArvot = haeHistoriasta();
-        		//std::cout << "ok\n";
-        		if(muodonArvot.size() != 8) {
-        			std::cout << dClock::getTimeString() << "HaeHistoriasta: Tuli " << muodonArvot.size() << " arvoa!\n";
-        			muodonArvot.resize(8);
-        		}
-        		playback_t.reset();
-        	}
+            //hae uusi tieto sekunnin vï¿½lein
+            if (playback_t.get() >= 1.0) {
+                muodonArvot = haeHistoriasta();
+                //std::cout << "ok\n";
+                if (muodonArvot.size() != 8) {
+                    std::cout << dClock::getTimeString() << "HaeHistoriasta: Tuli " << muodonArvot.size() << " arvoa!\n";
+                    muodonArvot.resize(8);
+                }
+                playback_t.reset();
+            }
 
         }
-        
+*/
         //nnInterface::mtx.unlock();
 
         //std::thread(asetaMuoto,muodonArvot).detach();
@@ -393,21 +366,21 @@ int main(int argc, char* argv[]) {
 
         olentoServer::asetaVastausviesti(muodonArvot);
         //updateGL();
-        
+
         //print(ui);
-        
+
         //ajasta luuppi
-       // std::cout << "Kesti " << t.get() << " s\n";
+        // std::cout << "Kesti " << t.get() << " s\n";
         t.delay(30);
-        
+
     } while (ui.run);
-    
+
     nnInterface::Close();
-    
-    net.join();
+
+    //net.join();
     olentoServer::lopeta();
-    
+
     return 0;
-    
+
 }
 

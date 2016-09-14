@@ -1,5 +1,5 @@
-#ifndef __libnn__libnnInterface__
-#define __libnn__libnnInterface__
+#ifndef OLENTO_LIBNNINTERFACE_H
+#define OLENTO_LIBNNINTERFACE_H
 
 #include <stdio.h>
 #include "libnn.h"
@@ -167,5 +167,9 @@ namespace nnInterface {
     void LaskeDesiredOut(std::vector<float> nykyinenPaikka);
     
     void Close();
+    
+    void SaveNN(std::string savefile);
+    
+    void LoadNN(std::string filename);
 }
 #endif

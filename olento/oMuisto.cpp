@@ -1,4 +1,3 @@
-﻿
 #include "oMuisto.h"
 
 oMuisto::oMuisto () : currentId(-1)

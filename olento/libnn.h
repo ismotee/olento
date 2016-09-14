@@ -46,6 +46,9 @@ public:
     float output;
     std::vector<float> weights;  // bias + weights
 
+    std::string toString();
+    void fromString(std::string data);
+    
 protected:
     float learnRate;
 };
@@ -54,6 +57,7 @@ struct NeuronData
 {
     std::vector<float> weights;
     float output;
+    NeuronData() {}
     NeuronData(Neuron& original) : output(original.output)
     {
         weights = original.weights;
@@ -109,6 +113,9 @@ public:
     // for inputLayer
     void setInputs(std::vector<float> inputs);
     
+    std::string toString();
+    void fromString(std::string data);
+    
 };
 
 struct NNetData
@@ -117,6 +124,7 @@ struct NNetData
     
     std::vector<NeuronData> nData;
     std::vector<linkData> lData;
+    std::string neurons_str;
     
     NNetData();
     NNetData(int in_n, int hl_n, int hn_n, int o_n) : inputs_n(in_n),hidden_layers_n(hl_n), hidden_neurons_n(hn_n),outputs_n(o_n)
@@ -124,6 +132,7 @@ struct NNetData
     }
     
     std::string toString();
+    NNetData fromString(std::string str);
     
 };
 
@@ -141,6 +150,10 @@ public:
     void printSize();
     void saveNet(std::string filename);
     void loadNet(std::string filename);
+    
+    void setWeight(float value,int layer, int neuron, int weight);
+    void setWeights(std::vector<NeuronData> nData);
+    void setInputWeight(float value, int neuron, int weight);
     
 protected:
     void linkInput(int input_id, int hidden_id);
