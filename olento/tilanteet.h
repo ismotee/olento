@@ -28,6 +28,7 @@ public:
     std::vector<float> annaVertailuArvot(std::vector<float> vertailtavat);
     //void jarjestaLahinTilanne (std::vector<float> input);
     std::vector<int> lahimmatTilanteetOutputinMukaan(int maara, std::vector<float> out);
+    int lahinTilanneListastaOutputinMukaan(std::vector<int> lista, std::vector<float> out);
     tilanne lahinTilanneListasta(std::vector<int> lista, std::vector<float> input);
     
     

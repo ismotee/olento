@@ -37,7 +37,8 @@ std::mutex mtx;
 userInput ui;
 std::vector<float> muodonArvot(8, 0.5);
 std::vector<float> viimeisinPaketti(102, 0);
-int viimeisinTilanne = -1;
+std::vector<std::vector<float> > viimeisimmatPaketit;
+int viimeisinTilanne = 100;
 
 std::vector< std::vector<float> > historia;
 
@@ -240,6 +241,7 @@ int main(int argc, char* argv[]) {
     std::vector<float> paketti;
     std::vector<float> outputs;
     outputs.resize(8, 0.5);
+    float raja = 0.0;
 
     dClock t;
     dClock paketti_t;
@@ -269,12 +271,20 @@ int main(int argc, char* argv[]) {
 
         paketti = olentoServer::haePaketti(); //palauttaa tyhj�n paketin jos paketteja ei ole tullut. Tarkista p.empty()
         if (!paketti.empty()) {
-            if (paketti.size() < 102) //paketin koko pit�isi olla 104. Jos tuli v�hemm�n, hyl�t��n paketti.
+            if (paketti.size() < 102) {//paketin koko pit�isi olla 104. Jos tuli v�hemm�n, hyl�t��n paketti.
                 paketti.clear();
-            else {
-                std::cout << dClock::getTimeString() << " Tuli paketti! Koko: " << paketti.size() << " Lava: " << paketti[0] << " Naamoja: " << paketti[1] << "\n";
+            } 
+            /*else if (paketti[0] != 2) {
+                paketti.clear();
+                std::cout << "vääränlainen paketti\n";
+            }*/ else {
+                //std::cout << dClock::getTimeString() << " Tuli paketti! Koko: " << paketti.size() << " Lava: " << paketti[0] << " Naamoja: " << paketti[1] << "\n";
                 paketti_t.reset();
+                paketti.erase(paketti.begin(), paketti.begin() +2);
                 paketti.resize(102);
+                std::cout << "paketin koko: " << paketti.size() <<"\n";
+                //olentoServer::tulostaPaketti(paketti);
+                //viimeisinPaketti = paketti;
             }
         }
 
@@ -285,54 +295,39 @@ int main(int argc, char* argv[]) {
 
         if (ui.moodi == KATSELLAAN) {
 
-            bool samaNaama;
+
 
             if (paketti.size() == 102) {
-
-                if (vektori::pituus(vektori::erotus(viimeisinPaketti, paketti)) < 0.2) {
-                    samaNaama = true;
-                    viimeisinPaketti = vektori::miksaus(paketti, viimeisinPaketti, 0.85f);
-                    std::cout << "sama naama\n";
-                } else {
-                    viimeisinPaketti = vektori::miksaus(paketti, viimeisinPaketti, 0.7f);
-                    samaNaama = false;
-                }
+                //viimeisinPaketti = paketti;
+                
+                viimeisinPaketti = vektori::miksaus(viimeisinPaketti, paketti, 0.9);
 
             }
 
-            if (viimeisinPaketti.size() == 102) {
+            if (!viimeisinPaketti.empty()) {
                 dClock clk;
 
-
+                float matka = vektori::pituus(vektori::erotus(muodonArvot, tilanteet_.annaTilanne(viimeisinTilanne).getOutput()));
                 //maaritellaan paamaara
-                std::vector<int> lahimmatInputit = tilanteet_.teeLahimpienTilanteidenIndeksiTaulukko(viimeisinPaketti, 60);
+                std::vector<int> lahimmatInputit = tilanteet_.teeLahimpienTilanteidenIndeksiTaulukko(viimeisinPaketti, 5 + matka);
 
 
-                    bool viimeInputLoytyy;
+                bool samaNaama;
 
-                    for (int i = 0; i < lahimmatInputit.size(); i++) {
-                        if (lahimmatInputit[i] == viimeisinTilanne) {
-                            viimeInputLoytyy = true;
-                            break;
-                        }
-                    }
+                for (int i = 0; i < lahimmatInputit.size(); i++) {
+                    if (viimeisinTilanne == lahimmatInputit[i]) samaNaama = true;
+                }
 
+                if (!samaNaama)
+                    viimeisinTilanne = lahimmatInputit[0];
+                else
+                    samaNaama = false;
 
-                    if (!viimeInputLoytyy) {
-                        
-                        float rajaarvo = vektori::pituus(vektori::erotus(tilanteet_.annaTilanne(lahimmatInputit[0]).getOutput(),muodonArvot));
-                        std::cout << "rajaarvo: " << 1+rajaarvo*100 << "\n";
-                        
-                        int id = tilanteet_.lahimmatTilanteetOutputinMukaan(1 +(int)rajaarvo * 100, tilanteet_.annaTilanne(lahimmatInputit[0]).getOutput())[0];
-                        muodonArvot = vektori::miksaus(muodonArvot,tilanteet_.annaTilanne(id).getOutput(),0.15);
-                    }
-                        
-                        //muutoin sama kuin ennen
-                
+                int id = tilanteet_.lahinTilanneListastaOutputinMukaan(lahimmatInputit, muodonArvot);
 
-
-
-
+                //muodonArvot = vektori::miksaus(muodonArvot, tilanteet_.annaTilanne(viimeisinTilanne).getOutput(), 0.3);
+                //muodonArvot = vektori::miksaus(muodonArvot, tilanteet_.annaTilanne(id).getOutput(), 0.1);
+                muodonArvot = tilanteet_.annaTilanne(viimeisinTilanne).getOutput();
                 //aseta viel� samat arvot ui:iin ett� on helpompi vaihtaa
                 ui.arvot = muodonArvot;
 
@@ -343,9 +338,10 @@ int main(int argc, char* argv[]) {
                 //std::cout << "laskeDesired: " << clk.get() << "\n";
             }//playback jos paketteja ei kuulu v�h��n aikaan
 
-            else if (paketti_t.get() > 10) {
+            else {
                 //std::cout << dClock::getTimeString() << " Ei paketteja " << paketti_t.get() << " sekuntiin. Playback p��lle.\n";
                 //ui.moodi = PLAYBACK;
+                std::cout << "paketti ohi\n";
             }
 
         }

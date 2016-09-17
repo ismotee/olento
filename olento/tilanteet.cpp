@@ -30,25 +30,25 @@ std::vector<int> tilanteet::teeLahimpienTilanteidenIndeksiTaulukko(std::vector<f
 
     std::vector<float> vertaillut;
     vertaillut.resize(vec_tilanteet.size(), -1);
-    
-    for(int i = 0; i < vec_tilanteet.size() ; i++)
+
+    for (int i = 0; i < vec_tilanteet.size(); i++)
         vertaillut[i] = vec_tilanteet[i].compare(input);
-    
+
     while (lista.size() < maara) {
         int id = -1;
         float vertailu = 100000;
-        
+
         for (int i = 0; i < vertaillut.size(); i++) {
-            
-            if(vertaillut[i] < vertailu) {
+
+            if (vertaillut[i] < vertailu) {
                 bool listassa = false;
-                
-                for(int j = 0; j < lista.size();j++) {
-                    if(lista[j] == i) 
+
+                for (int j = 0; j < lista.size(); j++) {
+                    if (lista[j] == i)
                         listassa = true;
                 }
-                
-                if(!listassa) {
+
+                if (!listassa) {
                     vertailu = vertaillut[i];
                     id = i;
                 }
@@ -150,7 +150,7 @@ void tilanteet::laskeGeenit() {
         vec_tilanteet[i].epoch();
     }
 }
-*/
+ */
 int tilanteet::annaLahinTilanneId() {
     return lahinTilanneid;
 }
@@ -159,31 +159,31 @@ int tilanteet::annaLahinTilanneId() {
 void tilanteet::jarjestaLahinTilanne(std::vector<float> input) {
     vec_tilanteet[lahinTilanneid].jarjestaGeenit(input);
 }
-*/
+ */
 std::vector<int> tilanteet::lahimmatTilanteetOutputinMukaan(int maara, std::vector<float> out) {
     std::vector<int> lista;
 
     std::vector<float> vertaillut;
     vertaillut.resize(vec_tilanteet.size(), -1);
-    
-    for(int i = 0; i < vec_tilanteet.size() ; i++)
+
+    for (int i = 0; i < vec_tilanteet.size(); i++)
         vertaillut[i] = vec_tilanteet[i].compare_out(out);
-    
+
     while (lista.size() < maara) {
         int id = -1;
         float vertailu = 100000;
-        
+
         for (int i = 0; i < vertaillut.size(); i++) {
-            
-            if(vertaillut[i] < vertailu) {
+
+            if (vertaillut[i] < vertailu) {
                 bool listassa = false;
-                
-                for(int j = 0; j < lista.size();j++) {
-                    if(lista[j] == i) 
+
+                for (int j = 0; j < lista.size(); j++) {
+                    if (lista[j] == i)
                         listassa = true;
                 }
-                
-                if(!listassa) {
+
+                if (!listassa) {
                     vertailu = vertaillut[i];
                     id = i;
                 }
@@ -195,8 +195,29 @@ std::vector<int> tilanteet::lahimmatTilanteetOutputinMukaan(int maara, std::vect
     return lista;
 }
 
+int tilanteet::lahinTilanneListastaOutputinMukaan(std::vector<int> lista, std::vector<float> out) {
+
+    std::vector<float> vertaillut;
+    vertaillut.resize(lista.size(), -1);
+
+    for (int i = 0; i < lista.size(); i++)
+        vertaillut[i] = vec_tilanteet[lista[i]].compare_out(out);
+
+    int id = -1;
+    float vertailu = 100000;
+
+    for (int i = 0; i < vertaillut.size(); i++) {
+        if (vertaillut[i] < vertailu) {
+            vertailu = vertaillut[i];
+            id = i;
+        }
+    }
+
+    return lista[id];
+}
+
 tilanne tilanteet::lahinTilanneListasta(std::vector<int> lista, std::vector<float> input) {
-    
+
     float pieninEro = 100000;
     int indeksi = -1;
 
