@@ -531,7 +531,7 @@ void oObj::asetaMuoto(vector<float> values) {
   std::vector<glm::vec3> newVerts = mods.getShape(shapeValues);
 
   //aseta vertekstit kappaleeseen
-  obj.changeVerticesTowards(newVerts, 0.03);
+  obj.changeVertices(newVerts);
 
   //5: materiaali, 6 & 7: väri
   mat = getMaterial(values[5]);

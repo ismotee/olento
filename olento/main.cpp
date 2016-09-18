@@ -273,16 +273,15 @@ int main(int argc, char* argv[]) {
         if (!paketti.empty()) {
             if (paketti.size() < 102) {//paketin koko pit�isi olla 104. Jos tuli v�hemm�n, hyl�t��n paketti.
                 paketti.clear();
-            } 
-            /*else if (paketti[0] != 2) {
-                paketti.clear();
-                std::cout << "vääränlainen paketti\n";
-            }*/ else {
+            }                /*else if (paketti[0] != 2) {
+                    paketti.clear();
+                    std::cout << "vääränlainen paketti\n";
+                }*/ else {
                 //std::cout << dClock::getTimeString() << " Tuli paketti! Koko: " << paketti.size() << " Lava: " << paketti[0] << " Naamoja: " << paketti[1] << "\n";
                 paketti_t.reset();
-                paketti.erase(paketti.begin(), paketti.begin() +2);
+                paketti.erase(paketti.begin(), paketti.begin() + 2);
                 paketti.resize(102);
-                std::cout << "paketin koko: " << paketti.size() <<"\n";
+                //std::cout << "paketin koko: " << paketti.size() <<"\n";
                 //olentoServer::tulostaPaketti(paketti);
                 //viimeisinPaketti = paketti;
             }
@@ -298,10 +297,12 @@ int main(int argc, char* argv[]) {
 
 
             if (paketti.size() == 102) {
-                //viimeisinPaketti = paketti;
-                
-                viimeisinPaketti = vektori::miksaus(viimeisinPaketti, paketti, 0.9);
+                viimeisinPaketti = paketti;
 
+                //viimeisinPaketti = vektori::miksaus(viimeisinPaketti, paketti, 0.1);
+
+            } else {
+                std::cout << "viimeisinPaketti1: " << viimeisinPaketti[0] << "\n";
             }
 
             if (!viimeisinPaketti.empty()) {
@@ -309,25 +310,30 @@ int main(int argc, char* argv[]) {
 
                 float matka = vektori::pituus(vektori::erotus(muodonArvot, tilanteet_.annaTilanne(viimeisinTilanne).getOutput()));
                 //maaritellaan paamaara
-                std::vector<int> lahimmatInputit = tilanteet_.teeLahimpienTilanteidenIndeksiTaulukko(viimeisinPaketti, 5 + matka);
-
+                std::vector<int> lahimmatInputit = tilanteet_.teeLahimpienTilanteidenIndeksiTaulukko(viimeisinPaketti, 2);
+                float inputVektorinPituus = vektori::pituus(vektori::erotus(viimeisinPaketti, tilanteet_.annaTilanne(lahimmatInputit[0]).getInput()));
 
                 bool samaNaama;
 
-                for (int i = 0; i < lahimmatInputit.size(); i++) {
-                    if (viimeisinTilanne == lahimmatInputit[i]) samaNaama = true;
+                std::cout << "inputVektorin pituus: " << inputVektorinPituus << "\n";
+                if (inputVektorinPituus < 0.3) {
+                    for (int i = 0; i < lahimmatInputit.size(); i++) {
+                        if (viimeisinTilanne == lahimmatInputit[i]) samaNaama = true;
+                    }
+
+                    if (!samaNaama) {
+                        viimeisinTilanne = lahimmatInputit[0];
+                        std::cout << "viimeisin Tilanne: " << viimeisinTilanne << "\n";
+                    } else
+                        samaNaama = false;
                 }
 
-                if (!samaNaama)
-                    viimeisinTilanne = lahimmatInputit[0];
-                else
-                    samaNaama = false;
 
                 int id = tilanteet_.lahinTilanneListastaOutputinMukaan(lahimmatInputit, muodonArvot);
 
-                //muodonArvot = vektori::miksaus(muodonArvot, tilanteet_.annaTilanne(viimeisinTilanne).getOutput(), 0.3);
-                //muodonArvot = vektori::miksaus(muodonArvot, tilanteet_.annaTilanne(id).getOutput(), 0.1);
-                muodonArvot = tilanteet_.annaTilanne(viimeisinTilanne).getOutput();
+                muodonArvot = vektori::miksaus(muodonArvot, tilanteet_.annaTilanne(viimeisinTilanne).getOutput(), 0.1);
+                muodonArvot = vektori::miksaus(muodonArvot, tilanteet_.annaTilanne(id).getOutput(), 0.25);
+                //muodonArvot = tilanteet_.annaTilanne(viimeisinTilanne).getOutput();
                 //aseta viel� samat arvot ui:iin ett� on helpompi vaihtaa
                 ui.arvot = muodonArvot;
 
